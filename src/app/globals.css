@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --animate-spin-slow: spin 20s linear infinite;
+  --animate-spin-slow-reverse: spin 25s linear infinite reverse;
+  --animate-ripple: ripple 2s ease-out infinite;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes orbit-float {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(3px, -4px); }
+  50% { transform: translate(-2px, 3px); }
+  75% { transform: translate(4px, 2px); }
+}
+
+body {
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background-color: #818cf8;
+  color: white;
+}
+
+/* 隐藏滚动条但保留滚动功能 */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* 博客文章代码块样式优化 */
+.blog-content pre {
+  position: relative;
+}
+
+.blog-content pre code {
+  font-family: var(--font-geist-mono), "Cascadia Code", "Fira Code", Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.7;
+  tab-size: 2;
+}
+
+/* 代码块顶部装饰条 */
+.blog-content pre::before {
+  content: "";
+  display: block;
+  height: 3px;
+  background: linear-gradient(to right, #6366f1, #a855f7, #ec4899);
+  border-radius: 12px 12px 0 0;
+}
+
+/* 行内代码样式 */
+.blog-content :not(pre) > code {
+  font-size: 0.875em;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* 段落首行不缩进 */
+.blog-content p {
+  text-indent: 0;
+}
+
+/* 列表项间距 */
+.blog-content li {
+  margin-bottom: 0.5rem;
+}
+
+/* 图片居中 */
+.blog-content img {
+  margin-left: auto;
+  margin-right: auto;
+}
