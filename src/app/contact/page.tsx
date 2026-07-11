@@ -4,10 +4,12 @@ import { useLang } from "@/components/language-context";
 
 const translations = {
   zh: {
+    section: "联系方式",
     title: "联系方式",
     subtitle: "欢迎通过以下方式联系我。",
   },
   en: {
+    section: "Contact",
     title: "Contact",
     subtitle: "Feel free to reach out through the following channels.",
   },
@@ -20,7 +22,7 @@ export default function Contact() {
   return (
     <div className="max-w-2xl pt-12 pb-24 px-8 md:px-16 lg:px-24">
       <p className="text-sm font-medium text-primary tracking-wide uppercase">
-        Contact
+        {t.section}
       </p>
       <h1 className="mt-3 text-4xl font-bold tracking-tight text-foreground">
         {t.title}
@@ -53,7 +55,7 @@ export default function Contact() {
         </a>
 
         <a
-          href="mailto:muanyan5@gmail.com"
+          href="mailto:muanyan7@gmail.com"
           className="group flex items-center gap-4 bg-card rounded-xl p-5 border border-border card-hover"
         >
           <div className="w-10 h-10 rounded-lg bg-foreground/5 flex items-center justify-center">
@@ -66,7 +68,7 @@ export default function Contact() {
               Email
             </p>
             <p className="text-sm text-muted mt-0.5">
-              muanyan5@gmail.com
+              muanyan7@gmail.com
             </p>
           </div>
           <span className="text-muted group-hover:text-primary transition-colors">→</span>

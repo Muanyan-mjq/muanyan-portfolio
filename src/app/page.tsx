@@ -3,7 +3,10 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { BASE_PATH } from "@/lib/base-path";
 import { useLang } from "@/components/language-context";
+import { VAEIcon } from "@/components/vae-icon";
+import { TypewriterText } from "@/components/typewriter-text";
 
 // Translations — 主要内容的中英文对照
 const t = {
@@ -13,16 +16,16 @@ const t = {
     bio: "计算机科学与技术专业学生，热爱系统化思考。以 VAE 为切入点研究生成模型，同时从 Q-Learning 入手学习强化学习。学习习惯是「先理解原理，再写代码」。",
     uni: "湖北理工学院",
     year: "2025 届",
-    edu: "Education",
+    edu: "教育背景",
     eduCurrent: "在读",
     eduMajor: "计算机科学与技术（卓越工程师试点班）",
     eduFuture: "远景规划：扩散模型与多模态方向持续深耕",
-    awards: "Awards",
-    skills: "Skills",
-    blog: "Blog",
-    viewAll: "View all",
-    projects: "Projects",
-    contact: "Contact",
+    awards: "获奖经历",
+    skills: "技能",
+    blog: "博客",
+    viewAll: "查看全部",
+    projects: "项目经历",
+    contact: "联系方式",
     ghDesc: "查看我的项目和贡献",
     emailDesc: "联系我",
     footerBio: "计算机科学与技术专业学生，专注于生成模型与强化学习研究。",
@@ -45,6 +48,15 @@ const t = {
     projColorDesc: "在基础 VAE 上进行彩色图像生成优化，提升重建质量。",
     projFlaskTitle: "Flask 智能课表助手",
     projFlaskDesc: "基于 Flask + Ollama 本地大模型的智能课表管理工具。",
+    projSXYTitle: "随心耶",
+    projSXYDesc: "日记书写 + 专注计时 + 塔罗/八字/星座，Flutter 开发的个人 App。",
+    tagDL: "深度学习",
+    tagWeb: "网页应用",
+    tagSolo: "独立开发",
+    tagDesktop: "桌面应用",
+    // DeepSeek Monitor
+    projDSMTitle: "DeepSeek Monitor",
+    projDSMDesc: "基于 Tauri 2 + React + Rust 的 Windows 桌面应用，实时监控 DeepSeek API 用量。7 套主题配色，系统托盘驻留。",
     // 博客
     blogTag: "示例",
     blogDesc: "示例 MDX 博客文章，支持 JSX 和 Markdown 混合编写。",
@@ -87,6 +99,15 @@ const t = {
     projColorDesc: "Optimizing color image generation on top of basic VAE, improving reconstruction quality.",
     projFlaskTitle: "Flask Smart Timetable Assistant",
     projFlaskDesc: "An intelligent timetable management tool built with Flask + Ollama local LLM.",
+    projSXYTitle: "Flowdiary",
+    projSXYDesc: "A personal app with journaling, focus timer, and Tarot / BaZi / Zodiac. Built with Flutter.",
+    tagDL: "Deep Learning",
+    tagWeb: "Web App",
+    tagSolo: "Solo",
+    tagDesktop: "Desktop App",
+    // DeepSeek Monitor
+    projDSMTitle: "DeepSeek Monitor",
+    projDSMDesc: "A Windows desktop app built with Tauri 2 + React + Rust for real-time DeepSeek API usage monitoring. 7 themes, system tray integration.",
     // 博客
     blogTag: "Sample",
     blogDesc: "Sample MDX blog post supporting JSX and Markdown.",
@@ -243,8 +264,8 @@ const awardsData = [
   {
     id: 1,
     year: "2026.05",
-    title: { zh: "中国大学生计算机设计大赛", en: "China Collegiate Computing Design Contest" },
-    subtitle: { zh: "中南赛区湖北省一等奖", en: "Central-South Division, Hubei Province — First Prize" },
+    title: { zh: "第19届中国大学生计算机设计大赛", en: "19th Chinese Collegiate Computing Design Competition" },
+    subtitle: { zh: "中南赛区 · 湖北省一等奖", en: "Central-South Division · Hubei Province First Prize" },
     image: "", // 后续替换为获奖照片路径，如 "/awards/ccc2026.jpg"
   },
 ];
@@ -274,7 +295,7 @@ export default function Home() {
   return (
     <div className="min-h-screen overflow-hidden">
       {/* Hero */}
-      <section className="relative min-h-screen flex items-center justify-center px-8 md:px-16 lg:px-24">
+      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-8 md:px-16 lg:px-24">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-1/4 -right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-pink-500/20 rounded-full blur-3xl animate-pulse" />
           <div className="absolute bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-blue-500/15 via-cyan-500/10 to-emerald-500/15 rounded-full blur-3xl animate-pulse delay-1000" />
@@ -288,7 +309,7 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 w-full max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <div className="flex flex-col justify-center">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full mb-8 w-fit">
                 <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" />
@@ -297,11 +318,11 @@ export default function Home() {
               <h1 className="text-[clamp(4rem,10vw,8rem)] font-bold tracking-tight leading-[0.85] mb-6">
                 <span className="bg-gradient-to-r from-zinc-900 via-zinc-700 to-zinc-500 dark:from-white dark:via-zinc-300 dark:to-zinc-500 bg-clip-text text-transparent">马佳祺</span>
               </h1>
-              <p className="text-3xl text-zinc-400 dark:text-zinc-500 font-light tracking-[0.3em] mb-10">Muanyan</p>
-              <p className="text-xl text-zinc-600 dark:text-zinc-300 leading-relaxed max-w-lg mb-8">
+              <p className="text-2xl md:text-3xl text-zinc-400 dark:text-zinc-500 font-light tracking-[0.2em] md:tracking-[0.3em] mb-6 md:mb-10">Muanyan</p>
+              <p className="text-base sm:text-lg md:text-xl text-zinc-600 dark:text-zinc-300 leading-relaxed max-w-lg mb-6 md:mb-8">
                 {T.bio}
               </p>
-              <div className="flex items-center gap-6 text-sm text-zinc-500 dark:text-zinc-400">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
                 <span className="flex items-center gap-2">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" /></svg>
                   {T.uni}
@@ -322,12 +343,12 @@ export default function Home() {
                 <div className="absolute inset-8 border border-pink-500/10 rounded-full" />
                 {/* Avatar */}
                 <div className="absolute inset-12 rounded-full overflow-hidden border-4 border-white dark:border-zinc-900 shadow-2xl group-hover/avatar:scale-110 transition-transform duration-500 z-10">
-                  <Image src="/avatar.png" alt="马佳祺" width={256} height={256} className="w-full h-full object-cover" priority />
+                  <Image src={`${BASE_PATH}/avatar.png`} alt="马佳祺" width={256} height={256} className="w-full h-full object-cover" priority />
                 </div>
-                {/* 座右铭 — hover 时和标签一起出现，位置更低更显眼 */}
-                <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 z-20 pointer-events-none opacity-0 translate-y-4 group-hover/avatar:opacity-100 group-hover/avatar:translate-y-0 transition-all duration-700 ease-out delay-[1100ms]">
-                  <p className="text-lg md:text-xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent tracking-wide whitespace-nowrap drop-shadow-sm">
-                    &ldquo;{T.motto}&rdquo;
+                {/* 座右铭 — hover 时显示，下移避免被标签遮挡 */}
+                <div className="absolute -bottom-[170px] left-1/2 -translate-x-1/2 z-30 pointer-events-none opacity-0 translate-y-4 group-hover/avatar:opacity-100 group-hover/avatar:translate-y-0 transition-all duration-700 ease-out delay-[1100ms]">
+                  <p className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent tracking-wide whitespace-nowrap drop-shadow-sm">
+                    &ldquo;<TypewriterText text={T.motto} speed={100} cursor={false} />&rdquo;
                   </p>
                 </div>
                 {/* Orbiting tags — hover 时环绕头像出现 */}
@@ -344,8 +365,6 @@ export default function Home() {
                         top: `${cy}px`,
                         transform: "translate(-50%, -50%)",
                         transitionDelay: `${80 + i * 60}ms`,
-                        animation: `orbit-float 3.${i}s ease-in-out infinite`,
-                        animationDelay: `${i * 0.2}s`,
                       }}
                     >
                       <span className={`inline-block px-3 py-1 text-xs font-semibold bg-gradient-to-r ${tag.color} text-white rounded-full shadow-lg whitespace-nowrap`}>
@@ -361,7 +380,7 @@ export default function Home() {
       </section>
 
       {/* Education */}
-      <section className="py-24 px-8 md:px-16 lg:px-24">
+      <section className="py-16 md:py-24 px-4 sm:px-8 md:px-16 lg:px-24">
         <div className="max-w-7xl mx-auto">
           <AnimatedSection>
             <div className="flex items-center gap-6 mb-12">
@@ -380,22 +399,22 @@ export default function Home() {
 
               <div className="space-y-8 pr-2">
                 {/* Current */}
-                <div className="relative pl-20">
+                <div className="relative pl-12 sm:pl-16 md:pl-20">
                   <div className="absolute left-6 top-2 w-5 h-5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 border-4 border-white dark:border-zinc-950" />
-                  <div className="p-8 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                  <div className="p-5 sm:p-8 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                       <div>
                         <span className="px-3 py-1 text-xs font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full">{T.eduCurrent}</span>
-                        <h3 className="mt-4 text-2xl font-bold text-zinc-900 dark:text-white">{T.uni}</h3>
-                        <p className="mt-2 text-lg text-zinc-600 dark:text-zinc-300">{T.eduMajor}</p>
+                        <h3 className="mt-4 text-xl sm:text-2xl font-bold text-zinc-900 dark:text-white">{T.uni}</h3>
+                        <p className="mt-2 text-base sm:text-lg text-zinc-600 dark:text-zinc-300">{T.eduMajor}</p>
                       </div>
-                      <span className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent whitespace-nowrap">2025 - 2029</span>
+                      <span className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent whitespace-nowrap">2025 - 2029</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Future */}
-                <div className="relative pl-20">
+                <div className="relative pl-12 sm:pl-16 md:pl-20">
                   <div className="absolute left-6 top-2 w-5 h-5 rounded-full bg-zinc-300 dark:bg-zinc-700 border-4 border-white dark:border-zinc-950" />
                   <div className="p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-700">
                     <p className="text-lg text-zinc-500 dark:text-zinc-400">{T.eduFuture}</p>
@@ -410,7 +429,7 @@ export default function Home() {
       </section>
 
       {/* Awards — 时间线布局 + 渐变色块 */}
-      <section className="py-24 px-8 md:px-16 lg:px-24">
+      <section className="py-16 md:py-24 px-4 sm:px-8 md:px-16 lg:px-24">
         <div className="max-w-7xl mx-auto">
           <AnimatedSection>
             <div className="flex items-center gap-6 mb-12">
@@ -449,13 +468,13 @@ export default function Home() {
                             {/* 左侧渐变色块 */}
                             <div className={`md:w-2 w-full h-1 md:h-auto bg-gradient-to-b md:bg-gradient-to-b ${grad}`} />
                             {/* 内容区 */}
-                            <div className="flex-1 p-8">
+                            <div className="flex-1 p-5 sm:p-8">
                               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                 <div>
-                                  <h3 className="text-xl font-bold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                  <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                                     {award.title[lang]}
                                   </h3>
-                                  <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+                                  <p className="mt-2 text-sm sm:text-base text-zinc-600 dark:text-zinc-400">
                                     {award.subtitle[lang]}
                                   </p>
                                   <p className="mt-3 text-sm text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5">
@@ -463,7 +482,7 @@ export default function Home() {
                                     {T.awardPhotoHint}
                                   </p>
                                 </div>
-                                <span className={`text-4xl font-bold bg-gradient-to-r ${grad} bg-clip-text text-transparent whitespace-nowrap`}>
+                                <span className={`text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r ${grad} bg-clip-text text-transparent whitespace-nowrap`}>
                                   {award.year}
                                 </span>
                               </div>
@@ -483,18 +502,18 @@ export default function Home() {
       </section>
 
       {/* Skills */}
-      <section className="relative py-32 px-8 md:px-16 lg:px-24">
+      <section className="relative py-20 md:py-32 px-4 sm:px-8 md:px-16 lg:px-24">
         <div className="absolute inset-0 bg-gradient-to-b from-zinc-50 to-white dark:from-zinc-900/50 dark:to-zinc-950" />
         <div className="relative max-w-7xl mx-auto">
           <AnimatedSection>
-            <div className="flex items-center gap-6 mb-20">
+            <div className="flex items-center gap-6 mb-12 md:mb-20">
               <div className="w-20 h-[2px] bg-gradient-to-r from-indigo-600 to-purple-600" />
               <h2 className="text-sm font-semibold text-zinc-900 dark:text-white uppercase tracking-[0.4em]">
                 {T.skills}
               </h2>
             </div>
           </AnimatedSection>
-          <div className="grid md:grid-cols-2 gap-x-24 gap-y-12">
+          <div className="grid md:grid-cols-2 gap-x-8 lg:gap-x-24 gap-y-8 md:gap-y-12">
             {skills.map((skill, index) => (
               <AnimatedSection key={skill.name} delay={index * 60}>
                 <div className="group">
@@ -522,8 +541,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Blog */}
-      <section className="py-24 px-8 md:px-16 lg:px-24">
+      {/* Blog — 横向滑动 */}
+      <section className="py-16 md:py-24 px-4 sm:px-8 md:px-16 lg:px-24">
         <div className="max-w-7xl mx-auto">
           <AnimatedSection>
             <div className="flex items-center justify-between mb-12">
@@ -535,6 +554,7 @@ export default function Home() {
               </div>
               <Link
                 href="/blog"
+                onClick={() => sessionStorage.removeItem("blog-entered")}
                 className="inline-flex items-center gap-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors"
               >
                 {T.viewAll}
@@ -544,12 +564,39 @@ export default function Home() {
               </Link>
             </div>
           </AnimatedSection>
+
           <div className="grid md:grid-cols-2 gap-8">
             <AnimatedSection delay={100}>
+              <Link href="/blog/claude-code-statusline" className="group block h-full">
+                <div className="h-full overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500/50 transition-all duration-500 hover:shadow-xl hover:shadow-indigo-500/5">
+                  <div className="w-full h-48 bg-gradient-to-br from-[#D87756] via-[#D2734C] to-[#C06843] flex items-center justify-center relative overflow-hidden">
+                    <img src={`${BASE_PATH}/statusline-cover.png`} alt="Claude Code 状态栏" className="w-60 object-contain rounded-xl relative z-10 group-hover:scale-110 transition-transform duration-500" />
+                  </div>
+                  <div className="p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="px-2.5 py-1 text-xs font-semibold bg-gradient-to-r from-[#D87756] to-[#C06843] text-white rounded-full">
+                        {lang === "zh" ? "灵感产物" : "Inspired Work"}
+                      </span>
+                      <span className="text-xs text-zinc-400 dark:text-zinc-500">2026-06-29</span>
+                      <span className="text-xs text-zinc-400 dark:text-zinc-500">· 15 {lang === "zh" ? "分钟阅读" : "min read"}</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2">
+                      {lang === "zh" ? "自定义 Claude Code 状态栏" : "Custom Claude Code Status Line"}
+                    </h3>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3">
+                      {lang === "zh"
+                        ? "不需要手写代码。在 Claude Code 里复制一句提示词，回答几个问题，三行状态栏就做好了。"
+                        : "No coding required. Copy a prompt into Claude Code, answer a few questions, and your three-line status bar is ready."}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            </AnimatedSection>
+            <AnimatedSection delay={200}>
               <Link href="/blog/vae-1-introduction" className="group block h-full">
                 <div className="h-full overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500/50 transition-all duration-500 hover:shadow-xl hover:shadow-indigo-500/5">
-                  <div className="w-full h-40 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center">
-                    <span className="text-6xl opacity-80 group-hover:scale-110 transition-transform duration-500">🧠</span>
+                  <div className="w-full h-48 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center relative overflow-hidden">
+                    <VAEIcon size="2xl" className="relative z-10" />
                   </div>
                   <div className="p-6">
                     <div className="flex items-center gap-2 mb-3">
@@ -571,35 +618,13 @@ export default function Home() {
                 </div>
               </Link>
             </AnimatedSection>
-            <AnimatedSection delay={200}>
-              <Link href="/blog/first-post" className="group block h-full">
-                <div className="h-full overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500/50 transition-all duration-500 hover:shadow-xl hover:shadow-indigo-500/5">
-                  <div className="w-full h-40 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 flex items-center justify-center">
-                    <span className="text-6xl opacity-80 group-hover:scale-110 transition-transform duration-500">📝</span>
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="px-2.5 py-1 text-xs font-semibold bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-full">
-                        MDX
-                      </span>
-                      <span className="text-xs text-zinc-400 dark:text-zinc-500">{T.blogTag}</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2">
-                      First Post
-                    </h3>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3">
-                      {T.blogDesc}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            </AnimatedSection>
           </div>
+
         </div>
       </section>
 
       {/* Projects */}
-      <section className="py-32 px-8 md:px-16 lg:px-24">
+      <section className="py-20 md:py-32 px-4 sm:px-8 md:px-16 lg:px-24">
         <div className="max-w-7xl mx-auto">
           <AnimatedSection>
             <div className="flex items-center justify-between mb-16">
@@ -611,6 +636,7 @@ export default function Home() {
               </div>
               <Link
                 href="/projects"
+                onClick={() => sessionStorage.removeItem("projects-entered")}
                 className="inline-flex items-center gap-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors"
               >
                 {T.viewAll}
@@ -620,38 +646,64 @@ export default function Home() {
               </Link>
             </div>
           </AnimatedSection>
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {[
-              { id: "01", title: T.projVAETitle, desc: T.projVAEDesc, tag: "Deep Learning", icon: "🧠" },
-              { id: "02", title: T.projColorTitle, desc: T.projColorDesc, tag: "Deep Learning", icon: "🎨" },
-              { id: "03", title: T.projFlaskTitle, desc: T.projFlaskDesc, tag: "Web App", icon: "📅" },
-            ].map((project, index) => (
-              <AnimatedSection key={project.id} delay={index * 150}>
-                <div className="group h-full">
-                  <div className="h-full p-8 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1">
-                    <div className="w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="flex items-start justify-between mb-6">
-                      <span className="text-5xl">{project.icon}</span>
-                      <span className="px-3 py-1.5 text-xs font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full">
-                        {project.tag}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-bold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-4">
-                      {project.title}
-                    </h3>
-                    <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm">
-                      {project.desc}
-                    </p>
+              { id: "01", title: T.projVAETitle, desc: T.projVAEDesc, tag: T.tagDL, icon: "vae-bw" },
+              { id: "02", title: T.projColorTitle, desc: T.projColorDesc, tag: T.tagDL, icon: "vae-color" },
+              { id: "03", title: T.projFlaskTitle, desc: T.projFlaskDesc, tag: T.tagWeb, icon: "📅" },
+              { id: "04", title: T.projSXYTitle, desc: T.projSXYDesc, tag: T.tagSolo, icon: "sui_xin_ye", link: "/projects/flowdiary" },
+              { id: "05", title: T.projDSMTitle, desc: T.projDSMDesc, tag: T.tagDesktop, icon: "deepseek-monitor", link: "/projects/deepseek-monitor" },
+            ].map((project, index) => {
+              const cardContent = (
+                <div className="h-full p-5 sm:p-8 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1">
+                  <div className="w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full mb-6 sm:mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="flex items-start justify-between mb-4 sm:mb-6">
+                    {project.icon === "vae-bw" ? (
+                      <VAEIcon size="lg" className="grayscale" />
+                    ) : project.icon === "vae-color" ? (
+                      <VAEIcon size="lg" />
+                    ) : project.icon === "sui_xin_ye" ? (
+                      <img src={`${BASE_PATH}/sui_xin_ye_icon.png`} alt="随心耶" className="w-20 h-20 rounded-xl object-contain" />
+                    ) : project.icon === "deepseek-monitor" ? (
+                      <div className="h-20 flex items-center">
+                        <img src={`${BASE_PATH}/deepseek-monitor/deepseek-color.png`} alt="DeepSeek Monitor" className="w-16 h-16 rounded-xl object-contain" />
+                      </div>
+                    ) : (
+                      <span className="text-4xl sm:text-5xl">{project.icon}</span>
+                    )}
+                    <span className="px-3 py-1.5 text-xs font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full">
+                      {project.tag}
+                    </span>
                   </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-3 sm:mb-4">
+                    {project.title}
+                  </h3>
+                  <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm sm:text-base">
+                    {project.desc}
+                  </p>
                 </div>
-              </AnimatedSection>
-            ))}
+              );
+
+              return (
+                <AnimatedSection key={project.id} delay={index * 150}>
+                  {"link" in project && project.link ? (
+                    <Link href={project.link!} className="group h-full block">
+                      {cardContent}
+                    </Link>
+                  ) : (
+                    <div className="group h-full">
+                      {cardContent}
+                    </div>
+                  )}
+                </AnimatedSection>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Contact */}
-      <section className="py-32 px-8 md:px-16 lg:px-24">
+      <section className="py-20 md:py-32 px-4 sm:px-8 md:px-16 lg:px-24">
         <div className="max-w-7xl mx-auto">
           <AnimatedSection>
             <div className="flex items-center gap-6 mb-16">
@@ -672,22 +724,22 @@ export default function Home() {
                 external: true,
               },
               {
-                href: "mailto:muanyan5@gmail.com",
+                href: "mailto:muanyan7@gmail.com",
                 icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>,
                 label: "Email",
-                value: "muanyan5@gmail.com",
+                value: "muanyan7@gmail.com",
                 desc: T.emailDesc,
                 external: false,
               },
             ].map((contact, index) => (
               <AnimatedSection key={contact.label} delay={index * 100}>
                 <a href={contact.href} target={contact.external ? "_blank" : undefined} rel={contact.external ? "noopener noreferrer" : undefined} className="group block">
-                  <div className="p-8 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500/50 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-all duration-500 hover:shadow-xl hover:shadow-indigo-500/5">
+                  <div className="p-5 sm:p-8 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500/50 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-all duration-500 hover:shadow-xl hover:shadow-indigo-500/5">
                     <p className="flex items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400 mb-2">
                       <span className="w-5 h-5 text-zinc-400 dark:text-zinc-500 group-hover:text-indigo-500 transition-colors">{contact.icon}</span>
                       {contact.label}
                     </p>
-                    <p className="text-xl font-bold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors pl-8">
+                    <p className="text-base sm:text-lg md:text-xl font-bold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors pl-8">
                       {contact.value}
                     </p>
                   </div>

@@ -6,21 +6,23 @@ const translations = {
   zh: {
     name: "马佳祺",
     nameEn: "Muanyan",
-    education: "Education",
+    section: "关于",
+    education: "教育背景",
     school: "学校",
     schoolName: "湖北理工学院",
     major: "专业",
     majorName: "计算机科学与技术（卓越工程师试点班）",
     graduationYear: "毕业年份",
     graduationYearValue: "2029",
-    skills: "Skills",
-    awards: "Awards",
-    awardName: "中国大学生计算机设计大赛",
-    awardDetail: "2026 · 湖北省一等奖",
+    skills: "技能",
+    awards: "获奖经历",
+    awardName: "第19届中国大学生计算机设计大赛",
+    awardDetail: "2026 · 中南赛区 · 湖北省一等奖",
   },
   en: {
     name: "Ma Jiaqi",
     nameEn: "Muanyan",
+    section: "About",
     education: "Education",
     school: "School",
     schoolName: "Hubei Polytechnic University",
@@ -30,8 +32,8 @@ const translations = {
     graduationYearValue: "2029",
     skills: "Skills",
     awards: "Awards",
-    awardName: "Chinese Collegiate Computing Competition",
-    awardDetail: "2026 · Provincial First Prize, Hubei",
+    awardName: "19th Chinese Collegiate Computing Design Competition",
+    awardDetail: "2026 · Central-South Division · Hubei Province First Prize",
   },
 };
 
@@ -43,7 +45,7 @@ export default function About() {
     <div className="max-w-2xl space-y-12 pt-12 pb-24 px-8 md:px-16 lg:px-24">
       <div>
         <p className="text-sm font-medium text-primary tracking-wide uppercase">
-          About
+          {t.section}
         </p>
         <h1 className="mt-3 text-4xl font-bold tracking-tight text-foreground">
           {t.name}

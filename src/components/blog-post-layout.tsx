@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef, type ReactNode } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { useLang } from "@/components/language-context";
 import { getAdjacentPosts, categories, type BlogPost } from "@/lib/blog-data";
+import { BASE_PATH } from "@/lib/base-path";
 
 interface TocItem {
   id: string;
@@ -54,53 +55,87 @@ export function BlogPostLayout({ children, post, seriesPosts }: BlogPostLayoutPr
   const contentRef = useRef<HTMLDivElement>(null);
   const [toc, setToc] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState<string>("");
-  const [readProgress, setReadProgress] = useState(0);
+
+  const tocNavRef = useRef<HTMLElement>(null);
 
   const adjacentPosts = post ? getAdjacentPosts(post.slug) : { prev: null, next: null };
   const cat = post ? categories[post.category] : null;
 
-  // 从内容中提取标题生成目录
-  useEffect(() => {
+  // 从内容中提取标题生成目录（useLayoutEffect 在 DOM 更新后同步执行，无延迟）
+  useLayoutEffect(() => {
     if (!contentRef.current) return;
     const headings = contentRef.current.querySelectorAll("h2, h3");
+    if (headings.length === 0) return;
+
     const items: TocItem[] = [];
-    headings.forEach((h) => {
-      const id = h.textContent?.toLowerCase().replace(/\s+/g, "-").replace(/[^\w一-鿿-]/g, "") || "";
-      h.id = id;
-      items.push({ id, text: h.textContent || "", level: h.tagName === "H2" ? 2 : 3 });
+    const idCount: Record<string, number> = {};
+
+    headings.forEach((h, index) => {
+      // 优先保留 JSX 中手动设置的 id，没有才自动生成
+      let baseId = h.id || h.textContent?.toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w一-鿿-]/g, "")
+        .slice(0, 50) || `heading-${index}`;
+
+      // 去重
+      if (idCount[baseId]) {
+        idCount[baseId]++;
+        baseId = `${baseId}-${idCount[baseId]}`;
+      } else {
+        idCount[baseId] = 1;
+      }
+
+      h.id = baseId;
+      (h as HTMLElement).style.scrollMarginTop = "90px";
+      items.push({ id: baseId, text: h.textContent || "", level: h.tagName === "H2" ? 2 : 3 });
     });
     setToc(items);
-  }, []);
+  }, [lang]);
 
-  // 监听滚动高亮当前标题 + 阅读进度
+  // 滚动监听 — 当前章节标题高亮
   useEffect(() => {
-    const handleScroll = () => {
-      const article = contentRef.current;
-      if (!article) return;
-      const rect = article.getBoundingClientRect();
-      const total = article.scrollHeight - window.innerHeight;
-      const scrolled = -rect.top;
-      setReadProgress(Math.min(100, Math.max(0, (scrolled / total) * 100)));
+    if (toc.length === 0 || !contentRef.current) return;
+
+    const headings = Array.from(contentRef.current.querySelectorAll("h2, h3"));
+    if (headings.length === 0) return;
+
+    const HEADER_H = 90;
+    let prev = "";
+
+    const update = () => {
+      let active = headings[0]?.id || "";
+
+      // 从后往前：找第一个顶部已经超过 header 线的标题
+      for (let i = headings.length - 1; i >= 0; i--) {
+        if (headings[i].getBoundingClientRect().top <= HEADER_H + 6) {
+          active = headings[i].id;
+          break;
+        }
+      }
+
+      if (active !== prev) {
+        prev = active;
+        setActiveId(active);
+      }
     };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveId(entry.target.id);
-        });
-      },
-      { rootMargin: "-80px 0px -80% 0px" }
-    );
-
-    const headings = document.querySelectorAll("h2, h3");
-    headings.forEach((h) => observer.observe(h));
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    // 直接用 scroll 事件（不用 RAF），响应更快
+    window.addEventListener("scroll", update, { passive: true });
+    setTimeout(update, 150);
 
     return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", update);
     };
-  }, []);
+  }, [toc]);
+
+  // 活跃项变化时，目录自动滚动到可见位置
+  useEffect(() => {
+    if (!activeId || !tocNavRef.current) return;
+    const activeLink = tocNavRef.current.querySelector(`[data-toc-id="${activeId}"]`);
+    if (activeLink) {
+      activeLink.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+  }, [activeId]);
 
   // 代码复制功能
   useEffect(() => {
@@ -129,32 +164,20 @@ export function BlogPostLayout({ children, post, seriesPosts }: BlogPostLayoutPr
 
   return (
     <>
-      {/* 阅读进度条 */}
-      <div className="fixed top-0 left-0 right-0 z-[60] h-0.5 bg-zinc-200 dark:bg-zinc-800">
-        <div
-          className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transition-all duration-150"
-          style={{ width: `${readProgress}%` }}
-        />
-      </div>
-
-      <div className="pt-8 pb-16 px-6 md:px-12 lg:px-20">
+      <div className="pt-2 pb-10 px-4 sm:px-5 md:px-8 lg:px-10">
         <div className="max-w-7xl mx-auto">
-          {/* 返回链接 */}
-          <div className="mb-10">
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-              {T.back}
-            </Link>
-          </div>
-
           {/* 文章封面 Banner */}
           {post && (
-            <div className={`w-full h-48 md:h-64 rounded-2xl bg-gradient-to-br ${post.cover.gradient} flex items-center justify-center mb-10 relative overflow-hidden`}>
-              <div className="absolute inset-0 bg-black/10" />
-              <span className="text-8xl opacity-60 relative z-10">{post.cover.icon}</span>
+            <div className={`w-full ${
+"h-44 md:h-72"
+            } rounded-2xl bg-gradient-to-br ${post.cover.gradient} flex items-center justify-center mb-6 relative overflow-hidden`}>
+              {post.cover.image ? (
+                <img src={`${BASE_PATH}${post.cover.image}`} alt="" className={`relative z-10 object-contain rounded-lg ${
+                  post.slug.startsWith("vae") ? "w-32 md:w-48 h-28 md:h-40" : "w-[85%] md:w-[75%] h-auto max-h-[40vh]"
+                }`} />
+              ) : (
+                <span className="text-8xl opacity-60 relative z-10">{post.cover.icon}</span>
+              )}
               {post.series && (
                 <span className="absolute top-4 left-4 z-10 px-3 py-1.5 text-xs font-semibold bg-black/30 backdrop-blur-sm text-white rounded-full">
                   {post.series.name[lang]} · {post.series.order}/{post.series.total}
@@ -163,9 +186,9 @@ export function BlogPostLayout({ children, post, seriesPosts }: BlogPostLayoutPr
             </div>
           )}
 
-          <div className="flex gap-16">
+          <div className="flex gap-12">
             {/* 左侧边栏 — 系列导航 + 目录 */}
-            <aside className="hidden lg:block w-52 shrink-0">
+            <aside className="hidden lg:block w-48 shrink-0">
               <div className="sticky top-20 space-y-8">
                 {/* 系列导航 */}
                 {seriesPosts && seriesPosts.length > 1 && (
@@ -200,12 +223,23 @@ export function BlogPostLayout({ children, post, seriesPosts }: BlogPostLayoutPr
                       <span className="w-4 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500" />
                       {T.toc}
                     </p>
-                    <nav className="flex flex-col gap-0.5">
+                    <nav ref={tocNavRef} data-toc-nav className="flex flex-col gap-0.5 max-h-[50vh] overflow-y-auto scrollbar-hide">
                       {toc.map((item) => (
                         <a
                           key={item.id}
                           href={`#${item.id}`}
-                          className={`text-[13px] leading-relaxed transition-all py-1 ${
+                          onClick={(e) => {
+                            e.preventDefault();
+                            // 立即更新高亮，不等滚动事件
+                            setActiveId(item.id);
+                            const el = document.getElementById(item.id);
+                            if (el) {
+                              el.scrollIntoView({ behavior: "smooth", block: "start" });
+                              window.history.replaceState(null, "", `#${item.id}`);
+                            }
+                          }}
+                          data-toc-id={item.id}
+                          className={`text-[13px] leading-relaxed transition-all py-1 shrink-0 ${
                             item.level === 3 ? "pl-6" : "pl-4"
                           } ${
                             activeId === item.id
@@ -223,12 +257,12 @@ export function BlogPostLayout({ children, post, seriesPosts }: BlogPostLayoutPr
             </aside>
 
             {/* 右侧正文 */}
-            <article className="flex-1 min-w-0 max-w-[860px]">
+            <article className="flex-1 min-w-0">
               {/* 文章元信息头 */}
               {post && (
-                <div className="mb-10">
+                <div className="mb-6">
                   {/* 分类 + 日期 + 阅读时间 */}
-                  <div className="flex items-center gap-3 mb-5 flex-wrap">
+                  <div className="flex items-center gap-3 mb-3 flex-wrap">
                     {cat && (
                       <span className={`px-3 py-1 text-xs font-semibold bg-gradient-to-r ${cat.color} text-white rounded-full`}>
                         {cat[lang]}
@@ -242,12 +276,12 @@ export function BlogPostLayout({ children, post, seriesPosts }: BlogPostLayoutPr
                   </div>
 
                   {/* 标题 */}
-                  <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white leading-tight mb-5">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white leading-tight mb-3">
                     {post.title[lang]}
                   </h1>
 
                   {/* 摘要 */}
-                  <p className="text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed mb-6 border-l-4 border-indigo-500 pl-4">
+                  <p className="text-base md:text-lg text-zinc-600 dark:text-zinc-300 leading-relaxed mb-4 border-l-4 border-indigo-500 pl-4">
                     {post.description[lang]}
                   </p>
 
@@ -270,26 +304,33 @@ export function BlogPostLayout({ children, post, seriesPosts }: BlogPostLayoutPr
                 </div>
               )}
 
-              {/* 正文内容 */}
+              {/* 正文内容 - 纸张效果 */}
               <div
                 ref={contentRef}
-                className="blog-content prose prose-lg prose-zinc dark:prose-invert max-w-none
+                className="blog-content prose prose-base sm:prose-lg md:prose-xl prose-zinc dark:prose-invert max-w-none
+                  bg-white dark:bg-zinc-900
+                  rounded-2xl
+                  shadow-[0_0_40px_rgba(0,0,0,0.06)] dark:shadow-[0_0_40px_rgba(0,0,0,0.3)]
+                  border border-zinc-100 dark:border-zinc-800/50
+                  px-5 py-5
+                  sm:px-6 sm:py-6
+                  md:px-8 md:py-8
                   prose-headings:font-bold prose-headings:tracking-tight
-                  prose-h2:text-2xl prose-h2:mt-14 prose-h2:mb-5 prose-h2:pb-3 prose-h2:border-b prose-h2:border-zinc-200 dark:prose-h2:border-zinc-800
-                  prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-4 prose-h3:pl-4 prose-h3:border-l-4 prose-h3:border-indigo-500
-                  prose-p:text-[16px] prose-p:leading-[1.85] prose-p:text-zinc-700 dark:prose-p:text-zinc-300 prose-p:mb-5
-                  prose-li:text-[16px] prose-li:leading-[1.85] prose-li:text-zinc-700 dark:prose-li:text-zinc-300
+                  prose-h2:text-3xl sm:prose-h2:text-4xl md:prose-h2:text-5xl prose-h2:mt-14 md:prose-h2:mt-20 prose-h2:mb-6 md:prose-h2:mb-8 prose-h2:pb-3 md:prose-h2:pb-4 prose-h2:border-b-2 prose-h2:border-indigo-500/30 prose-h2:text-indigo-900 dark:prose-h2:text-indigo-100
+                  prose-h3:text-xl sm:prose-h3:text-2xl md:prose-h3:text-[26px] prose-h3:mt-10 md:prose-h3:mt-14 prose-h3:mb-4 md:prose-h3:mb-6 prose-h3:pl-3 md:prose-h3:pl-5 prose-h3:border-l-[3px] md:prose-h3:border-l-[5px] prose-h3:border-indigo-400 prose-h3:text-zinc-800 dark:prose-h3:text-zinc-200
+                  prose-p:text-base sm:prose-p:text-lg md:prose-p:text-[19px] prose-p:leading-[1.8] md:prose-p:leading-[1.9] prose-p:text-zinc-700 dark:prose-p:text-zinc-300 prose-p:mb-4 md:prose-p:mb-6
+                  prose-li:text-base sm:prose-li:text-lg md:prose-li:text-[19px] prose-li:leading-[1.8] md:prose-li:leading-[1.9] prose-li:text-zinc-700 dark:prose-li:text-zinc-300
                   prose-ul:my-5 prose-ol:my-5
                   prose-li:my-1.5
                   prose-a:text-indigo-600 dark:prose-a:text-indigo-400 prose-a:no-underline hover:prose-a:underline prose-a:font-medium
-                  prose-strong:text-zinc-900 dark:prose-strong:text-white prose-strong:font-semibold
-                  prose-code:bg-zinc-100 dark:prose-code:bg-zinc-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-[14px] prose-code:font-mono prose-code:before:content-none prose-code:after:content-none prose-code:font-normal
+                  prose-strong:text-indigo-700 dark:prose-strong:text-indigo-300 prose-strong:font-bold
+                  prose-code:bg-zinc-100 dark:prose-code:bg-zinc-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-[13px] md:prose-code:text-[14px] prose-code:font-mono prose-code:before:content-none prose-code:after:content-none prose-code:font-normal
                   prose-pre:bg-[#1e1e2e] dark:prose-pre:bg-[#1e1e2e] prose-pre:rounded-xl prose-pre:border prose-pre:border-zinc-200 dark:prose-pre:border-zinc-700 prose-pre:shadow-lg prose-pre:my-6
                   prose-pre:p-0 prose-pre:overflow-hidden
                   prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8
                   prose-blockquote:border-l-4 prose-blockquote:border-indigo-500 prose-blockquote:bg-zinc-50 dark:prose-blockquote:bg-zinc-900/50 prose-blockquote:rounded-r-lg prose-blockquote:py-1 prose-blockquote:text-zinc-600 dark:prose-blockquote:text-zinc-400
                   prose-hr:my-10 prose-hr:border-zinc-200 dark:prose-hr:border-zinc-800
-                  [&_pre_code]:bg-transparent [&_pre_code]:p-4 [&_pre_code]:block [&_pre_code]:overflow-x-auto [&_pre_code]:text-[14px] [&_pre_code]:leading-[1.7]
+                  [&_pre_code]:bg-transparent [&_pre_code]:p-3 md:[&_pre_code]:p-4 [&_pre_code]:block [&_pre_code]:overflow-x-auto [&_pre_code]:text-[12px] sm:[&_pre_code]:text-[13px] md:[&_pre_code]:text-[14px] [&_pre_code]:leading-[1.6] md:[&_pre_code]:leading-[1.7]
                 "
               >
                 {children}
@@ -297,7 +338,7 @@ export function BlogPostLayout({ children, post, seriesPosts }: BlogPostLayoutPr
 
               {/* 文章底部 — 标签 + 上下篇 + 分享 */}
               {post && (
-                <div className="mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                <div className="mt-10 pt-6 border-t border-zinc-200 dark:border-zinc-800">
                   {/* 标签 */}
                   <div className="flex flex-wrap gap-2 mb-8">
                     {post.tags.map((tag) => (

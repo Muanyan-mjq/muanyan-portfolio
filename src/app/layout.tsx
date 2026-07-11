@@ -14,9 +14,37 @@ const geist = Geist({
   subsets: ["latin"],
 });
 
+const siteUrl = "https://muanyan-mjq.github.io/muanyan-portfolio";
+
 export const metadata: Metadata = {
   title: "Muanyan | AI Engineering & Research",
-  description: "马佳祺 - AI Engineering & Research Portfolio",
+  description:
+    "马佳祺 - AI Engineering & Research Portfolio. CS student focused on generative models (VAE) and reinforcement learning (Q-Learning).",
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    title: "Muanyan | AI Engineering & Research",
+    description:
+      "马佳祺 - AI Engineering & Research Portfolio. CS student focused on generative models (VAE) and reinforcement learning (Q-Learning).",
+    url: siteUrl,
+    siteName: "Muanyan Portfolio",
+    images: [
+      {
+        url: `${siteUrl}/avatar.png`,
+        width: 256,
+        height: 256,
+        alt: "Muanyan Avatar",
+      },
+    ],
+    locale: "zh_CN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Muanyan | AI Engineering & Research",
+    description:
+      "马佳祺 - AI Engineering & Research Portfolio. CS student focused on generative models (VAE) and reinforcement learning (Q-Learning).",
+    images: [`${siteUrl}/avatar.png`],
+  },
 };
 
 export default function RootLayout({
@@ -30,7 +58,7 @@ export default function RootLayout({
         <link rel="stylesheet" href={katexCSS} crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@200;300;400&display=swap" rel="stylesheet" />
       </head>
       <body className="min-h-full flex flex-col antialiased bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
         <ThemeProvider>

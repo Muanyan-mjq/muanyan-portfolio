@@ -44,7 +44,8 @@ export function MathBlock({ children, display = true }: MathBlockProps) {
     return (
       <div
         ref={ref as React.RefObject<HTMLDivElement>}
-        className="my-6 py-4 px-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl overflow-x-auto text-center"
+        className="my-6 md:my-8 py-4 md:py-6 px-4 sm:px-6 md:px-8 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 rounded-xl overflow-x-auto text-center border border-indigo-200/50 dark:border-indigo-800/30 shadow-sm"
+        style={{ fontSize: '1.3em' }}
       >
         {children}
       </div>

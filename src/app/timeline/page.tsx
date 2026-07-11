@@ -4,6 +4,7 @@ import { useLang } from "@/components/language-context";
 
 const translations = {
   zh: {
+    section: "时间线",
     title: "时间线",
     events: [
       {
@@ -13,12 +14,13 @@ const translations = {
       },
       {
         date: "2026",
-        title: "中国大学生计算机设计大赛",
-        description: "湖北省一等奖",
+        title: "第19届中国大学生计算机设计大赛",
+        description: "中南赛区 · 湖北省一等奖",
       },
     ],
   },
   en: {
+    section: "Timeline",
     title: "Timeline",
     events: [
       {
@@ -28,8 +30,8 @@ const translations = {
       },
       {
         date: "2026",
-        title: "Chinese Collegiate Computing Competition",
-        description: "First Prize in Hubei Province",
+        title: "19th Chinese Collegiate Computing Design Competition",
+        description: "Central-South Division · Hubei Province First Prize",
       },
     ],
   },
@@ -42,7 +44,7 @@ export default function Timeline() {
   return (
     <div className="max-w-2xl pt-12 pb-24 px-8 md:px-16 lg:px-24">
       <p className="text-sm font-medium text-primary tracking-wide uppercase">
-        Timeline
+        {t.section}
       </p>
       <h1 className="mt-3 text-4xl font-bold tracking-tight text-foreground">
         {t.title}

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { useTheme } from "@/components/theme-provider";
 
 interface CodeBlockProps {
   children: string;
@@ -15,6 +16,7 @@ export function CodeBlock({ children, language = "python" }: CodeBlockProps) {
   const [html, setHtml] = useState<string>("");
   const [copied, setCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const { theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -29,7 +31,7 @@ export function CodeBlock({ children, language = "python" }: CodeBlockProps) {
         const { codeToHtml } = await import("shiki");
         const result = await codeToHtml(children.trim(), {
           lang: language,
-          theme: "one-dark-pro",
+          theme: theme === "dark" ? "one-dark-pro" : "github-light",
           transformers: [
             {
               pre(node) {
@@ -59,7 +61,7 @@ export function CodeBlock({ children, language = "python" }: CodeBlockProps) {
 
     highlight();
     return () => { cancelled = true; };
-  }, [children, language, mounted]);
+  }, [children, language, mounted, theme]);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(children.trim());
@@ -67,27 +69,28 @@ export function CodeBlock({ children, language = "python" }: CodeBlockProps) {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const isDark = theme === "dark";
+
   return (
     <div className="code-block-wrapper group my-6 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-lg">
       {/* 顶部栏：语言标签 + 复制按钮 */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-[#282c34] border-b border-zinc-700">
+      <div className={`flex items-center justify-between px-4 py-2.5 border-b ${isDark ? "bg-[#282c34] border-zinc-700" : "bg-zinc-100 border-zinc-200"}`}>
         <div className="flex items-center gap-2">
-          {/* 三个小圆点 */}
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
             <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
             <span className="w-3 h-3 rounded-full bg-[#28c840]" />
           </div>
-          <span className="text-xs text-zinc-400 ml-2 font-mono">{language}</span>
+          <span className={`text-xs ml-2 font-mono ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>{language}</span>
         </div>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-zinc-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-md transition-all"
+          className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md transition-all ${isDark ? "text-zinc-400 hover:text-white bg-white/5 hover:bg-white/10" : "text-zinc-500 hover:text-zinc-900 bg-zinc-200/50 hover:bg-zinc-200"}`}
         >
           {copied ? (
             <>
-              <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-              <span className="text-emerald-400">Copied!</span>
+              <svg className="w-3.5 h-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+              <span className="text-emerald-500">Copied!</span>
             </>
           ) : (
             <>
@@ -100,7 +103,7 @@ export function CodeBlock({ children, language = "python" }: CodeBlockProps) {
 
       {/* 代码内容 */}
       <div
-        className="bg-[#282c34] overflow-x-auto [&_.code-block-pre]:!m-0 [&_.code-block-pre]:!rounded-none [&_.code-block-pre]:!border-0 [&_code]:!bg-transparent [&_code]:block [&_code]:p-4 [&_code]:text-[14px] [&_code]:leading-[1.75] [&_code]:font-mono"
+        className={`${isDark ? "bg-[#282c34]" : "bg-white"} overflow-x-auto [&_.code-block-pre]:!m-0 [&_.code-block-pre]:!rounded-none [&_.code-block-pre]:!border-0 [&_code]:!bg-transparent [&_code]:block [&_code]:p-3 sm:[&_code]:p-4 [&_code]:text-[12px] sm:[&_code]:text-[13px] md:[&_code]:text-[14px] [&_code]:leading-[1.6] sm:[&_code]:leading-[1.75] [&_code]:font-mono`}
         dangerouslySetInnerHTML={{ __html: html || `<pre class="code-block-pre"><code>${children.trim().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>` }}
       />
     </div>

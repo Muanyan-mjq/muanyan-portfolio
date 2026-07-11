@@ -5,7 +5,7 @@ export interface BlogPost {
   date: string;           // YYYY-MM-DD
   updated?: string;       // 最后更新日期
   tags: string[];
-  category: "learning" | "project" | "algorithm" | "reading";
+  category: "learning" | "project" | "algorithm" | "reading" | "indie";
   series?: {
     name: { zh: string; en: string };
     order: number;        // 第几篇
@@ -13,7 +13,8 @@ export interface BlogPost {
   };
   cover: {
     gradient: string;     // Tailwind gradient classes
-    icon: string;         // emoji
+    icon: string;         // emoji (fallback when no image)
+    image?: string;       // 图片路径，优先于 icon
   };
   readingTime: number;    // 分钟
   prerequisites?: { zh: string; en: string }[];
@@ -26,6 +27,7 @@ export const categories = {
   project: { zh: "项目记录", en: "Project Logs", color: "from-emerald-500 to-teal-500" },
   algorithm: { zh: "算法", en: "Algorithms", color: "from-orange-500 to-red-500" },
   reading: { zh: "论文阅读", en: "Paper Reading", color: "from-pink-500 to-rose-500" },
+  indie: { zh: "灵感产物", en: "Inspired Work", color: "from-[#D87756] to-[#C06843]" },
 } as const;
 
 // VAE 系列
@@ -46,7 +48,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["VAE", "深度学习", "PyTorch", "生成模型"],
     category: "learning",
     series: { ...vaeSeries, order: 1 },
-    cover: { gradient: "from-indigo-500 via-purple-500 to-pink-500", icon: "🧠" },
+    cover: { gradient: "from-indigo-500 via-purple-500 to-pink-500", icon: "🧬", image: "/vae-images/vae-icon.png" },
     readingTime: 20,
     prerequisites: [
       { zh: "了解 Python 基础语法", en: "Basic Python syntax" },
@@ -67,7 +69,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["VAE", "深度学习", "PyTorch", "图像生成"],
     category: "learning",
     series: { ...vaeSeries, order: 2 },
-    cover: { gradient: "from-pink-500 via-rose-500 to-orange-500", icon: "🎨" },
+    cover: { gradient: "from-pink-500 via-rose-500 to-orange-500", icon: "🔮", image: "/vae-images/vae-icon.png" },
     readingTime: 25,
     published: false,
   },
@@ -82,9 +84,29 @@ export const blogPosts: BlogPost[] = [
     tags: ["CVAE", "深度学习", "条件生成"],
     category: "learning",
     series: { ...vaeSeries, order: 3 },
-    cover: { gradient: "from-purple-500 via-indigo-500 to-blue-500", icon: "🎯" },
+    cover: { gradient: "from-purple-500 via-indigo-500 to-blue-500", icon: "🧬", image: "/vae-images/vae-icon.png" },
     readingTime: 30,
     published: false,
+  },
+  {
+    slug: "claude-code-statusline",
+    title: { zh: "自定义 Claude Code 状态栏", en: "Custom Claude Code Status Line" },
+    description: {
+      zh: "自己动手，用 Claude Code 给 Claude Code 做一个三行状态栏。不需要手写代码——复制一句提示词，回答几个问题就搞定。",
+      en: "Build your own status line for Claude Code — no coding required. Copy a prompt, answer a few questions, done.",
+    },
+    date: "2026-06-29",
+    tags: ["Claude Code", "终端", "状态栏", "Python", "灵感产物"],
+    category: "indie",
+    cover: { gradient: "from-[#D87756] via-[#D2734C] to-[#C06843]", icon: "📊", image: "/statusline-cover.png" },
+    readingTime: 15,
+    prerequisites: [
+      { zh: "Claude Code 终端版已安装并能正常启动", en: "Claude Code CLI installed and running" },
+      { zh: "Python 3 已安装并加入系统 PATH", en: "Python 3 installed and in PATH" },
+      { zh: "Git for Windows（Windows 用户需要 Git Bash）", en: "Git for Windows (Git Bash required on Windows)" },
+    ],
+    featured: false,
+    published: true,
   },
 ];
 
