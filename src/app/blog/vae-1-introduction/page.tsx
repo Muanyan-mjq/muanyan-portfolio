@@ -907,14 +907,14 @@ export default function VAEPost1() {
             icon: "💻",
             title: "The_simple_vae",
             desc: lang === "zh" ? "本文所有代码来源" : "All code in this article",
-            href: "https://github.com/Muanyan-mjq/The_simple_vae",
+            href: "https://github.com/hasen-zcs/The_simple_vae",
             external: true,
           },
           {
             icon: "❓",
             title: "VAE Q&A",
             desc: lang === "zh" ? "更多 VAE 相关问答" : "More VAE Q&A records",
-            href: "/qa/vae",
+            href: `${BASE_PATH}/qa/vae`,
             external: false,
           },
         ].map((item, i) => (
