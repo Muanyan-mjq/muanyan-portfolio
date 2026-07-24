@@ -70,7 +70,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["VAE", "深度学习", "PyTorch", "图像生成"],
     category: "learning",
     series: { ...vaeSeries, order: 2 },
-    cover: { gradient: "from-pink-500 via-rose-500 to-orange-500", icon: "🔮", image: "/vae-images/vae-icon.png" },
+    cover: { gradient: "from-indigo-500 via-purple-500 to-pink-500", icon: "🧬", image: "/vae-images/vae-icon.png" },
     readingTime: 25,
     published: true,
   },
