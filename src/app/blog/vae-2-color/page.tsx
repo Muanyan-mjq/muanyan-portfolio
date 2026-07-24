@@ -9,7 +9,6 @@ import { CodeBlock } from "@/components/code-block";
 import { blogPosts } from "@/lib/blog-data";
 import { BASE_PATH } from "@/lib/base-path";
 
-// 可折叠卡片组件 — 与第一篇保持一致
 function CollapsibleCard({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
@@ -22,9 +21,7 @@ function CollapsibleCard({ title, children, defaultOpen = false }: { title: stri
         <span className="text-lg font-semibold text-zinc-900 dark:text-white">{title}</span>
         <svg
           className={`w-5 h-5 text-zinc-500 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+          fill="none" viewBox="0 0 24 24" stroke="currentColor"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
@@ -52,9 +49,6 @@ const seriesPosts = blogPosts
   .filter((p) => p.series?.name.zh === post.series?.name.zh && p.published)
   .sort((a, b) => (a.series?.order ?? 0) - (b.series?.order ?? 0));
 
-// ══════════════════════════════════════════════════════════════
-// 双语内容定义
-// ══════════════════════════════════════════════════════════════
 const content = {
   zh: {
     // ── 动机 ──
@@ -65,10 +59,9 @@ const content = {
 
     // ── 架构升级 ──
     h2_arch: "架构升级：从灰度到彩色",
-    arch_overview: "从第一篇的灰度 VAE 到这里，架构层面有四处关键改动。下图是改动前后对照：",
+    arch_p1: "从第一篇的灰度 VAE 到这里，架构层面有四处关键改动：",
 
-    // 对照表
-    arch_compare: "第一篇灰度 VAE vs 本篇彩色 VAE 架构对照",
+    // 对照表字段
     arch_thead_dim: "维度",
     arch_thead_gray: "第一篇（灰度）",
     arch_thead_color: "本篇（彩色）",
@@ -80,7 +73,7 @@ const content = {
     arch_row_conv: "卷积层数",
     arch_row_conv_gray: "2 层",
     arch_row_conv_color: "3 层",
-    arch_row_conv_reason: "2 层 → 7×7 特征图不够深，3 层 → 4×4 让单点覆盖更大感受野",
+    arch_row_conv_reason: "2 层特征图到 7×7 就停了；3 层到 4×4，单个特征点覆盖更大感受野",
     arch_row_latent: "潜在空间维度",
     arch_row_latent_gray: "4",
     arch_row_latent_color: "16",
@@ -91,142 +84,182 @@ const content = {
     arch_row_loss_reason: "BCE 对边界像素梯度更尖锐，避免 MSE 的「灰度雾」",
 
     h3_model: "模型改动详解",
-    model_p1: "编码器和解码器都从 2 层卷积升级到 3 层，并适配了 3 通道输入/输出：",
+    model_p1: "编码器和解码器都从 2 层卷积升级到 3 层，并适配了 3 通道输入/输出。下面是本篇使用的 VAE 版本（不含标签条件，CVAE 是下一篇的主题）：",
 
-    model_enc_title: "Encoder（3 层卷积 · 无标签条件版）",
-    model_enc_path: "空间压缩路径：",
-    model_enc_path_detail: "28×28 → 14×14 → 7×7 → 4×4",
-    model_enc_chan: "通道变化：",
-    model_enc_chan_detail: "3 → 32 → 64 → 128（每降一次分辨率，通道翻倍）",
-    model_enc_fc: "展平后维度：",
-    model_enc_fc_detail: "128 通道 × 4 × 4 = <strong>2048</strong> 维，接入 fc_mu 和 fc_logvar，各输出 16 维",
+    // Encoder
+    model_enc_title: "Encoder（3 层卷积版）",
+    model_enc_code_title: "Encoder 代码（model.py）",
+    model_enc_explain1: "三层卷积 + 批归一化，逐步压缩空间：",
+    model_enc_explain2: "28×28 → 14×14 → 7×7 → 4×4",
+    model_enc_explain3: "同时通道逐层翻倍：3 → 32 → 64 → 128",
+    model_enc_explain4: "展平后得到 128×4×4 = 2048 维，分别接",
+    model_enc_explain5: "和",
+    model_enc_explain6: "，各输出 16 维",
 
-    model_dec_title: "Decoder（3 层转置卷积 · 无标签条件版）",
-    model_dec_path: "空间放大路径：",
-    model_dec_path_detail: "4×4 → 7×7 → 14×14 → 28×28",
-    model_dec_odd: "⚠️ 关键细节：第一层反卷积用 <code>output_padding=0</code>，从 4 放大到 7 而非 8。因为编码器在 stride=2 下采样时，7 是奇数——PyTorch 的 Conv2d 取 floor，7÷2=3.5→3，加 padding 后输出为 ⌊(3+2×1−3)/2⌋+1 = 4。解码器必须逆向还原到 7，否则 7→8 会导致尺寸不匹配。",
-    model_dec_output: "最终 Sigmoid 输出：",
+    model_enc_detail: "逐行解析：",
+    model_enc_d1: "<code>Conv2d(3, 32, kernel_size=3, stride=2, padding=1)</code> — 输入 3 通道（RGB 彩色图），输出 32 通道，stride=2 让尺寸减半（28→14）",
+    model_enc_d2: "<code>BatchNorm2d</code> — 稳定训练，加速收敛，每一层后面都跟着一个 BN",
+    model_enc_d3: "<code>LeakyReLU</code> — 比 ReLU 更平滑，避免「死亡神经元」问题",
+    model_enc_d4: "<code>fc_mu</code> 和 <code>fc_logvar</code> — 两个独立的全连接层，分别输出均值和对数方差",
+    model_enc_d5: "为什么输出 log(σ²) 而不是 σ？因为对数可以取任意实数，数值更稳定",
 
-    model_latent_note: "注意：当前代码仓库（vae_color/model.py）中模型已经包含了 CVAE 的标签嵌入层。上面展示的是实验 #1~#3 使用的纯 VAE 版本——无标签条件，3 层卷积，16 维潜在空间。标签嵌入是下一篇的主题。",
+    model_enc_deep: "深入理解：为什么加第三层？",
+    model_enc_deep_p1: "第一篇的 2 层卷积压缩到 7×7 就停了。每个特征点对应原图约 7×7 像素的区域——对 MNIST 这种简单数字来说刚好够用，但彩色信息（R/G/B 三个通道的分布模式）需要更大的空间上下文。",
+    model_enc_deep_p2: "加第三层后特征图缩小到 4×4，每个特征点覆盖更大感受野，能同时编码颜色组合和笔画形状。代价是 FC 维度从 64×7×7=3136 变为 128×4×4=2048——维度反而下降了，但信息更「浓缩」了。",
+    model_enc_deep_p3: "对应地，latent_size 从 4 翻到 16：输入信息量 ×3（灰度→3 通道），压缩维度 ×4，保持了合理的压缩比 ~150:1（2352÷16），而不是灰度版的 ~200:1 或彩色 4 维的 588:1。",
 
+    // Decoder
+    model_dec_title: "Decoder（3 层转置卷积版）",
+    model_dec_code_title: "Decoder 代码（model.py）",
+    model_dec_explain1: "全连接层把",
+    model_dec_explain2: "维潜在向量扩展为 128×4×4 的特征图",
+    model_dec_explain3: "三层转置卷积逐步放大：4×4 → 7×7 → 14×14 → 28×28",
+    model_dec_explain4: "最后用 Sigmoid 压缩像素值到 [0, 1]，输出 3 通道彩色图",
+
+    model_dec_detail: "逐行解析：",
+    model_dec_d1: "<code>Linear(latent_size, 128*4*4)</code> — 把 16 维潜在向量扩展成 2048 维",
+    model_dec_d2: "<code>ConvTranspose2d</code> — 转置卷积，作用是放大图像尺寸。stride=2 让尺寸翻倍",
+    model_dec_d3: "<code>output_padding=0</code>（第一层）— 关键细节！4→7 而非 4→8，下面详解",
+    model_dec_d4: "<code>Sigmoid</code> — 把输出值压缩到 [0,1]，对应 RGB 各通道的像素值",
+
+    model_dec_odd: "⚠️ output_padding=0：为什么第一层是 4→7 而不是 4→8？",
+    model_dec_odd_p1: "编码器在 stride=2 下采样时，7 是奇数——PyTorch 的 Conv2d 取 floor：7÷2=3.5→3，加 padding 后输出为 ⌊(3+2×1−3)/2⌋+1 = 4。解码器必须逆向还原到 7，否则 7→8 会导致尺寸不匹配。",
+    model_dec_odd_p2: "这是从 CIFAR-10（32×32 整除）转回 MNIST（28×28）时踩的一个坑。三十二有 2⁵ 因子可以连续除以 2 五次，但 28 只有 2²×7——第三次除 2 时就会出现奇数。",
+
+    model_latent_note: "注意：当前代码仓库（vae_color/model.py）中模型已经包含了 CVAE 的标签嵌入层。上面展示的是实验 #1~#3 使用的纯 VAE 版本，标签嵌入是下一篇的主题。",
+
+    // 数据改动
     h3_data: "数据改动：ColoredMNIST",
-    data_p1: "MNIST 是灰度数据集，每张图只有一个亮度通道。要让它变成彩色，核心思路是：<code>img.repeat(3, 1, 1)</code> 把单通道扩展为 3 通道，然后乘上一个颜色向量 <code>[R, G, B]</code>。",
-    data_p2: "关键问题是<strong>颜色从哪来</strong>。下面会讲到，这个选择直接决定了实验的成败。",
+    data_p1: "MNIST 是灰度数据集，每张图只有一个亮度通道。要让它变成彩色：<code>img.repeat(3, 1, 1)</code> 把单通道扩展为 3 通道，然后乘上一个颜色向量 <code>[R, G, B]</code>。",
+    data_p2: "关键问题是<strong>颜色从哪来</strong>。这个选择直接决定了实验的成败。",
     data_code_title: "ColoredMNIST 数据集包装类",
 
     // ── 染色问题 ──
-    h2_coloring: "染色问题：一次失败的调试过程",
-    coloring_p1: "这是整个项目最有价值的一次「失败」。说它失败，因为模型确实跑通了、loss 也正常收敛；说它有价值，因为最终的输出完全不是我们想要的。",
+    h2_coloring: "染色问题：一次失败的调试",
+    coloring_p1: "这是整个项目最有价值的一次「失败」——模型跑通了、loss 正常收敛了、但输出完全不是我们想要的。",
 
-    h3_random: "实验 #1：随机染色（2026-06-28 · 3 分钟 · val_loss = 302.23）",
+    h3_random: "实验 #1：随机染色（val_loss = 302.23）",
     random_p1: "最初的想法很直觉：给每张 MNIST 图片乘一个随机颜色系数（0.3~1.0 之间的三个随机数），生成「五颜六色」的数字。变体越多，模型学到的颜色能力应该越强——至少我们是这么想的。",
-    random_formula: "colored_img = gray_img.repeat(3, 1, 1) ∗ [R, G, B]（三个随机数）",
-    random_p2: "训练跑了 100 轮，一切正常——loss 从 640 降到 302，KL 稳定在 5~7，早停也没触发。打开生成的图片，<strong>全是灰度</strong>——所有数字的 R≈G≈B。模型自适应地「学会」了忽略颜色。",
+    random_formula_desc: "染色公式：",
+    random_p2: "训练跑了 100 轮，一切正常——loss 从 640 降到 302，KL 稳定在 5~7，早停也没触发。打开生成的图片，<strong>全是灰度</strong>。模型自适应地「学会」了忽略颜色。",
 
-    h3_root: "根因分析：颜色信号太弱",
-    root_p1: "为什么模型选择忽略颜色？不是 bug，是<strong>最优解</strong>。让我们算一笔账：",
+    h3_root: "根因分析：模型在算账",
+    root_p1: "为什么模型选择忽略颜色？不是 bug，是<strong>最优策略</strong>。算一笔账：",
     root_li1: "MNIST 数字的<strong>笔画像素只占图片的 ~15%</strong>——剩下 85% 是纯黑背景",
-    root_li2: "输出灰度（R=G=B=某个值）vs 正确彩色的 BCE 差异：每像素仅 ~0.14",
-    root_li3: "颜色信号占总 loss 的 <strong>~0.6%</strong>——模型在形状上多费一点力，loss 降得更多",
-    root_conclusion: "模型不是「画不对」，而是「算过账后觉得不值得」。加大颜色系数范围只是让颜色更鲜艳，没改变「颜色是噪声」的本质——同一张图的不同 epoch 随机染色不同，颜色的每次出现都在告诉模型「这个信息不可靠」。",
+    root_li2: "输出灰度（R=G=B=均值）vs 正确彩色的 BCE 差异：每像素仅 ~0.14",
+    root_li3: "颜色信号占总 loss 的 <strong>~0.6%</strong>——模型在形状上多费一点力，loss 降得多得多",
+    root_p2: "更进一步：同一张图在不同 epoch 颜色不同（因为是随机的），颜色没有语义含义——它纯粹是噪声。模型的最优策略是「忽略噪声，专注形状」。",
+    root_conclusion: "核心教训：不是「颜色不够鲜艳」，而是「颜色作为信号不够可靠」。加大颜色系数范围让颜色更鲜艳，没有解决可靠性问题。",
 
-    h3_fix: "实验 #2：按类染色（2026-06-28 · 3 分钟 · val_loss = 252.35 · ↓16.5%）",
-    fix_p1: "解决思路很简单：<strong>把颜色绑定到数字类别</strong>。0~9 各分配一种固定鲜明的颜色：",
-    fix_table_head: "数字 → 颜色对照",
-    fix_p2: "颜色一绑定到类别，立即变成语义信号：画红色的不可能是 3，画蓝色的不可能是 7。模型必须准确区分 R/G/B 三个通道，画出正确的颜色组合。",
-    fix_p3: "改动极小（dataset 包装类中一行：<code>colored_img = img.repeat(3, 1, 1) * CLASS_COLORS[label]</code>），但效果立竿见影：val_loss 从 302 降到 252（↓16.5%），颜色成功输出，重建质量同步提升。",
+    h3_fix: "实验 #2：按类染色（val_loss = 252.35 · ↓16.5%）",
+    fix_p1: "解决思路很简单：<strong>把颜色绑定到数字类别</strong>。0~9 各分配一种固定鲜明的颜色。颜色变成语义信号——画红色不可能是 3，画蓝色不可能是 7。模型必须准确区分 R/G/B 通道。",
+    fix_table_head: "▲ 数字 → 颜色对照表",
+    fix_p2: "改动极小（dataset 中一行：<code>colored_img = img.repeat(3, 1, 1) * CLASS_COLORS[label]</code>），效果立竿见影：val_loss 从 302 降到 252（↓16.5%），颜色成功输出，重建质量同步提升。",
+
+    fix_deep: "为什么不是「数据增强」？",
+    fix_deep_p1: "有一种反驳：「随机染色可以看作数据增强，让模型更鲁棒」。但数据增强的前提是增强后的样本仍在数据分布内——MNIST 数字的灰度笔画和彩色背景不构成合理的分布。随机染色制造的是分布外的噪声，而非分布内的变体。",
+    fix_deep_p2: "按类染色则是人为给每类数字强加了一个属性，把「颜色 = 类别 ID」变成了数据定义的一部分。这更像是在原始数据上叠加结构化标注，而非制造噪声。",
 
     // ── 优化工具箱 ──
     h2_optimization: "优化工具箱：从「跑通」到「跑好」",
-    optimize_p1: "在修复染色问题的同时，我们对训练过程做了一整套优化。这些改进彼此独立，可以单独使用，也可以组合。下面逐一说明每项改进「解决了什么问题」和「为什么这样设计」。",
+    optimize_p1: "在修复染色问题的同时，我们对训练过程做了一整套优化。每项改进独立可用，下面是每项「解决什么问题」和「为什么这样设计」。",
 
     h3_bce: "BCE 替代 MSE",
     bce_p1: "第一篇中我们用 MSE 做重建损失。MSE 的缺点在生成任务中很明显：当一个边缘像素有时黑有时白时，MSE 的最优输出是 0.5（灰色）——这就是「灰度雾」效应。",
-    bce_p2: "BCE（Binary Cross Entropy）的梯度在 0.5 处最大，明确「惩罚」模糊不清。loss 从 <code>mse_loss(reduction='mean') * 2352</code> 改为 <code>bce_loss(reduction='sum') / batch_size</code>——不需要手动乘系数，BCE 的 sum/batch 天然在几十量级，和 KL 散度自动平衡。",
-    bce_code_title: "BCE 重建损失",
+    bce_p2: "BCE（Binary Cross Entropy）的梯度在 0.5 处最大，明确惩罚模糊不清。从 <code>mse_loss(reduction='mean') * 2352</code> 改为 <code>bce_loss(reduction='sum') / batch_size</code>：不需要手动乘系数，BCE 的 sum/batch 天然在几十量级，和 KL 散度自动平衡。",
+    bce_code_title: "重建损失对比代码",
 
     h3_beta: "β 系数与 KL 预热",
     beta_p1: "VAE 的训练本质上是一场拔河：<strong>重建损失想把每张图的 z 拉开（越散重建越准），KL 散度想把所有 z 挤到标准高斯周围（越聚生成越好）。</strong>",
-    beta_p2: "引入 <strong>β 系数</strong>来控制这场拔河的权重。β < 1 偏向重建质量，β > 1 偏向生成效果。对于彩色 MNIST 这种相对简单的数据，β = 0.05（重建:KL = 20:1）效果最好——先保证能画清楚，再谈生成能力。",
-    beta_formula: "L = L_recon + β × D_KL",
-    beta_p3: "但 β 不能直接用在训练初期。epoch 0 的 KL 散度可能达到数千（随机初始化的 fc_logvar 输出大正值 → exp 爆炸），如果此时 β=0.05，KL 梯度仍是 recon 的几十倍。",
-    beta_p4: "<strong>KL 预热（warm-up）</strong>解决这个问题：前 20 轮 kl_weight 从 0 线性增长到 β。编码器前 20 轮只关心重建，不受 KL 约束；第 21 轮起逐步引入 KL，在已有编码能力上微调，而非推倒重来。",
+    beta_p2: "引入 <strong>β 系数</strong>来控制权重：",
+    beta_p3: "对于彩色 MNIST，β = 0.05（重建:KL = 20:1）效果最好——先保证能画清楚，再谈生成多样性。",
+    beta_p4: "但 β 不能直接用在训练初期。epoch 0 的 KL 散度可能达到数千（随机初始化的 fc_logvar → exp 爆炸），即使 β=0.05，KL 梯度仍是 recon 的几十倍。",
+    beta_p5: "<strong>KL 预热（warm-up）</strong>：前 20 轮 kl_weight 从 0 线性增长到 β。编码器先专注重建 20 轮，第 21 轮起逐步引入 KL，在已有能力上微调而非推倒重来。",
 
     h3_scheduler: "余弦退火学习率",
     scheduler_p1: "固定学习率的问题是后期「刹不住车」。参数接近最优时梯度很小，但 lr × 小梯度仍可能跨过谷底→对面坡→下一轮跨回来→无限震荡。",
-    scheduler_p2: "余弦退火（CosineAnnealingLR）让学习率从 0.001 平滑降到 1e-5：前期大步赶路，后期小碎步踩准。T_max 设为 epoch 总数，eta_min 设一个很小的底值。",
+    scheduler_p2: "余弦退火让学习率从 0.001 平滑降到 1e-5：前期大步赶路，后期小碎步踩准。T_max 设为 epoch 总数，eta_min 设为极小底值。",
 
     h3_clip: "自适应梯度裁剪",
-    clip_p1: "梯度裁剪用于防止梯度爆炸。但固定阈值有一个矛盾：训练前期梯度大（5~10），阈值设 1 会砍掉 80% 的有效步长，拖慢训练；后期梯度小（0.1~0.5），阈值设 10 等于没有保护。",
-    clip_p2: "自适应方案：维护一个梯度范数的<strong>指数移动平均（EMA）</strong>，只有当当前梯度超过历史均值的 5 倍时才裁剪。前期均值大，阈值自动放宽；后期均值小，阈值自动收紧。",
-    clip_code_title: "自适应梯度裁剪",
+    clip_p1: "梯度裁剪防止梯度爆炸。但固定阈值有一个矛盾：前期梯度 5~10，阈值设 1 砍掉 80% 步长；后期梯度 0.1~0.5，阈值设 10 等于没保护。",
+    clip_p2: "自适应方案：维护一个梯度范数的<strong>指数移动平均（EMA）</strong>，当前梯度超过历史均值 5 倍时才裁剪。前期均值大 → 阈值自动放宽；后期均值小 → 阈值自动收紧。",
+    clip_code_title: "自适应梯度裁剪代码",
 
     h3_early: "早停 + 验证集",
-    early_p1: "第一篇中我们用了全部 6 万张 MNIST 训练，打印的是训练 loss——永远在下降，看不出是否过拟合。",
-    early_p2: "改进：把数据分成 5 万训练 + 1 万验证。验证集不参与训练，每轮用来独立评估。当 val_loss 连续 10 轮不创新低时自动停止，保存的是 val_loss 最低那轮的权重。",
-    early_p3: "不过在这个场景下，早停从未触发——所有 3 个实验都跑满了 100 轮。这说明模型还没有明显过拟合，但收益递减很严重（epoch 50 后的改善微乎其微）。",
+    early_p1: "第一篇用了全部 6 万张 MNIST 训练，打印训练 loss——永远在下降，看不出是否过拟合。",
+    early_p2: "改进：5 万训练 + 1 万验证。验证集不参与训练，每轮独立评估。val_loss 连续 10 轮不创新低时自动停止，保存的是 val_loss 最低那轮的权重。",
+    early_p3: "不过在这个场景下，早停从未触发——3 个实验都跑满了 100 轮。说明模型还没明显过拟合，但 epoch 50 后改善微乎其微。",
+
+    // 实验 #3
+    h3_exp3: "实验 #3：调参提精度（val_loss = 224.80 · ↓10.9%）",
+    exp3_p1: "实验 #2 的染色问题解决了，但重建质量还有提升空间。本次同时做两项调整：<strong>latent_size 8→16</strong> 和 <strong>β 0.1→0.05</strong>。",
+    exp3_p2: "latent_size 翻倍给了模型多一倍隐空间表达细节，β 减半让模型更偏重建精度。val_loss 从 252 降到 225（↓10.9%），KL 略升（5.50→6.23）——因为 KL 是对 16 个维度求和，维度翻倍后 KL 自然变大，不代表分布质量变差。",
 
     // ── 实验总览 ──
     h2_experiments: "实验总览",
-    experiments_p1: "下面是本篇涉及的 3 个实验的完整对比。所有实验都在服务器 GPU 上运行，每次约 3 分钟，100 个 epoch。",
-    exp_table_title: "本篇实验对比",
+    experiments_p1: "下面是本篇 3 个实验的完整对比。所有实验在服务器 GPU 上运行，每次约 3 分钟，100 epoch。",
+    exp_table_title: "▲ 本篇实验对比",
     exp_th_exp: "实验",
     exp_th_key: "关键配置",
     exp_th_val: "最佳 val_loss",
     exp_th_color: "染色",
     exp_th_note: "说明",
     exp1_key: "latent=8, β=0.1, 随机染色",
-    exp1_note: "全灰度输出，染色失败",
+    exp1_note: "全灰度，染色失败",
     exp2_key: "latent=8, β=0.1, 按类染色",
-    exp2_note: "染色成功，较 #1 ↓16.5%",
+    exp2_note: "染色成功，↓16.5%",
     exp3_key: "latent=16, β=0.05, 按类染色",
     exp3_note: "再降 10.9%，最佳精度",
 
-    experiments_p2: "三次实验的 loss 下降路径：",
+    experiments_p2: "三次实验的 loss 下降路径分析：",
     exp_trend_h3: "Loss 下降趋势",
-    exp_trend_1: "实验 #1→#2（改染色方式）：val_loss 302 → 252，下降 16.5%。这是最大的一跳——不是改模型、不是调参数，而是修正了数据的构造方式。",
-    exp_trend_2: "实验 #2→#3（改架构参数）：val_loss 252 → 225，下降 10.9%。latent_size 8→16 给模型更大的隐空间，β 0.1→0.05 让模型更偏重建精度。",
-    exp_trend_3: "共同特征：~95% 的学习发生在 KL 预热期（前 20 轮）。预热结束后，后 70 轮的改善不到 6 个 loss 点。",
-
-    experiments_p3: "这些实验数据的完整记录在 <a href='https://github.com/Muanyan-mjq/The_simple_vae' target='_blank' rel='noopener noreferrer' class='text-indigo-600 dark:text-indigo-400 hover:underline'>GitHub 仓库</a> 的 <code>EXPERIMENT_LOG.md</code> 和 <code>CHANGELOG.md</code> 中，包括每轮 loss 数值、收敛曲线分析等细节。",
+    exp_trend_1: "<strong>#1→#2（改染色方式）</strong>：val_loss 302 → 252，↓16.5%。这是最大的一跳——不是改模型、不是调参数，是修正了数据的构造方式。",
+    exp_trend_2: "<strong>#2→#3（改架构参数）</strong>：val_loss 252 → 225，↓10.9%。latent_size 翻倍给更大隐空间，β 减半偏向重建精度。",
+    exp_trend_3: "<strong>共同特征</strong>：~95% 的学习发生在 KL 预热期（前 20 轮）。预热结束后，后 70 轮的改善不到 6 个 loss 点。训练到 60 轮基本就够用了。",
+    experiments_p3: "完整实验数据（每轮 loss、收敛曲线等）记录在 <a href='https://github.com/Muanyan-mjq/The_simple_vae' target='_blank' rel='noopener noreferrer' class='text-indigo-600 dark:text-indigo-400 hover:underline'>GitHub 仓库</a> 的 <code>EXPERIMENT_LOG.md</code> 中。",
 
     // ── 训练代码全貌 ──
     h2_train: "训练代码全貌",
     train_p1: "包含了上述所有优化的完整训练循环：",
-    train_code_title: "训练脚本（train.py 核心逻辑）",
-    train_params: "最终的超参数配置：",
+    train_code_title: "训练脚本核心（train.py）",
+    train_params: "最终超参数配置：",
     train_param_list: "batch_size=256, num_epochs=100, lr=0.001→1e-5, latent_size=16, β=0.05, warmup_epochs=20, patience=10",
+
+    // ── 生成效果 ──
+    h2_visual: "生成效果",
+    visual_p1: "实验 #3 训练完成后的重建效果和随机生成效果如下。左边是原始彩色数字（按类染色），右边是 VAE 的重建结果：",
+    visual_recon_caption: "▲ 重建对比：上排为原始彩色 MNIST，下排为 VAE 重建（实验 #3, latent=16, β=0.05）",
+    visual_gen_caption: "▲ 随机生成：从 N(0,1) 采样潜在向量，解码得到的全新彩色数字",
+    visual_note: "注意：以上图片需要从服务器生成。运行 <code>python vae_test.py</code>（需先恢复纯 VAE 版模型权重），输出在 <code>test_img/</code> 和 <code>sample_img/</code> 目录。也可以直接使用实验 #3 训练时每 10 轮自动保存的 <code>out_img/epochs_*.png</code> 和 <code>test_img/test_*.png</code>。",
 
     // ── 总结 ──
     h2_summary: "总结与回顾",
     summary_p1: "这篇文章不是「调了几个参数 loss 降了多少」的流水账。核心收获有三个层面：",
 
     summary_h3_debug: "调试方法论：从现象到根因",
-    summary_debug_p1: "当模型输出不符合预期时，最容易犯的错误是盲目改参数。实验 #1 的灰度输出，根因不是「网络太浅」或「学习率太大」——根因是<strong>数据构造方式让颜色信号弱到模型选择了忽略</strong>。改模型架构解决不了这个问题，改染色方式才能。",
-    summary_debug_p2: "养成习惯：先分析 <strong>loss 在罚什么</strong>，再动手改。这里一个像素的颜色差异只有 0.14 BCE，而整个 batch 的形状重建损失有几百。模型的最优策略当然是「忽略那 0.14，全力优化那几百」。",
+    summary_debug_p1: "当模型输出不符合预期时，最容易犯的错误是盲目改参数。实验 #1 的灰度输出，根因不是网络太浅或学习率太大，是<strong>数据构造方式让颜色信号不可靠</strong>。改架构不解决这个问题，改染色方式才能。",
+    summary_debug_p2: "养成习惯：先分析 <strong>loss 在罚什么</strong>，再动手改。一个像素的颜色差异只有 0.14 BCE，整个 batch 的形状重建有几百。模型的最优策略清楚得很——忽略颜色、全力学形状。这不是模型的问题，是你的数据设计有问题。",
 
     summary_h3_toolkit: "工程化训练：从脚本到实验",
-    summary_toolkit_p1: "第一篇的训练代码是「能跑就行」——全数据训练、固定学习率、无验证、无早停。这一篇引入了一整套工程实践：train/val 分集、早停、学习率调度、梯度裁剪。这些不是 VAE 特有的，是任何深度学习训练的基础设施。",
-    summary_toolkit_p2: "其中最有价值的单项改进是<strong>自适应梯度裁剪</strong>——固定阈值在训练前期和后期取值差两个数量级，要找一个一刀切的值根本不可能。EMA 自适应阈值省去了反复试阈值的麻烦。",
+    summary_toolkit_p1: "第一篇的训练代码是「能跑就行」——全数据训练、固定学习率、无验证、无早停。这一篇引入了一整套工程实践——这些不是 VAE 特有的，是任何深度学习训练的基础设施。",
+    summary_toolkit_p2: "最有价值的单项改进是<strong>自适应梯度裁剪</strong>——固定阈值在训练前后差两个数量级，一刀切的值根本不存在。EMA 自适应阈值省去了反复试值的麻烦。",
 
     summary_h3_beta: "β 的哲学：一场精心控制的拔河",
-    summary_beta_p1: "β 系数是这篇实验中最微妙的参数。0.1 时重建还行但 KL 太松、生成质量一般；0.05 时重建最好但 KL 更松；0.01 时 KL 几乎消失、latent 空间失去约束。没有「最优 β」——它只代表你在「画得清楚」和「画得多样」之间的站队。",
-    summary_beta_p2: "KL 预热是 β 的必要配套。训练初期 encoder 输出混乱，直接引入 KL 会让它学会「输出 0，装作标准高斯」——这就是后验坍缩（posterior collapse）。预热给了 encoder 先用重建学习内容，再慢慢被 KL 规整的机会。",
+    summary_beta_p1: "β 是这篇实验中最微妙的参数。0.1 时重建还行但 KL 太松；0.05 时重建最好；0.01 时 KL 几乎消失、latent 空间失去约束。没有「最优 β」——它代表你在「画得清楚」和「画得多样」之间的站队。",
+    summary_beta_p2: "KL 预热是 β 的必要配套。训练初期 encoder 输出混乱，直接引入 KL 会让它学会「输出 0，装作标准高斯」——这就是后验坍缩。预热给了 encoder 先用重建学内容、再慢慢被 KL 规整的机会。",
 
     summary_h3_next: "下一步：条件生成 CVAE",
-    summary_next_p1: "现在的 VAE 只能随机生成——你没法说「给我画一个红色的 5」，它可能画出蓝色的 7。下一篇将在模型中加入<strong>标签条件</strong>，让 encoder 和 decoder 都「知道」当前是什么数字。这就是 CVAE（Conditional VAE）——从随机生成到可控生成的关键一步。",
-    summary_next_p2: "预告：CVAE 的 loss 提升不大（仅 1%），但定性收益远超定量——它能做到 VAE 做不到的按需生成。详见下一篇。",
+    summary_next_p1: "现在的 VAE 只能随机生成——你没法说「给我画一个红色的 5」。下一篇将在编码器和解码器中同时注入<strong>标签条件</strong>，让模型知道当前处理的是什么数字。这就是 CVAE——从随机生成到可控生成的关键一步。",
+    summary_next_p2: "预告：CVAE 的 loss 提升只有 ~1%，但定性价值远超定量——它能做到 VAE 做不到的按需生成。",
 
     h2_ref: "参考资源",
     ref_li1: "代码仓库：",
     ref_li2: "第一篇：",
-    ref_li3: "实验记录：项目中的 ",
-    ref_li4: "原始 VAE 论文：",
+    ref_li3: "实验记录：",
+    ref_li4: "VAE 论文：",
   },
 
-  // ═══════════════════════════════════════
-  // English
-  // ═══════════════════════════════════════
+  // ════════════════════ English ════════════════════
   en: {
     h2_motivation: "Why Color?",
     motivation_p1: "In the first article, we used VAE to generate grayscale handwritten digits — 784 pixels, each with a single intensity value. But most real-world images are in color: traffic lights, medical scans, natural landscapes — color itself carries important information.",
@@ -234,8 +267,8 @@ const content = {
     motivation_p3: "This article documents the full process of extending grayscale VAE to color generation — including an unexpected failure, root cause analysis, and the optimization toolkit that emerged from it.",
 
     h2_arch: "Architecture Upgrade: From Grayscale to Color",
-    arch_overview: "From Part 1's grayscale VAE to here, there are four key architectural changes:",
-    arch_compare: "Part 1 Grayscale VAE vs This Article's Color VAE",
+    arch_p1: "From Part 1's grayscale VAE to here, there are four key architectural changes:",
+
     arch_thead_dim: "Dimension",
     arch_thead_gray: "Part 1 (Grayscale)",
     arch_thead_color: "This Article (Color)",
@@ -247,7 +280,7 @@ const content = {
     arch_row_conv: "Conv layers",
     arch_row_conv_gray: "2 layers",
     arch_row_conv_color: "3 layers",
-    arch_row_conv_reason: "2 layers → 7×7 features not deep enough; 3 layers → larger receptive field at 4×4",
+    arch_row_conv_reason: "2 layers stop at 7×7 feature maps; 3 layers reach 4×4 with larger receptive field per point",
     arch_row_latent: "Latent dims",
     arch_row_latent_gray: "4",
     arch_row_latent_color: "16",
@@ -258,135 +291,173 @@ const content = {
     arch_row_loss_reason: "BCE has sharper gradients at boundary pixels, avoiding MSE's \"gray fog\"",
 
     h3_model: "Model Changes in Detail",
-    model_p1: "Both encoder and decoder upgraded from 2 layers to 3, and adapted to 3-channel input/output:",
-    model_enc_title: "Encoder (3-layer conv · no label conditioning)",
-    model_enc_path: "Spatial compression path:",
-    model_enc_path_detail: "28×28 → 14×14 → 7×7 → 4×4",
-    model_enc_chan: "Channel changes:",
-    model_enc_chan_detail: "3 → 32 → 64 → 128 (doubling channels as resolution halves)",
-    model_enc_fc: "After flattening:",
-    model_enc_fc_detail: "128 channels × 4 × 4 = <strong>2048</strong> dims, fed into fc_mu and fc_logvar, each outputting 16 dims",
-    model_dec_title: "Decoder (3-layer transposed conv · no label conditioning)",
-    model_dec_path: "Spatial upscaling path:",
-    model_dec_path_detail: "4×4 → 7×7 → 14×14 → 28×28",
-    model_dec_odd: "⚠️ Key detail: the first deconv layer uses <code>output_padding=0</code>, going from 4→7 instead of 4→8. This is because the encoder's stride-2 downsampling on an odd-sized 7×7 feature map uses floor division: 7÷2=3.5→3, so output is ⌊(3+2×1−3)/2⌋+1 = 4. The decoder must reverse exactly to 7, or dimensions won't match.",
-    model_dec_output: "Final Sigmoid output: [3, 28, 28]",
-    model_latent_note: "Note: the current codebase (vae_color/model.py) already includes CVAE label embeddings. What's shown above is the pure VAE version used in experiments #1–#3 — no label conditioning, 3 conv layers, 16 latent dimensions. Label embeddings are next article's topic.",
+    model_p1: "Both encoder and decoder upgraded from 2 layers to 3, adapted to 3-channel I/O. Here's the pure VAE version used in experiments #1–#3 (CVAE label embeddings covered in the next article):",
+
+    model_enc_title: "Encoder (3-layer version)",
+    model_enc_code_title: "Encoder Code (model.py)",
+    model_enc_explain1: "Three conv layers + BatchNorm progressively compress spatial dimensions:",
+    model_enc_explain2: "28×28 → 14×14 → 7×7 → 4×4",
+    model_enc_explain3: "while doubling channels: 3 → 32 → 64 → 128",
+    model_enc_explain4: "After flattening: 128×4×4 = 2048 dims, fed into ",
+    model_enc_explain5: " and ",
+    model_enc_explain6: ", each outputting 16 dims",
+
+    model_enc_detail: "Line-by-line breakdown:",
+    model_enc_d1: "<code>Conv2d(3, 32, kernel_size=3, stride=2, padding=1)</code> — Input 3 channels (RGB), output 32 channels, stride=2 halves size (28→14)",
+    model_enc_d2: "<code>BatchNorm2d</code> — Stabilizes training, accelerates convergence, follows every conv layer",
+    model_enc_d3: "<code>LeakyReLU</code> — Smoother than ReLU, avoids the \"dying neuron\" problem",
+    model_enc_d4: "<code>fc_mu</code> and <code>fc_logvar</code> — Two independent FC layers outputting mean and log-variance respectively",
+    model_enc_d5: "Why output log(σ²) instead of σ? Log can take any real value, more numerically stable",
+
+    model_enc_deep: "Deep Dive: Why Add a Third Layer?",
+    model_enc_deep_p1: "Part 1's 2-layer encoder compressed to 7×7 feature maps. Each feature point covers roughly a 7×7 pixel patch — fine for simple MNIST digits, but color information (R/G/B distribution patterns) benefits from larger spatial context.",
+    model_enc_deep_p2: "The third layer shrinks features to 4×4, where each point aggregates structural and color information from a larger receptive field. FC dims go from 64×7×7=3136 to 128×4×4=2048 — fewer dimensions but more concentrated information.",
+    model_enc_deep_p3: "Correspondingly, latent_size goes from 4 to 16: input information ×3 (grayscale→3 channels), latent capacity ×4, keeping a reasonable compression ratio of ~150:1 (2352÷16), rather than the grayscale version's ~200:1 or the 4-dim color version's 588:1.",
+
+    model_dec_title: "Decoder (3-layer version)",
+    model_dec_code_title: "Decoder Code (model.py)",
+    model_dec_explain1: "FC layer expands the ",
+    model_dec_explain2: "-dim latent vector into a 128×4×4 feature map",
+    model_dec_explain3: "Three transposed conv layers progressively upsample: 4×4 → 7×7 → 14×14 → 28×28",
+    model_dec_explain4: "Final Sigmoid compresses to [0, 1], outputting 3-channel color image",
+
+    model_dec_detail: "Line-by-line breakdown:",
+    model_dec_d1: "<code>Linear(latent_size, 128*4*4)</code> — Expands the 16-dim latent vector to 2048 dims",
+    model_dec_d2: "<code>ConvTranspose2d</code> — Transposed convolution, upsamples image size. stride=2 doubles dimensions",
+    model_dec_d3: "<code>output_padding=0</code> (first layer) — Critical! 4→7 instead of 4→8, explained below",
+    model_dec_d4: "<code>Sigmoid</code> — Compresses output to [0,1], corresponding to RGB pixel values",
+
+    model_dec_odd: "⚠️ output_padding=0: Why 4→7 and not 4→8?",
+    model_dec_odd_p1: "During the encoder's stride-2 downsampling, 7 is odd — PyTorch's Conv2d uses floor: 7÷2=3.5→3, with padding the output is ⌊(3+2×1−3)/2⌋+1 = 4. The decoder must reverse exactly to 7, or dimensions won't match.",
+    model_dec_odd_p2: "This is a pitfall encountered when switching from CIFAR-10 (32×32, evenly divisible) back to MNIST (28×28). 32 = 2⁵, divisible by 2 five times; 28 = 2²×7 — the third division by 2 hits an odd number.",
+
+    model_latent_note: "Note: the current codebase (vae_color/model.py) already includes CVAE label embeddings. What's shown above is the pure VAE version from experiments #1–#3. Label embeddings are next.",
 
     h3_data: "Data Changes: ColoredMNIST",
-    data_p1: "MNIST is a grayscale dataset — each image has only one brightness channel. To make it colorful, the core idea is: <code>img.repeat(3, 1, 1)</code> expands to 3 channels, then multiply by a color vector <code>[R, G, B]</code>.",
-    data_p2: "The critical question is <strong>where the colors come from</strong>. As we'll see below, this choice directly determines whether the experiment succeeds or fails.",
+    data_p1: "MNIST is grayscale — one brightness channel per image. To make it colorful: <code>img.repeat(3, 1, 1)</code> expands to 3 channels, then multiply by a color vector <code>[R, G, B]</code>.",
+    data_p2: "The critical question is <strong>where the colors come from</strong>. This choice directly determines success or failure.",
     data_code_title: "ColoredMNIST Dataset Wrapper",
 
     h2_coloring: "The Coloring Problem: A Debugging Story",
-    coloring_p1: "This is the most valuable 'failure' in the entire project. It's a failure because the model ran fine and loss converged normally; it's valuable because the output was nothing like what we wanted.",
+    coloring_p1: "This is the most valuable 'failure' of the entire project — the model ran fine, loss converged normally, but the output was nothing like what we wanted.",
 
-    h3_random: "Experiment #1: Random Coloring (2026-06-28 · 3 min · val_loss = 302.23)",
-    random_p1: "The initial idea was intuitive: multiply each MNIST image by a random color coefficient (three random numbers between 0.3~1.0), producing 'colorful' digits. More variation should mean better color learning — or so we thought.",
-    random_formula: "colored_img = gray_img.repeat(3, 1, 1) ∗ [R, G, B] (three random numbers)",
-    random_p2: "Training ran for 100 epochs, everything looked normal — loss dropped from 640 to 302, KL stabilized at 5~7, early stopping never triggered. Opened the generated images: <strong>all grayscale</strong> — every digit had R≈G≈B. The model had adaptively 'learned' to ignore color.",
+    h3_random: "Experiment #1: Random Coloring (val_loss = 302.23)",
+    random_p1: "The initial idea was intuitive: multiply each MNIST image by a random color coefficient (three numbers between 0.3~1.0), producing 'colorful' digits. More variation = better color learning, right?",
+    random_formula_desc: "Coloring formula:",
+    random_p2: "Training ran for 100 epochs, everything looked normal — loss dropped from 640 to 302, KL stabilized at 5~7. Opened the generated images: <strong>all grayscale</strong>. The model adaptively 'learned' to ignore color.",
 
-    h3_root: "Root Cause Analysis: Color Signal Too Weak",
-    root_p1: "Why did the model choose to ignore color? Not a bug — it found the <strong>optimal solution</strong>. Let's do the math:",
+    h3_root: "Root Cause: The Model Did the Math",
+    root_p1: "Why ignore color? Not a bug — the <strong>optimal strategy</strong>. Let's do the math:",
     root_li1: "Stroke pixels account for only <strong>~15%</strong> of the image — the remaining 85% is pure black background",
-    root_li2: "BCE difference between outputting grayscale (R=G=B=some value) vs correct color: only ~0.14 per stroke pixel",
-    root_li3: "Color signal accounts for <strong>~0.6%</strong> of total loss — the model gets more loss reduction by improving shape reconstruction",
-    root_conclusion: "The model didn't 'fail to learn color' — it calculated that learning color wasn't worth the effort. Expanding the color coefficient range only made colors more vivid; it didn't change the fundamental problem: <strong>random coloring makes color a noise signal</strong>. If the same digit is red in epoch 1 and blue in epoch 4, the color information is unreliable by design.",
+    root_li2: "BCE difference between grayscale output and correct color: only ~0.14 per stroke pixel",
+    root_li3: "Color signal accounts for <strong>~0.6%</strong> of total loss — model gets far more reduction by improving shape",
+    root_p2: "Worse: the same digit gets different random colors across epochs. Color has no semantic meaning — it's pure noise. The model's optimal strategy is 'ignore the noise, focus on shape'.",
+    root_conclusion: "Core lesson: it's not that 'colors aren't bright enough' — it's that 'color as a signal isn't reliable enough'. Widening the color coefficient range makes colors more vivid without solving the reliability problem.",
 
-    h3_fix: "Experiment #2: Per-Class Coloring (2026-06-28 · 3 min · val_loss = 252.35 · ↓16.5%)",
-    fix_p1: "The solution was simple: <strong>bind color to digit class</strong>. Assign each digit 0–9 a fixed, distinct color:",
-    fix_table_head: "Digit → Color Mapping",
-    fix_p2: "Once color is bound to class, it becomes a semantic signal: red can't be digit 3, blue can't be digit 7. The model must accurately distinguish R/G/B channels to reconstruct correctly.",
-    fix_p3: "The code change was minimal (one line in the dataset wrapper: <code>colored_img = img.repeat(3, 1, 1) * CLASS_COLORS[label]</code>), but the effect was immediate: val_loss dropped from 302 to 252 (↓16.5%), colors rendered correctly, and reconstruction quality improved simultaneously.",
+    h3_fix: "Experiment #2: Per-Class Coloring (val_loss = 252.35 · ↓16.5%)",
+    fix_p1: "The solution: <strong>bind color to digit class</strong>. Assign each digit 0–9 a fixed, distinct color. Color becomes a semantic signal — red can't be 3, blue can't be 7. The model must accurately distinguish R/G/B channels.",
+    fix_table_head: "▲ Digit → Color Mapping",
+    fix_p2: "Minimal code change (one line: <code>colored_img = img.repeat(3, 1, 1) * CLASS_COLORS[label]</code>), immediate effect: val_loss 302→252 (↓16.5%), correct colors, improved reconstruction.",
+
+    fix_deep: "Why Isn't This 'Data Augmentation'?",
+    fix_deep_p1: "A possible objection: 'Random coloring is just data augmentation, making the model more robust'. But data augmentation requires augmented samples to stay within the data distribution — grayscale strokes on randomly colored backgrounds don't form a valid distribution. Random coloring creates out-of-distribution noise, not in-distribution variants.",
+    fix_deep_p2: "Per-class coloring imposes a structured attribute — 'color = class ID' becomes part of the data definition. It's more like adding structured annotations than adding noise.",
 
     h2_optimization: "The Optimization Toolkit: From Working to Working Well",
-    optimize_p1: "While fixing the coloring problem, we also built out a full optimization toolkit. Each improvement is independent and addresses a specific problem. Here's what each one solves and why it's designed this way.",
+    optimize_p1: "Alongside fixing the coloring problem, we built out a full optimization toolkit. Each improvement is independent. Here's what each solves and why.",
 
     h3_bce: "BCE Replaces MSE",
-    bce_p1: "In Part 1 we used MSE for reconstruction loss. MSE's weakness in generation tasks is well-known: when a boundary pixel is sometimes black and sometimes white, MSE's optimal output is 0.5 (gray) — this is the 'gray fog' effect.",
-    bce_p2: "BCE (Binary Cross Entropy) has its maximum gradient at 0.5, explicitly penalizing ambiguity. The loss changes from <code>mse_loss(reduction='mean') * 2352</code> to <code>bce_loss(reduction='sum') / batch_size</code> — no manual coefficient needed; BCE's sum/batch naturally sits in the tens range, automatically balancing against KL divergence.",
-    bce_code_title: "BCE Reconstruction Loss",
+    bce_p1: "Part 1 used MSE for reconstruction loss. MSE's weakness: when a boundary pixel is sometimes black and sometimes white, MSE's optimal output is 0.5 (gray) — the 'gray fog' effect.",
+    bce_p2: "BCE has its maximum gradient at 0.5, explicitly penalizing ambiguity. From <code>mse_loss(reduction='mean') * 2352</code> to <code>bce_loss(reduction='sum') / batch_size</code> — no manual coefficient needed; BCE's sum/batch naturally sits in the tens range, auto-balancing against KL.",
+    bce_code_title: "Reconstruction Loss Comparison",
 
     h3_beta: "β Coefficient & KL Warm-up",
-    beta_p1: "VAE training is essentially a tug-of-war: <strong>reconstruction loss wants to spread out each image's z (further apart = better reconstruction), while KL divergence wants to squeeze all z toward standard Gaussian (closer together = better generation).</strong>",
-    beta_p2: "Introduce <strong>β coefficient</strong> to control this tug-of-war. β < 1 favors reconstruction quality, β > 1 favors generation diversity. For colored MNIST — relatively simple data — β = 0.05 (recon:KL = 20:1) works best: nail the reconstruction first, then worry about generation.",
-    beta_formula: "L = L_recon + β × D_KL",
-    beta_p3: "But β can't be applied directly from the start. At epoch 0, KL divergence can reach thousands (randomly initialized fc_logvar outputs large positive values → exp explosion). Even with β=0.05, KL gradients would still dominate recon by dozens of times.",
-    beta_p4: "<strong>KL warm-up</strong> solves this: for the first 20 epochs, kl_weight linearly ramps from 0 to β. The encoder learns content from reconstruction alone for 20 epochs; KL is gradually introduced afterward, fine-tuning rather than bulldozing the existing encoding.",
+    beta_p1: "VAE training is a tug-of-war: <strong>recon loss wants to spread each image's z apart; KL wants to squeeze all z toward standard Gaussian.</strong>",
+    beta_p2: "Introduce <strong>β coefficient</strong> to control the balance:",
+    beta_p3: "For colored MNIST, β = 0.05 (recon:KL = 20:1) works best — nail reconstruction first, then worry about generation diversity.",
+    beta_p4: "But β can't be applied from epoch 0. Initial KL can reach thousands (random fc_logvar → exp explosion); even β=0.05 leaves KL dominating recon.",
+    beta_p5: "<strong>KL warm-up</strong>: first 20 epochs kl_weight ramps from 0 to β. The encoder learns content from reconstruction alone, then KL is gradually introduced to fine-tune rather than bulldoze.",
 
-    h3_scheduler: "Cosine Annealing Learning Rate",
-    scheduler_p1: "The problem with fixed learning rate is that it 'can't brake' in late training. When parameters near optimal, gradients become tiny — but lr × tiny_gradient can still overshoot the valley, land on the opposite slope, overshoot back next round, and oscillate forever.",
-    scheduler_p2: "Cosine annealing (CosineAnnealingLR) smoothly decays lr from 0.001 to 1e-5: big strides early, tiny steps later. T_max equals total epochs, eta_min is a small floor value.",
+    h3_scheduler: "Cosine Annealing LR",
+    scheduler_p1: "Fixed learning rate can't 'brake' in late training. When parameters near optimal, gradients are tiny — but lr × tiny_gradient can still overshoot, land on the opposite slope, and oscillate forever.",
+    scheduler_p2: "Cosine annealing smoothly decays lr from 0.001 to 1e-5: big strides early, tiny steps late. T_max = total epochs, eta_min = small floor value.",
 
     h3_clip: "Adaptive Gradient Clipping",
-    clip_p1: "Gradient clipping prevents gradient explosion. But fixed thresholds have a contradiction: early in training, gradients are large (5~10), so a threshold of 1 would cut 80% of effective step size; late in training, gradients are small (0.1~0.5), so a threshold of 10 offers no protection.",
-    clip_p2: "Adaptive solution: maintain an <strong>exponential moving average (EMA)</strong> of gradient norms, and only clip when the current gradient exceeds 5× the historical mean. Early on, the mean is large so the threshold is automatically loose; later, the mean shrinks so the threshold tightens.",
-    clip_code_title: "Adaptive Gradient Clipping",
+    clip_p1: "Gradient clipping prevents explosion, but fixed thresholds are contradictory: early gradients 5~10, threshold 1 cuts 80% of step; late gradients 0.1~0.5, threshold 10 offers no protection.",
+    clip_p2: "Adaptive: maintain an <strong>EMA</strong> of gradient norms. Only clip when current exceeds 5× the historical mean. Early: mean large → threshold loose; late: mean small → threshold tight.",
+    clip_code_title: "Adaptive Gradient Clipping Code",
 
     h3_early: "Early Stopping + Validation Set",
-    early_p1: "In Part 1, we trained on all 60K MNIST images and printed training loss — which always decreases, making overfitting invisible.",
-    early_p2: "Improvement: split data into 50K training + 10K validation. The validation set never participates in training; it's used for independent evaluation each epoch. When val_loss hasn't improved for 10 consecutive epochs, training stops automatically, saving the weights from the epoch with the lowest val_loss.",
-    early_p3: "In this case, early stopping never triggered — all 3 experiments ran the full 100 epochs. This means no significant overfitting, but diminishing returns were severe (improvements after epoch 50 were negligible).",
+    early_p1: "Part 1 trained on all 60K MNIST and printed training loss — always decreasing, overfitting invisible.",
+    early_p2: "Improvement: 50K train + 10K validation. Validation never participates in training; independently evaluated each epoch. When val_loss hasn't improved for 10 epochs, stop and save the best-epoch weights.",
+    early_p3: "In this case, early stopping never triggered — all 3 experiments ran full 100 epochs. No significant overfitting, but improvements after epoch 50 were negligible.",
+
+    h3_exp3: "Experiment #3: Parameter Tuning (val_loss = 224.80 · ↓10.9%)",
+    exp3_p1: "Experiment #2 solved coloring but left room for reconstruction quality. Two simultaneous changes: <strong>latent_size 8→16</strong> and <strong>β 0.1→0.05</strong>.",
+    exp3_p2: "Doubling latent_size gives twice the latent capacity for fine details; halving β shifts bias toward reconstruction. val_loss: 252→225 (↓10.9%). KL rose slightly (5.50→6.23) — not a quality issue, just summing over 16 dimensions vs 8.",
 
     h2_experiments: "Experiment Overview",
-    experiments_p1: "Below is the complete comparison of the 3 experiments covered in this article. All experiments ran on a server GPU, approximately 3 minutes each, 100 epochs.",
-    exp_table_title: "Experiment Comparison",
-    exp_th_exp: "Experiment",
+    experiments_p1: "Below is the complete comparison of the 3 experiments. All ran on a server GPU, ~3 minutes each, 100 epochs.",
+    exp_table_title: "▲ Experiment Comparison",
+    exp_th_exp: "Exp",
     exp_th_key: "Key Config",
     exp_th_val: "Best val_loss",
-    exp_th_color: "Coloring",
+    exp_th_color: "Color",
     exp_th_note: "Notes",
-    exp1_key: "latent=8, β=0.1, random coloring",
-    exp1_note: "All grayscale output, coloring failed",
-    exp2_key: "latent=8, β=0.1, per-class coloring",
-    exp2_note: "Coloring succeeded, ↓16.5% vs #1",
-    exp3_key: "latent=16, β=0.05, per-class coloring",
-    exp3_note: "Further ↓10.9%, best accuracy",
+    exp1_key: "latent=8, β=0.1, random",
+    exp1_note: "All grayscale, coloring failed",
+    exp2_key: "latent=8, β=0.1, per-class",
+    exp2_note: "Coloring OK, ↓16.5%",
+    exp3_key: "latent=16, β=0.05, per-class",
+    exp3_note: "Best accuracy, ↓10.9%",
 
-    experiments_p2: "Loss reduction path across the three experiments:",
+    experiments_p2: "Loss reduction path across experiments:",
     exp_trend_h3: "Loss Trends",
-    exp_trend_1: "Experiment #1→#2 (coloring strategy): val_loss 302 → 252, ↓16.5%. The biggest single jump — not from changing the model or tuning parameters, but from <strong>fixing how the data was constructed</strong>.",
-    exp_trend_2: "Experiment #2→#3 (architecture parameters): val_loss 252 → 225, ↓10.9%. latent_size 8→16 gives more latent capacity; β 0.1→0.05 shifts the bias further toward reconstruction quality.",
-    exp_trend_3: "Common pattern: ~95% of learning happens during the KL warm-up period (first 20 epochs). After warm-up, the remaining 70+ epochs improve by less than 6 loss points.",
-
-    experiments_p3: "Complete experimental records — including per-epoch loss values and convergence analysis — are in the <a href='https://github.com/Muanyan-mjq/The_simple_vae' target='_blank' rel='noopener noreferrer' class='text-indigo-600 dark:text-indigo-400 hover:underline'>GitHub repo</a>'s <code>EXPERIMENT_LOG.md</code> and <code>CHANGELOG.md</code>.",
+    exp_trend_1: "<strong>#1→#2 (coloring strategy)</strong>: val_loss 302→252, ↓16.5%. The biggest single jump — from fixing data construction, not from changing the model.",
+    exp_trend_2: "<strong>#2→#3 (architecture params)</strong>: val_loss 252→225, ↓10.9%. Doubling latent capacity, halving KL weight toward reconstruction.",
+    exp_trend_3: "<strong>Common pattern</strong>: ~95% of learning happens during KL warm-up (first 20 epochs). After warm-up, 70+ epochs improve by <6 loss points. Training to 60 epochs is sufficient.",
+    experiments_p3: "Complete experimental data (per-epoch loss, convergence curves) in the <a href='https://github.com/Muanyan-mjq/The_simple_vae' target='_blank' rel='noopener noreferrer' class='text-indigo-600 dark:text-indigo-400 hover:underline'>GitHub repo</a>'s <code>EXPERIMENT_LOG.md</code>.",
 
     h2_train: "Training Code Overview",
-    train_p1: "The complete training loop incorporating all the optimizations above:",
-    train_code_title: "Training Script (train.py core logic)",
-    train_params: "Final hyperparameter configuration:",
+    train_p1: "The complete training loop incorporating all optimizations:",
+    train_code_title: "Training Script Core (train.py)",
+    train_params: "Final hyperparameter config:",
     train_param_list: "batch_size=256, num_epochs=100, lr=0.001→1e-5, latent_size=16, β=0.05, warmup_epochs=20, patience=10",
 
+    h2_visual: "Visual Results",
+    visual_p1: "Reconstruction and generation results from Experiment #3. Left: original colored MNIST (per-class coloring). Right: VAE reconstruction:",
+    visual_recon_caption: "▲ Reconstruction: top row = original colored MNIST, bottom row = VAE reconstruction (Experiment #3, latent=16, β=0.05)",
+    visual_gen_caption: "▲ Random generation: sampling latent vectors from N(0,1), decoded into novel color digit images",
+    visual_note: "Note: these images need to be generated from the server. Run <code>python vae_test.py</code> (restore pure VAE weights first). Output goes to <code>test_img/</code> and <code>sample_img/</code>. Or use the auto-saved images from Experiment #3 training at <code>out_img/epochs_*.png</code> and <code>test_img/test_*.png</code>.",
+
     h2_summary: "Summary & Review",
-    summary_p1: "This article isn't a 'tweaked some parameters and improved loss' log. The core takeaways are on three levels:",
+    summary_p1: "This article isn't a 'tweaked parameters and improved loss' log. The core takeaways are on three levels:",
 
     summary_h3_debug: "Debugging Methodology: From Symptom to Root Cause",
-    summary_debug_p1: "When model output doesn't match expectations, the easiest mistake is blindly changing parameters. Experiment #1's grayscale output had nothing to do with 'network too shallow' or 'learning rate too high' — the root cause was <strong>the data construction made the color signal so weak the model chose to ignore it</strong>. Changing the model architecture wouldn't fix this; changing the coloring strategy would.",
-    summary_debug_p2: "Build the habit: first analyze <strong>what the loss is actually penalizing</strong>, then act. Here, the color difference per pixel was only 0.14 BCE, while shape reconstruction loss for the whole batch was in the hundreds. The model's optimal strategy was obviously 'ignore that 0.14, focus entirely on those hundreds'.",
+    summary_debug_p1: "When output doesn't match expectations, the easiest mistake is blindly changing parameters. Experiment #1's grayscale output had nothing to do with network depth or learning rate — the root cause was <strong>data construction making the color signal unreliable</strong>. Fixing the architecture wouldn't help; fixing the coloring strategy would.",
+    summary_debug_p2: "Build the habit: first analyze <strong>what the loss is actually penalizing</strong>, then act. Color difference per pixel: 0.14 BCE. Shape reconstruction for the whole batch: hundreds. The model's optimal strategy is clear — ignore color, focus on shape. That's not a model problem; it's a data design problem.",
 
     summary_h3_toolkit: "Engineering Training: From Script to Experiment",
-    summary_toolkit_p1: "Part 1's training code was 'just make it run' — full data training, fixed learning rate, no validation, no early stopping. This article introduces a full set of engineering practices: train/val split, early stopping, learning rate scheduling, gradient clipping. These aren't VAE-specific — they're infrastructure for any deep learning training.",
-    summary_toolkit_p2: "The single most valuable addition is <strong>adaptive gradient clipping</strong> — fixed thresholds differ by two orders of magnitude between early and late training, making a universal value impossible. EMA-adaptive thresholds eliminate the trial-and-error of tuning clip values.",
+    summary_toolkit_p1: "Part 1's training code was 'just make it run'. This article introduces full engineering practices — train/val split, early stopping, LR scheduling, gradient clipping. These aren't VAE-specific; they're infrastructure for any DL training.",
+    summary_toolkit_p2: "The single most valuable addition is <strong>adaptive gradient clipping</strong> — fixed thresholds differ by two orders of magnitude between early and late training. EMA-adaptive thresholds eliminate the trial-and-error.",
 
     summary_h3_beta: "The Philosophy of β: A Carefully Orchestrated Tug-of-War",
-    summary_beta_p1: "β is the most subtle parameter in these experiments. At 0.1, reconstruction is decent but KL is too loose and generation quality suffers; at 0.05, reconstruction is best but KL is even looser; at 0.01, KL nearly vanishes and latent space loses all constraint. There is no 'optimal β' — it only represents where you stand between 'draw clearly' and 'draw diversely'.",
-    summary_beta_p2: "KL warm-up is β's necessary companion. In early training, the encoder's output is chaotic — directly introducing KL would teach it to 'output 0, pretend to be standard Gaussian'. That's posterior collapse. Warm-up gives the encoder a chance to learn content from reconstruction first, then gradually add KL regularization.",
+    summary_beta_p1: "β is the most subtle parameter. At 0.1: decent reconstruction but loose KL; at 0.05: best reconstruction; at 0.01: KL nearly vanishes, latent space loses constraint. There is no 'optimal β' — it represents where you stand between 'draw clearly' and 'draw diversely'.",
+    summary_beta_p2: "KL warm-up is β's necessary companion. Early encoder output is chaotic; directly introducing KL teaches it to 'output 0, pretend to be standard Gaussian' — posterior collapse. Warm-up lets the encoder learn content first, then gradually add KL regularization.",
 
     summary_h3_next: "Next: Conditional Generation with CVAE",
-    summary_next_p1: "The current VAE can only generate randomly — you can't say 'draw a red 5'. The next article will add <strong>label conditioning</strong> to the model, making both encoder and decoder 'aware' of which digit they're processing. That's CVAE (Conditional VAE) — the leap from random generation to controllable generation.",
-    summary_next_p2: "Preview: CVAE's loss improvement is minimal (only ~1%), but the qualitative gain far exceeds the quantitative — it enables class-specific generation that VAE simply can't do. Details in the next article.",
+    summary_next_p1: "The current VAE can only generate randomly — you can't say 'draw a red 5'. The next article adds <strong>label conditioning</strong>, injecting class information into both encoder and decoder. That's CVAE — the leap from random to controllable generation.",
+    summary_next_p2: "Preview: CVAE's loss improvement is only ~1%, but the qualitative gain far exceeds the quantitative — class-specific generation that VAE simply can't do.",
 
     h2_ref: "References",
-    ref_li1: "Code repository: ",
+    ref_li1: "Code repo: ",
     ref_li2: "Part 1: ",
     ref_li3: "Experiment logs: ",
-    ref_li4: "Original VAE paper: ",
+    ref_li4: "VAE paper: ",
   },
 } as const;
 
-// ══════════════════════════════════════════════════════════════
-// 代码块双语定义
-// ══════════════════════════════════════════════════════════════
+// ── 代码块 ──
 const codeBlocks = {
   encoder: {
     zh: `class Encoder(nn.Module):
@@ -532,12 +603,11 @@ class ColoredMNIST(Dataset):
         # 前向传播
         recon_x, mu, logvar = vae(inputs)
 
-        # 计算损失
+        # 损失：BCE + KL*warmup
         recon_loss = F.binary_cross_entropy(recon_x, inputs, reduction='sum') / inputs.size(0)
         kl_loss = -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
         loss = recon_loss + kl_weight * kl_loss
 
-        # 反向传播
         loss.backward()
 
         # 自适应梯度裁剪
@@ -550,7 +620,7 @@ class ColoredMNIST(Dataset):
 
     scheduler.step()  # 余弦退火
 
-    # 验证阶段 + 早停检查
+    # 验证 + 早停 + 每10轮可视化
     val_loss = evaluate(vae, val_loader)
     if val_loss < best_val_loss:
         best_val_loss = val_loss
@@ -568,12 +638,11 @@ class ColoredMNIST(Dataset):
         # Forward pass
         recon_x, mu, logvar = vae(inputs)
 
-        # Compute loss
+        # Loss: BCE + KL*warmup
         recon_loss = F.binary_cross_entropy(recon_x, inputs, reduction='sum') / inputs.size(0)
         kl_loss = -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
         loss = recon_loss + kl_weight * kl_loss
 
-        # Backward pass
         loss.backward()
 
         # Adaptive gradient clipping
@@ -586,7 +655,7 @@ class ColoredMNIST(Dataset):
 
     scheduler.step()  # Cosine annealing
 
-    # Validation + early stopping
+    # Validation + early stopping + visualization every 10 epochs
     val_loss = evaluate(vae, val_loader)
     if val_loss < best_val_loss:
         best_val_loss = val_loss
@@ -596,9 +665,7 @@ class ColoredMNIST(Dataset):
   },
 };
 
-// ══════════════════════════════════════════════════════════════
-// 颜色对照数据
-// ══════════════════════════════════════════════════════════════
+// ── 颜色对照数据 ──
 const colorMap = [
   { digit: "0", color: "红 Red", rgb: "(1.0, 0.3, 0.3)", bg: "#fecaca" },
   { digit: "1", color: "绿 Green", rgb: "(0.3, 1.0, 0.3)", bg: "#bbf7d0" },
@@ -618,15 +685,15 @@ export default function VAEPost2() {
 
   return (
     <BlogPostLayout post={post} seriesPosts={seriesPosts}>
-      {/* ── 动机 ── */}
+      {/* ═══ 动机 ═══ */}
       <h2>{c.h2_motivation}</h2>
       <p>{c.motivation_p1}</p>
       <p dangerouslySetInnerHTML={{ __html: c.motivation_p2 }} />
       <p>{c.motivation_p3}</p>
 
-      {/* ── 架构升级 ── */}
+      {/* ═══ 架构升级 ═══ */}
       <h2>{c.h2_arch}</h2>
-      <p>{c.arch_overview}</p>
+      <p>{c.arch_p1}</p>
 
       {/* 对照表 */}
       <div className="my-8 overflow-x-auto">
@@ -640,78 +707,106 @@ export default function VAEPost2() {
             </tr>
           </thead>
           <tbody className="text-zinc-800 dark:text-zinc-200">
-            <tr className="border-b border-zinc-200 dark:border-zinc-800">
-              <td className="p-3 font-medium">{c.arch_row_input}</td>
-              <td className="p-3 text-zinc-500">{c.arch_row_input_gray}</td>
-              <td className="p-3 text-indigo-600 dark:text-indigo-400 font-semibold">{c.arch_row_input_color}</td>
-              <td className="p-3">{c.arch_row_input_reason}</td>
-            </tr>
-            <tr className="border-b border-zinc-200 dark:border-zinc-800">
-              <td className="p-3 font-medium">{c.arch_row_conv}</td>
-              <td className="p-3 text-zinc-500">{c.arch_row_conv_gray}</td>
-              <td className="p-3 text-indigo-600 dark:text-indigo-400 font-semibold">{c.arch_row_conv_color}</td>
-              <td className="p-3">{c.arch_row_conv_reason}</td>
-            </tr>
-            <tr className="border-b border-zinc-200 dark:border-zinc-800">
-              <td className="p-3 font-medium">{c.arch_row_latent}</td>
-              <td className="p-3 text-zinc-500">{c.arch_row_latent_gray}</td>
-              <td className="p-3 text-indigo-600 dark:text-indigo-400 font-semibold">{c.arch_row_latent_color}</td>
-              <td className="p-3">{c.arch_row_latent_reason}</td>
-            </tr>
-            <tr className="border-b border-zinc-200 dark:border-zinc-800">
-              <td className="p-3 font-medium">{c.arch_row_loss}</td>
-              <td className="p-3 text-zinc-500">{c.arch_row_loss_gray}</td>
-              <td className="p-3 text-indigo-600 dark:text-indigo-400 font-semibold">{c.arch_row_loss_color}</td>
-              <td className="p-3">{c.arch_row_loss_reason}</td>
-            </tr>
+            {[
+              [c.arch_row_input, c.arch_row_input_gray, c.arch_row_input_color, c.arch_row_input_reason],
+              [c.arch_row_conv, c.arch_row_conv_gray, c.arch_row_conv_color, c.arch_row_conv_reason],
+              [c.arch_row_latent, c.arch_row_latent_gray, c.arch_row_latent_color, c.arch_row_latent_reason],
+              [c.arch_row_loss, c.arch_row_loss_gray, c.arch_row_loss_color, c.arch_row_loss_reason],
+            ].map(([dim, gray, color, reason], i) => (
+              <tr key={i} className="border-b border-zinc-200 dark:border-zinc-800">
+                <td className="p-3 font-medium">{dim}</td>
+                <td className="p-3 text-zinc-500">{gray}</td>
+                <td className="p-3 text-indigo-600 dark:text-indigo-400 font-semibold">{color}</td>
+                <td className="p-3">{reason}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
-        <p className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">
-          {lang === "zh" ? "▲ 第一篇灰度 VAE vs 本篇彩色 VAE 架构对照" : "▲ Part 1 Grayscale VAE vs This Article's Color VAE"}
-        </p>
       </div>
 
+      {/* ═══ 模型改动 ═══ */}
       <h3>{c.h3_model}</h3>
       <p>{c.model_p1}</p>
 
-      <p className="text-lg font-semibold text-zinc-900 dark:text-white mt-6 mb-2">{c.model_enc_title}</p>
+      {/* Encoder */}
+      <p className="text-lg font-semibold text-zinc-900 dark:text-white mt-8 mb-2">{c.model_enc_title}</p>
+      <p>{c.model_enc_code_title}：</p>
       <CodeBlock language="python">{codeBlocks.encoder[lang]}</CodeBlock>
       <p>
-        {c.model_enc_path}<strong>{c.model_enc_path_detail}</strong><br />
-        {c.model_enc_chan}{c.model_enc_chan_detail}<br />
-        {c.model_enc_fc}<span dangerouslySetInnerHTML={{ __html: c.model_enc_fc_detail }} />
+        {c.model_enc_explain1}<br />
+        <strong>{c.model_enc_explain2}</strong><br />
+        {c.model_enc_explain3}<br />
+        {c.model_enc_explain4}<InlineMath>{"\\mu"}</InlineMath>{c.model_enc_explain5}<InlineMath>{"\\log(\\sigma^2)"}</InlineMath>{c.model_enc_explain6}
       </p>
 
-      <p className="text-lg font-semibold text-zinc-900 dark:text-white mt-8 mb-2">{c.model_dec_title}</p>
-      <CodeBlock language="python">{codeBlocks.decoder[lang]}</CodeBlock>
-      <p>
-        {c.model_dec_path}<strong>{c.model_dec_path_detail}</strong><br />
-        {c.model_dec_output}[3, 28, 28]
-      </p>
-
-      {/* output_padding 细节 */}
-      <div className="mt-6 p-5 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-800">
-        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200" dangerouslySetInnerHTML={{ __html: c.model_dec_odd }} />
+      {/* Encoder 逐行解析 */}
+      <div className="mt-6 p-5 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <p className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">{c.model_enc_detail}</p>
+        <ul className="space-y-2 text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200">
+          <li dangerouslySetInnerHTML={{ __html: c.model_enc_d1 }} />
+          <li dangerouslySetInnerHTML={{ __html: c.model_enc_d2 }} />
+          <li dangerouslySetInnerHTML={{ __html: c.model_enc_d3 }} />
+          <li dangerouslySetInnerHTML={{ __html: c.model_enc_d4 }} />
+          <li dangerouslySetInnerHTML={{ __html: c.model_enc_d5 }} />
+        </ul>
       </div>
 
-      {/* latent note */}
+      {/* Encoder 深入理解 */}
+      <div className="mt-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <p className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">{c.model_enc_deep}</p>
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200 mb-2">{c.model_enc_deep_p1}</p>
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200 mb-2">{c.model_enc_deep_p2}</p>
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200">{c.model_enc_deep_p3}</p>
+      </div>
+
+      {/* Decoder */}
+      <p className="text-lg font-semibold text-zinc-900 dark:text-white mt-8 mb-2">{c.model_dec_title}</p>
+      <p>{c.model_dec_code_title}：</p>
+      <CodeBlock language="python">{codeBlocks.decoder[lang]}</CodeBlock>
+      <p>
+        {c.model_dec_explain1}<InlineMath>{"d_{\\text{latent}}"}</InlineMath>{c.model_dec_explain2}<br />
+        {c.model_dec_explain3}<br />
+        {c.model_dec_explain4}
+      </p>
+
+      {/* Decoder 逐行解析 */}
+      <div className="mt-6 p-5 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <p className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">{c.model_dec_detail}</p>
+        <ul className="space-y-2 text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200">
+          <li dangerouslySetInnerHTML={{ __html: c.model_dec_d1 }} />
+          <li dangerouslySetInnerHTML={{ __html: c.model_dec_d2 }} />
+          <li dangerouslySetInnerHTML={{ __html: c.model_dec_d3 }} />
+          <li dangerouslySetInnerHTML={{ __html: c.model_dec_d4 }} />
+        </ul>
+      </div>
+
+      {/* output_padding 深入理解 */}
+      <div className="mt-6 p-6 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-800">
+        <p className="text-lg font-semibold text-amber-700 dark:text-amber-400 mb-4">{c.model_dec_odd}</p>
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200 mb-2">{c.model_dec_odd_p1}</p>
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200">{c.model_dec_odd_p2}</p>
+      </div>
+
+      {/* 注意 CVAE */}
       <div className="mt-6 p-5 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
         <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200">{c.model_latent_note}</p>
       </div>
 
+      {/* ═══ 数据改动 ═══ */}
       <h3>{c.h3_data}</h3>
       <p dangerouslySetInnerHTML={{ __html: c.data_p1 }} />
       <p dangerouslySetInnerHTML={{ __html: c.data_p2 }} />
       <p>{c.data_code_title}：</p>
       <CodeBlock language="python">{codeBlocks.dataset[lang]}</CodeBlock>
 
-      {/* ── 染色问题 ── */}
+      {/* ═══ 染色问题 ═══ */}
       <h2>{c.h2_coloring}</h2>
       <p>{c.coloring_p1}</p>
 
       <h3>{c.h3_random}</h3>
       <p>{c.random_p1}</p>
-      <p className="font-mono text-sm text-zinc-600 dark:text-zinc-400 my-3">{c.random_formula}</p>
+      <p>{c.random_formula_desc}</p>
+      <MathBlock>{"\\text{colored\\_img} = \\text{gray\\_img}.\\text{repeat}(3,1,1) \\times [R,G,B],\\quad R,G,B \\sim U(0.3, 1.0)"}</MathBlock>
       <p dangerouslySetInnerHTML={{ __html: c.random_p2 }} />
 
       <h3>{c.h3_root}</h3>
@@ -721,7 +816,12 @@ export default function VAEPost2() {
         <li dangerouslySetInnerHTML={{ __html: c.root_li2 }} />
         <li dangerouslySetInnerHTML={{ __html: c.root_li3 }} />
       </ul>
-      <p dangerouslySetInnerHTML={{ __html: c.root_conclusion }} />
+      <p>{c.root_p2}</p>
+
+      {/* 根因分析 — 灰底框 */}
+      <div className="mt-6 p-5 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200 font-semibold">{c.root_conclusion}</p>
+      </div>
 
       <h3>{c.h3_fix}</h3>
       <p dangerouslySetInnerHTML={{ __html: c.fix_p1 }} />
@@ -742,14 +842,17 @@ export default function VAEPost2() {
           </div>
         ))}
       </div>
-      <p className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-2 mb-6">
-        {c.fix_table_head}
-      </p>
+      <p className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-2 mb-6">{c.fix_table_head}</p>
 
       <p dangerouslySetInnerHTML={{ __html: c.fix_p2 }} />
-      <p dangerouslySetInnerHTML={{ __html: c.fix_p3 }} />
 
-      {/* ── 优化工具箱 ── */}
+      {/* 按类染色深入理解 */}
+      <CollapsibleCard title={c.fix_deep} defaultOpen={false}>
+        <p className="mb-3 text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200">{c.fix_deep_p1}</p>
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200">{c.fix_deep_p2}</p>
+      </CollapsibleCard>
+
+      {/* ═══ 优化工具箱 ═══ */}
       <h2>{c.h2_optimization}</h2>
       <p>{c.optimize_p1}</p>
 
@@ -764,13 +867,14 @@ recon_loss = F.mse_loss(recon_x, inputs, reduction='mean') * 2352
 # 新：BCE（本篇）
 recon_loss = F.binary_cross_entropy(recon_x, inputs, reduction='sum') / inputs.size(0)`}</CodeBlock>
 
-      {/* β 系数与 KL 预热 */}
+      {/* β 与 KL 预热 */}
       <h3>{c.h3_beta}</h3>
       <p dangerouslySetInnerHTML={{ __html: c.beta_p1 }} />
       <p dangerouslySetInnerHTML={{ __html: c.beta_p2 }} />
-      <p className="font-mono text-sm text-zinc-600 dark:text-zinc-400 my-3">{c.beta_formula}</p>
+      <MathBlock>{"\\mathcal{L} = \\mathcal{L}_{\\text{BCE}} + \\beta \\cdot D_{\\text{KL}}"}</MathBlock>
       <p>{c.beta_p3}</p>
-      <p dangerouslySetInnerHTML={{ __html: c.beta_p4 }} />
+      <p>{c.beta_p4}</p>
+      <p dangerouslySetInnerHTML={{ __html: c.beta_p5 }} />
 
       {/* KL warm-up 公式 */}
       <MathBlock>{"\\text{kl\\_weight} = \\beta \\times \\min\\left(1.0,\\ \\frac{\\text{epoch}}{\\text{warmup\\_epochs}}\\right)"}</MathBlock>
@@ -797,7 +901,12 @@ grad_ema = 0.9 * grad_ema + 0.1 * total_norm                            # 更新
       <p>{c.early_p2}</p>
       <p>{c.early_p3}</p>
 
-      {/* ── 实验总览 ── */}
+      {/* 实验 #3 */}
+      <h3>{c.h3_exp3}</h3>
+      <p dangerouslySetInnerHTML={{ __html: c.exp3_p1 }} />
+      <p>{c.exp3_p2}</p>
+
+      {/* ═══ 实验总览 ═══ */}
       <h2>{c.h2_experiments}</h2>
       <p>{c.experiments_p1}</p>
 
@@ -850,18 +959,78 @@ grad_ema = 0.9 * grad_ema + 0.1 * total_norm                            # 更新
 
       <p dangerouslySetInnerHTML={{ __html: c.experiments_p3 }} />
 
-      {/* ── 训练代码全貌 ── */}
+      {/* ═══ 训练代码全貌 ═══ */}
       <h2>{c.h2_train}</h2>
       <p>{c.train_p1}</p>
       <CodeBlock language="python">{codeBlocks.train[lang]}</CodeBlock>
       <p><strong>{c.train_params}</strong> {c.train_param_list}</p>
 
-      {/* ── 总结 ── */}
+      {/* ═══ 生成效果 ═══ */}
+      <h2>{c.h2_visual}</h2>
+      <p>{c.visual_p1}</p>
+
+      {/*
+       * TODO: 添加重建对比图
+       * 来源：服务器上 vae_color/test_img/test_90.png（或其他最近的 epoch）
+       * 放入：public/vae-images/vae-color-reconstruction.png
+       */}
+      <figure className="my-8">
+        <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800 border-2 border-dashed border-zinc-300 dark:border-zinc-700 p-12 flex items-center justify-center">
+          <div className="text-center">
+            <span className="text-4xl mb-3 block">🖼️</span>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
+              {lang === "zh"
+                ? "📌 待添加：重建对比图"
+                : "📌 TODO: Reconstruction comparison image"}
+            </p>
+            <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1 font-mono">
+              {lang === "zh"
+                ? "来源: vae_color/test_img/ → public/vae-images/vae-color-reconstruction.png"
+                : "Source: vae_color/test_img/ → public/vae-images/vae-color-reconstruction.png"}
+            </p>
+          </div>
+        </div>
+        <figcaption className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">
+          {c.visual_recon_caption}
+        </figcaption>
+      </figure>
+
+      {/*
+       * TODO: 添加随机生成彩色数字网格图
+       * 来源：服务器上 vae_color/out_img/epochs_90.png
+       * 放入：public/vae-images/vae-color-generation.png
+       */}
+      <figure className="my-8">
+        <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800 border-2 border-dashed border-zinc-300 dark:border-zinc-700 p-12 flex items-center justify-center">
+          <div className="text-center">
+            <span className="text-4xl mb-3 block">🎨</span>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
+              {lang === "zh"
+                ? "📌 待添加：随机生成彩色数字网格"
+                : "📌 TODO: Generated color digit grid"}
+            </p>
+            <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1 font-mono">
+              {lang === "zh"
+                ? "来源: vae_color/out_img/ → public/vae-images/vae-color-generation.png"
+                : "Source: vae_color/out_img/ → public/vae-images/vae-color-generation.png"}
+            </p>
+          </div>
+        </div>
+        <figcaption className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">
+          {c.visual_gen_caption}
+        </figcaption>
+      </figure>
+
+      <div className="mt-6 p-5 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-800">
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200" dangerouslySetInnerHTML={{ __html: c.visual_note }} />
+      </div>
+
+      {/* ═══ 总结与回顾 ═══ */}
       <h2>{c.h2_summary}</h2>
       <p>{c.summary_p1}</p>
 
       <h3>{c.summary_h3_debug}</h3>
-      <p>{c.summary_debug_p1}</p>
+      <p dangerouslySetInnerHTML={{ __html: c.summary_debug_p1 }} />
       <p dangerouslySetInnerHTML={{ __html: c.summary_debug_p2 }} />
 
       <h3>{c.summary_h3_toolkit}</h3>
@@ -876,8 +1045,37 @@ grad_ema = 0.9 * grad_ema + 0.1 * total_norm                            # 更新
       <p dangerouslySetInnerHTML={{ __html: c.summary_next_p1 }} />
       <p>{c.summary_next_p2}</p>
 
-      {/* 下一篇导航卡片 */}
-      <div className="mt-12 mb-10">
+      {/* 下一步学习方向卡片 */}
+      <div className="mt-8 mb-10 grid md:grid-cols-2 gap-4">
+        {[
+          { icon: "🧬", title: lang === "zh" ? "条件生成 CVAE" : "Conditional Generation CVAE", desc: lang === "zh" ? "加入标签条件，指定生成某个数字——从随机到可控" : "Add label conditioning for class-specific generation", href: "/blog/vae-3-cvae" },
+          { icon: "🔬", title: lang === "zh" ? "β-VAE 解耦表示" : "β-VAE Disentangled Representation", desc: lang === "zh" ? "增强潜在空间的可解释性，每个维度控制独立特征" : "Enhance latent space disentanglement", href: "#" },
+          { icon: "💎", title: lang === "zh" ? "VQ-VAE 离散潜在空间" : "VQ-VAE Discrete Latent Space", desc: lang === "zh" ? "离散编码替代连续向量，更高质量生成" : "Discrete encoding for higher quality generation", href: "#" },
+          { icon: "🌊", title: lang === "zh" ? "扩散模型入门" : "Intro to Diffusion Models", desc: lang === "zh" ? "从 VAE 到 DDPM——生成模型的下一步进化" : "From VAE to DDPM — next evolution of generative models", href: "#" },
+        ].map((item, i) => (
+          <Link
+            key={i}
+            href={item.href}
+            className="group relative p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-400 dark:hover:border-indigo-600 bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-900 dark:to-zinc-950 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-0.5"
+          >
+            <div className="flex items-start gap-4">
+              <span className="text-3xl group-hover:scale-110 transition-transform duration-300">{item.icon}</span>
+              <div>
+                <h4 className="text-base font-bold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-1">{item.title}</h4>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">{item.desc}</p>
+              </div>
+            </div>
+            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+              <svg className="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* 下一篇导航 */}
+      <div className="mt-8 mb-10">
         <Link
           href="/blog/vae-3-cvae"
           className="group block p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-r from-purple-50 via-indigo-50 to-blue-50 dark:from-purple-950/30 dark:via-indigo-950/30 dark:to-blue-950/30 hover:border-indigo-400 dark:hover:border-indigo-600 transition-all duration-500 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1"
@@ -891,7 +1089,7 @@ grad_ema = 0.9 * grad_ema + 0.1 * total_norm                            # 更新
                 {lang === "zh" ? "VAE 学习笔记（三）：条件生成 CVAE" : "VAE Notes (3): Conditional Generation with CVAE"}
               </h3>
               <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                {lang === "zh" ? "在 VAE 中加入标签条件，实现指定类别的图像生成——从「随机画数字」到「按需画特定的数字」。" : "Adding label conditioning to VAE for class-specific generation — from random digit drawing to on-demand specific digits."}
+                {lang === "zh" ? "在 VAE 中加入标签条件，实现指定类别的图像生成——从「随机画数字」到「按需画特定的数字」。" : "Adding label conditioning for class-specific generation — from random digit drawing to on-demand specific digits."}
               </p>
             </div>
             <div className="shrink-0 ml-6 w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center group-hover:bg-indigo-200 dark:group-hover:bg-indigo-800 transition-colors">
@@ -903,7 +1101,7 @@ grad_ema = 0.9 * grad_ema + 0.1 * total_norm                            # 更新
         </Link>
       </div>
 
-      {/* ── 上一页导航 ── */}
+      {/* 上一篇导航 */}
       <div className="mb-10">
         <Link
           href="/blog/vae-1-introduction"
@@ -927,38 +1125,14 @@ grad_ema = 0.9 * grad_ema + 0.1 * total_norm                            # 更新
         </Link>
       </div>
 
-      {/* ── 参考资源 ── */}
+      {/* ═══ 参考资源 ═══ */}
       <h2>{c.h2_ref}</h2>
       <div className="mt-6 space-y-3">
         {[
-          {
-            icon: "💻",
-            title: "vae_color",
-            desc: lang === "zh" ? "本文所有代码与实验记录" : "All code and experiment logs for this article",
-            href: "https://github.com/Muanyan-mjq/The_simple_vae",
-            external: true,
-          },
-          {
-            icon: "📝",
-            title: lang === "zh" ? "VAE 学习笔记（一）：从直觉到实现" : "VAE Notes (1): From Intuition to Implementation",
-            desc: lang === "zh" ? "本篇的前置阅读" : "Prerequisite reading for this article",
-            href: `${BASE_PATH}/blog/vae-1-introduction`,
-            external: false,
-          },
-          {
-            icon: "📋",
-            title: "EXPERIMENT_LOG.md / CHANGELOG.md",
-            desc: lang === "zh" ? "4 次实验的完整 loss 数据与 57 条修改记录" : "Complete loss data for 4 experiments and 57 change records",
-            href: "https://github.com/Muanyan-mjq/The_simple_vae",
-            external: true,
-          },
-          {
-            icon: "📄",
-            title: "Kingma & Welling, Auto-Encoding Variational Bayes, 2013",
-            desc: lang === "zh" ? "VAE 原始论文" : "Original VAE paper",
-            href: "https://arxiv.org/abs/1312.6114",
-            external: true,
-          },
+          { icon: "💻", title: "vae_color", desc: lang === "zh" ? "本文所有代码与实验记录" : "All code and experiment logs", href: "https://github.com/Muanyan-mjq/The_simple_vae", external: true },
+          { icon: "📝", title: lang === "zh" ? "VAE 学习笔记（一）：从直觉到实现" : "VAE Notes (1): From Intuition to Implementation", desc: lang === "zh" ? "本篇的前置阅读" : "Prerequisite reading", href: `${BASE_PATH}/blog/vae-1-introduction`, external: false },
+          { icon: "📋", title: "EXPERIMENT_LOG.md / CHANGELOG.md", desc: lang === "zh" ? "4 次实验的完整数据与 57 条修改记录" : "Complete experiment data and 57 change records", href: "https://github.com/Muanyan-mjq/The_simple_vae", external: true },
+          { icon: "📄", title: "Kingma & Welling, Auto-Encoding Variational Bayes, 2013", desc: lang === "zh" ? "VAE 原始论文" : "Original VAE paper", href: "https://arxiv.org/abs/1312.6114", external: true },
         ].map((item, i) => (
           <a
             key={i}
@@ -969,9 +1143,7 @@ grad_ema = 0.9 * grad_ema + 0.1 * total_norm                            # 更新
           >
             <span className="text-2xl">{item.icon}</span>
             <div className="flex-1 min-w-0">
-              <p className="text-lg font-semibold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">
-                {item.title}
-              </p>
+              <p className="text-lg font-semibold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">{item.title}</p>
               <p className="text-sm text-zinc-500 dark:text-zinc-400">{item.desc}</p>
             </div>
             <svg className="w-5 h-5 text-zinc-400 group-hover:text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
