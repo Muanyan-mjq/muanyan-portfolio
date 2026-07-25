@@ -6,6 +6,7 @@ export interface BlogPost {
   updated?: string;       // 最后更新日期
   tags: string[];
   category: "learning" | "project" | "algorithm" | "reading" | "indie";
+  categoryColor?: string;   // 覆盖分类默认颜色（Tailwind gradient）
   series?: {
     name: { zh: string; en: string };
     order: number;        // 第几篇
@@ -123,6 +124,7 @@ export const blogPosts: BlogPost[] = [
     date: "2026-07-18",
     tags: ["Hermes Agent", "QQ Bot", "微信", "OCR", "EasyOCR", "DeepSeek", "灵感产物"],
     category: "indie",
+    categoryColor: "from-[#0606b4] to-[#4a4ef0]",
     cover: { gradient: "from-[#0606b4] via-[#2a2ad6] to-[#4a4ef0]", icon: "🤖", image: "/hermes-cover.png" },
     readingTime: 25,
     prerequisites: [
