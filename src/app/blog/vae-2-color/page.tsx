@@ -981,39 +981,11 @@ grad_ema = 0.9 * grad_ema + 0.1 * total_norm                            # 更新
 
       {/* ═══ 生成效果 ═══ */}
       <h2>{c.h2_visual}</h2>
-      <p>{c.visual_p1}</p>
-
-      {/* 重建对比图已移至文章开头 */}
-
-      {/*
-       * TODO: 添加随机生成彩色数字网格图
-       * 来源：服务器上 vae_color/out_img/epochs_90.png
-       * 放入：public/vae-images/vae-color-generation.png
-       */}
-      <figure className="my-8">
-        <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800 border-2 border-dashed border-zinc-300 dark:border-zinc-700 p-12 flex items-center justify-center">
-          <div className="text-center">
-            <span className="text-4xl mb-3 block">🎨</span>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
-              {lang === "zh"
-                ? "📌 待添加：随机生成彩色数字网格"
-                : "📌 TODO: Generated color digit grid"}
-            </p>
-            <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1 font-mono">
-              {lang === "zh"
-                ? "来源: vae_color/out_img/ → public/vae-images/vae-color-generation.png"
-                : "Source: vae_color/out_img/ → public/vae-images/vae-color-generation.png"}
-            </p>
-          </div>
-        </div>
-        <figcaption className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">
-          {c.visual_gen_caption}
-        </figcaption>
-      </figure>
-
-      <div className="mt-6 p-5 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-800">
-        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200" dangerouslySetInnerHTML={{ __html: c.visual_note }} />
-      </div>
+      <p>
+        {lang === "zh"
+          ? "实验 #3（latent=16, β=0.05, 按类染色）的重建效果已展示在文章开头。VAE 生成的全新彩色数字网格将在 GPU 服务器训练后补充。"
+          : "Reconstruction results for Experiment #3 (latent=16, β=0.05, per-class coloring) are shown at the top of this article. Generated color digit grids from random sampling will be added after GPU training."}
+      </p>
 
       {/* ═══ 总结与回顾 ═══ */}
       <h2>{c.h2_summary}</h2>
