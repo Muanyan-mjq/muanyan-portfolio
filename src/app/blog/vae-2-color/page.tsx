@@ -263,7 +263,7 @@ const content = {
   en: {
     h2_motivation: "Why Color?",
     motivation_p1: "In the first article, we used VAE to generate grayscale handwritten digits — 784 pixels, each with a single intensity value. But most real-world images are in color: traffic lights, medical scans, natural landscapes — color itself carries important information.",
-    motivation_p2: "The leap from grayscale to color seems simple (1 channel → 3 channels), but it triggers a cascade of new questions: <strong>How should the model architecture change? Is the loss function still suitable? How do we make the model learn the right colors?</strong>",
+    motivation_p2: "The leap from grayscale to color seems simple (1 channel → 3 channels), but it triggers a cascade of new questions: <strong>How should the model architecture change? Does the loss function still hold up? How do we make the model learn the right colors?</strong>",
     motivation_p3: "This article documents the full process of extending grayscale VAE to color generation — including an unexpected failure, root cause analysis, and the optimization toolkit that emerged from it.",
 
     h2_arch: "Architecture Upgrade: From Grayscale to Color",
@@ -280,7 +280,7 @@ const content = {
     arch_row_conv: "Conv layers",
     arch_row_conv_gray: "2 layers",
     arch_row_conv_color: "3 layers",
-    arch_row_conv_reason: "2 layers stop at 7×7 feature maps; 3 layers reach 4×4 with larger receptive field per point",
+    arch_row_conv_reason: "2 layers stop at 7×7 feature maps; 3 layers go deeper to 4×4, giving each feature point a larger receptive field",
     arch_row_latent: "Latent dims",
     arch_row_latent_gray: "4",
     arch_row_latent_color: "16",
@@ -342,15 +342,15 @@ const content = {
     coloring_p1: "This is the most valuable 'failure' of the entire project — the model ran fine, loss converged normally, but the output was nothing like what we wanted.",
 
     h3_random: "Experiment #1: Random Coloring (val_loss = 302.23)",
-    random_p1: "The initial idea was intuitive: multiply each MNIST image by a random color coefficient (three numbers between 0.3~1.0), producing 'colorful' digits. More variation = better color learning, right?",
+    random_p1: "The initial idea was intuitive: multiply each MNIST image by a random color coefficient (three numbers between 0.3 and 1.0), producing 'colorful' digits. More variation = better color learning, right?",
     random_formula_desc: "Coloring formula:",
     random_p2: "Training ran for 100 epochs, everything looked normal — loss dropped from 640 to 302, KL stabilized at 5~7. Opened the generated images: <strong>all grayscale</strong>. The model adaptively 'learned' to ignore color.",
 
     h3_root: "Root Cause: The Model Did the Math",
     root_p1: "Why ignore color? Not a bug — the <strong>optimal strategy</strong>. Let's do the math:",
     root_li1: "Stroke pixels account for only <strong>~15%</strong> of the image — the remaining 85% is pure black background",
-    root_li2: "BCE difference between grayscale output and correct color: only ~0.14 per stroke pixel",
-    root_li3: "Color signal accounts for <strong>~0.6%</strong> of total loss — model gets far more reduction by improving shape",
+    root_li2: "BCE difference between grayscale output and correct color: only ~0.14 BCE per stroke pixel",
+    root_li3: "Color signal accounts for <strong>~0.6%</strong> of total loss — model achieves far greater loss reduction by improving shape alone",
     root_p2: "Worse: the same digit gets different random colors across epochs. Color has no semantic meaning — it's pure noise. The model's optimal strategy is 'ignore the noise, focus on shape'.",
     root_conclusion: "Core lesson: it's not that 'colors aren't bright enough' — it's that 'color as a signal isn't reliable enough'. Widening the color coefficient range makes colors more vivid without solving the reliability problem.",
 
@@ -425,7 +425,7 @@ const content = {
     train_param_list: "batch_size=256, num_epochs=100, lr=0.001→1e-5, latent_size=16, β=0.05, warmup_epochs=20, patience=10",
 
     h2_visual: "Visual Results",
-    visual_p1: "Reconstruction and generation results from Experiment #3. Left: original colored MNIST (per-class coloring). Right: VAE reconstruction:",
+    visual_p1: "Reconstruction results from Experiment #3 are shown at the top of this article. Generated color digit grids from random sampling will be added after GPU training.",
     visual_recon_caption: "▲ Reconstruction: top row = original colored MNIST, bottom row = VAE reconstruction (Experiment #3, latent=16, β=0.05)",
     visual_gen_caption: "▲ Random generation: sampling latent vectors from N(0,1), decoded into novel color digit images",
     visual_note: "Note: these images need to be generated from the server. Run <code>python vae_test.py</code> (restore pure VAE weights first). Output goes to <code>test_img/</code> and <code>sample_img/</code>. Or use the auto-saved images from Experiment #3 training at <code>out_img/epochs_*.png</code> and <code>test_img/test_*.png</code>.",
