@@ -38,7 +38,7 @@ const content = {
     trainDesc: "100 轮训练，MSE + KL 散度联合优化。Loss 从 50+ 稳步降至 30 以下，编码器学会高效表示，解码器学会精准还原。",
     trainCaption: "▲ 训练 Loss 曲线（MSE + KL 散度）",
     reconTitle: "重建",
-    reconDesc: "上排为原始 MNIST 手写数字，下排为 VAE 经过 90 轮训练后的重建结果。两者几乎无法区分——模型已经学会了数字的"本质特征"。",
+    reconDesc: "上排为原始 MNIST 手写数字，下排为 VAE 经过 90 轮训练后的重建结果。两者几乎无法区分——模型已经学会了数字的「本质特征」。",
     reconCaption: "▲ VAE 重建对比：上排原始，下排重建",
     noteTitle: "关键设计",
     notes: [
