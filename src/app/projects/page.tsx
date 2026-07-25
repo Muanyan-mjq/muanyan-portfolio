@@ -17,26 +17,6 @@ const translations = {
     subtitle: "个人项目与实验作品。",
     projects: [
       {
-        title: "VAE 灰度数字生成",
-        desc: "从零开始理解变分自编码器——编码器/解码器架构、重参数化技巧、ELBO 损失函数。100 轮训练，从噪声到清晰数字的全过程。",
-        tag: "深度学习",
-        icon: "vae-bw",
-        link: "/projects/vae-gray",
-      },
-      {
-        title: "VAE 彩色图像与优化",
-        desc: "一次经典调试：随机染色失败→根因分析→按类修复→loss 降 25.6%。BCE、β-VAE、KL 预热、余弦退火——完整训练优化工具箱。",
-        tag: "深度学习",
-        icon: "vae-color",
-        link: "/projects/vae-color",
-      },
-      {
-        title: "Flask 智能课表助手",
-        desc: "基于 Flask + Ollama 本地大模型的智能课表管理工具，支持自然语言指令增删查改课表。",
-        tag: "网页应用",
-        icon: "📅",
-      },
-      {
         title: "随心耶",
         desc: "日记书写 + 专注计时 + 塔罗/八字/星座，Flutter 开发的个人 App。",
         tag: "独立开发",
@@ -50,6 +30,26 @@ const translations = {
         icon: "deepseek-monitor",
         link: "/projects/deepseek-monitor",
       },
+      {
+        title: "VAE 灰度数字生成",
+        desc: "从零理解变分自编码器：Encoder/Decoder 架构、重参数化、ELBO 损失。100 轮训练全记录。",
+        tag: "深度学习",
+        icon: "vae-bw",
+        link: "/blog/vae-1-introduction",
+      },
+      {
+        title: "VAE 彩色图像与优化",
+        desc: "一次经典调试：随机染色失败→根因分析→按类修复→loss 降 25.6%。完整训练优化工具箱。",
+        tag: "深度学习",
+        icon: "vae-color",
+        link: "/blog/vae-2-color",
+      },
+      {
+        title: "Flask 智能课表助手",
+        desc: "基于 Flask + Ollama 本地大模型的智能课表管理工具，支持自然语言指令增删查改课表。",
+        tag: "网页应用",
+        icon: "📅",
+      },
     ],
   },
   en: {
@@ -57,26 +57,6 @@ const translations = {
     title: "Projects",
     subtitle: "Personal projects and experimental works.",
     projects: [
-      {
-        title: "VAE Grayscale Digit Generation",
-        desc: "Understanding VAE from scratch: encoder-decoder architecture, reparameterization trick, ELBO loss. Full 100-epoch training journey from noise to clear digits.",
-        tag: "Deep Learning",
-        icon: "vae-bw",
-        link: "/projects/vae-gray",
-      },
-      {
-        title: "VAE Color Images & Optimization",
-        desc: "A classic debugging story: random coloring failure → root cause analysis → per-class fix → 25.6% loss reduction. Full optimization toolkit included.",
-        tag: "Deep Learning",
-        icon: "vae-color",
-        link: "/projects/vae-color",
-      },
-      {
-        title: "Flask Smart Timetable Assistant",
-        desc: "A smart timetable management tool based on Flask + Ollama local LLM, supporting natural language commands for CRUD operations.",
-        tag: "Web App",
-        icon: "📅",
-      },
       {
         title: "Flowdiary",
         desc: "A personal app with journaling, focus timer, and Tarot / BaZi / Zodiac. Built with Flutter.",
@@ -90,6 +70,26 @@ const translations = {
         tag: "Desktop App",
         icon: "deepseek-monitor",
         link: "/projects/deepseek-monitor",
+      },
+      {
+        title: "VAE Grayscale Digit Generation",
+        desc: "Understanding VAE from scratch: encoder-decoder architecture, reparameterization trick, ELBO loss. Full training log.",
+        tag: "Deep Learning",
+        icon: "vae-bw",
+        link: "/blog/vae-1-introduction",
+      },
+      {
+        title: "VAE Color Images & Optimization",
+        desc: "A classic debugging story: random coloring failure → root cause → per-class fix → 25.6% loss reduction.",
+        tag: "Deep Learning",
+        icon: "vae-color",
+        link: "/blog/vae-2-color",
+      },
+      {
+        title: "Flask Smart Timetable Assistant",
+        desc: "A smart timetable management tool based on Flask + Ollama local LLM, supporting natural language commands for CRUD operations.",
+        tag: "Web App",
+        icon: "📅",
       },
     ],
   },

@@ -648,11 +648,11 @@ export default function Home() {
           </AnimatedSection>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {[
-              { id: "01", title: T.projVAETitle, desc: T.projVAEDesc, tag: T.tagDL, icon: "vae-bw", link: "/projects/vae-gray" },
-              { id: "02", title: T.projColorTitle, desc: T.projColorDesc, tag: T.tagDL, icon: "vae-color", link: "/projects/vae-color" },
-              { id: "03", title: T.projFlaskTitle, desc: T.projFlaskDesc, tag: T.tagWeb, icon: "📅" },
-              { id: "04", title: T.projSXYTitle, desc: T.projSXYDesc, tag: T.tagSolo, icon: "sui_xin_ye", link: "/projects/flowdiary" },
-              { id: "05", title: T.projDSMTitle, desc: T.projDSMDesc, tag: T.tagDesktop, icon: "deepseek-monitor", link: "/projects/deepseek-monitor" },
+              { id: "01", title: T.projSXYTitle, desc: T.projSXYDesc, tag: T.tagSolo, icon: "sui_xin_ye", link: "/projects/flowdiary" },
+              { id: "02", title: T.projDSMTitle, desc: T.projDSMDesc, tag: T.tagDesktop, icon: "deepseek-monitor", link: "/projects/deepseek-monitor" },
+              { id: "03", title: T.projVAETitle, desc: T.projVAEDesc, tag: T.tagDL, icon: "vae-bw", link: "/blog/vae-1-introduction" },
+              { id: "04", title: T.projColorTitle, desc: T.projColorDesc, tag: T.tagDL, icon: "vae-color", link: "/blog/vae-2-color" },
+              { id: "05", title: T.projFlaskTitle, desc: T.projFlaskDesc, tag: T.tagWeb, icon: "📅" },
             ].map((project, index) => {
               const isVAEBW = project.icon === "vae-bw";
               const isVAEColor = project.icon === "vae-color";
