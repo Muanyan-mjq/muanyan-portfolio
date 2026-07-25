@@ -27,7 +27,7 @@ const translations = {
     school: "School",
     schoolName: "Hubei Polytechnic University",
     major: "Major",
-    majorName: "Computer Science and Technology (Outstanding Engineer Pilot Class)",
+    majorName: "Computer Science and Technology (Honors Engineer Program)",
     graduationYear: "Graduation",
     graduationYearValue: "2029",
     skills: "Skills",

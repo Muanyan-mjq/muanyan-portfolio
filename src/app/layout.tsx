@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LanguageProvider } from "@/components/language-context";
+import { HtmlLangSync } from "@/components/html-lang-sync";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import "./globals.css";
@@ -63,6 +64,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col antialiased bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
         <ThemeProvider>
           <LanguageProvider>
+            <HtmlLangSync />
             <Navbar />
             <main className="flex-1">{children}</main>
             <Footer />
