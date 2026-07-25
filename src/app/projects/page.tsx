@@ -17,18 +17,18 @@ const translations = {
     subtitle: "个人项目与实验作品。",
     projects: [
       {
-        title: "VAE 原理学习与可视化",
-        desc: "VAE 原理学习与可视化实验，理解变分自编码器的编码-解码过程。掌握 ELBO 损失函数和重参数化技巧。",
+        title: "VAE 灰度数字生成",
+        desc: "从零开始理解变分自编码器——编码器/解码器架构、重参数化技巧、ELBO 损失函数。100 轮训练，从噪声到清晰数字的全过程。",
         tag: "深度学习",
         icon: "vae-bw",
-        link: "/projects/vae",
+        link: "/projects/vae-gray",
       },
       {
-        title: "VAE 彩色图像优化",
-        desc: "在基础 VAE 上进行彩色图像生成优化，提升重建质量。实验不同网络结构和损失函数的组合效果。",
+        title: "VAE 彩色图像与优化",
+        desc: "一次经典调试：随机染色失败→根因分析→按类修复→loss 降 25.6%。BCE、β-VAE、KL 预热、余弦退火——完整训练优化工具箱。",
         tag: "深度学习",
         icon: "vae-color",
-        link: "/projects/vae",
+        link: "/projects/vae-color",
       },
       {
         title: "Flask 智能课表助手",
@@ -58,18 +58,18 @@ const translations = {
     subtitle: "Personal projects and experimental works.",
     projects: [
       {
-        title: "VAE Understanding & Visualization",
-        desc: "Learning VAE principles through visualization experiments. Mastering the encoder-decoder process, ELBO loss function, and reparameterization trick.",
+        title: "VAE Grayscale Digit Generation",
+        desc: "Understanding VAE from scratch: encoder-decoder architecture, reparameterization trick, ELBO loss. Full 100-epoch training journey from noise to clear digits.",
         tag: "Deep Learning",
         icon: "vae-bw",
-        link: "/projects/vae",
+        link: "/projects/vae-gray",
       },
       {
-        title: "VAE Color Image Optimization",
-        desc: "Optimizing color image generation on top of the basic VAE to improve reconstruction quality. Experimenting with different network architectures and loss function combinations.",
+        title: "VAE Color Images & Optimization",
+        desc: "A classic debugging story: random coloring failure → root cause analysis → per-class fix → 25.6% loss reduction. Full optimization toolkit included.",
         tag: "Deep Learning",
         icon: "vae-color",
-        link: "/projects/vae",
+        link: "/projects/vae-color",
       },
       {
         title: "Flask Smart Timetable Assistant",

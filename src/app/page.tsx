@@ -43,9 +43,9 @@ const t = {
     awardPhotoGuide: "将照片放入 public/awards/ 目录后更新 awards 数组中的 image 路径",
     // 项目
     projVAETitle: "VAE 原理学习与可视化",
-    projVAEDesc: "VAE 原理学习与可视化实验，理解变分自编码器的编码-解码过程。",
-    projColorTitle: "VAE 彩色图像优化",
-    projColorDesc: "在基础 VAE 上进行彩色图像生成优化，提升重建质量。",
+    projVAEDesc: "从零理解变分自编码器：Encoder/Decoder 架构、重参数化、ELBO 损失。100 轮训练全记录。",
+    projColorTitle: "VAE 彩色图像与优化",
+    projColorDesc: "一次经典调试：随机染色失败→根因分析→按类修复→loss 降 25.6%。",
     projFlaskTitle: "Flask 智能课表助手",
     projFlaskDesc: "基于 Flask + Ollama 本地大模型的智能课表管理工具。",
     projSXYTitle: "随心耶",
@@ -94,9 +94,9 @@ const t = {
     awardPhotoGuide: "Place photos in public/awards/ and update the image path in the awards array",
     // 项目
     projVAETitle: "VAE Understanding & Visualization",
-    projVAEDesc: "VAE principles and visualization experiments, understanding the encoder-decoder process.",
-    projColorTitle: "VAE Color Image Optimization",
-    projColorDesc: "Optimizing color image generation on top of basic VAE, improving reconstruction quality.",
+    projVAEDesc: "Understanding VAE from scratch: Encoder/Decoder architecture, reparameterization, ELBO loss. Full training log.",
+    projColorTitle: "VAE Color Images & Optimization",
+    projColorDesc: "A classic debugging story: random coloring failure → root cause → per-class fix → 25.6% loss reduction.",
     projFlaskTitle: "Flask Smart Timetable Assistant",
     projFlaskDesc: "An intelligent timetable management tool built with Flask + Ollama local LLM.",
     projSXYTitle: "Flowdiary",
@@ -648,8 +648,8 @@ export default function Home() {
           </AnimatedSection>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {[
-              { id: "01", title: T.projVAETitle, desc: T.projVAEDesc, tag: T.tagDL, icon: "vae-bw" },
-              { id: "02", title: T.projColorTitle, desc: T.projColorDesc, tag: T.tagDL, icon: "vae-color" },
+              { id: "01", title: T.projVAETitle, desc: T.projVAEDesc, tag: T.tagDL, icon: "vae-bw", link: "/projects/vae-gray" },
+              { id: "02", title: T.projColorTitle, desc: T.projColorDesc, tag: T.tagDL, icon: "vae-color", link: "/projects/vae-color" },
               { id: "03", title: T.projFlaskTitle, desc: T.projFlaskDesc, tag: T.tagWeb, icon: "📅" },
               { id: "04", title: T.projSXYTitle, desc: T.projSXYDesc, tag: T.tagSolo, icon: "sui_xin_ye", link: "/projects/flowdiary" },
               { id: "05", title: T.projDSMTitle, desc: T.projDSMDesc, tag: T.tagDesktop, icon: "deepseek-monitor", link: "/projects/deepseek-monitor" },
