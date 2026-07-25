@@ -691,6 +691,20 @@ export default function VAEPost2() {
       <p dangerouslySetInnerHTML={{ __html: c.motivation_p2 }} />
       <p>{c.motivation_p3}</p>
 
+      {/* 效果图 */}
+      <figure className="my-8">
+        <img
+          src={`${BASE_PATH}/vae-images/vae-color-reconstruction.png`}
+          alt={lang === "zh" ? "VAE 重建对比：上排原始彩色 MNIST，下排 VAE 重建" : "VAE reconstruction: top original colored MNIST, bottom VAE reconstruction"}
+          className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800"
+        />
+        <figcaption className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">
+          {lang === "zh"
+            ? "▲ 最终效果：上排为按类染色的原始 MNIST，下排为 VAE 重建输出"
+            : "▲ Final result: top row = per-class colored MNIST, bottom row = VAE reconstruction output"}
+        </figcaption>
+      </figure>
+
       {/* ═══ 架构升级 ═══ */}
       <h2>{c.h2_arch}</h2>
       <p>{c.arch_p1}</p>
@@ -969,31 +983,7 @@ grad_ema = 0.9 * grad_ema + 0.1 * total_norm                            # 更新
       <h2>{c.h2_visual}</h2>
       <p>{c.visual_p1}</p>
 
-      {/*
-       * TODO: 添加重建对比图
-       * 来源：服务器上 vae_color/test_img/test_90.png（或其他最近的 epoch）
-       * 放入：public/vae-images/vae-color-reconstruction.png
-       */}
-      <figure className="my-8">
-        <div className="rounded-xl bg-zinc-100 dark:bg-zinc-800 border-2 border-dashed border-zinc-300 dark:border-zinc-700 p-12 flex items-center justify-center">
-          <div className="text-center">
-            <span className="text-4xl mb-3 block">🖼️</span>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
-              {lang === "zh"
-                ? "📌 待添加：重建对比图"
-                : "📌 TODO: Reconstruction comparison image"}
-            </p>
-            <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1 font-mono">
-              {lang === "zh"
-                ? "来源: vae_color/test_img/ → public/vae-images/vae-color-reconstruction.png"
-                : "Source: vae_color/test_img/ → public/vae-images/vae-color-reconstruction.png"}
-            </p>
-          </div>
-        </div>
-        <figcaption className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">
-          {c.visual_recon_caption}
-        </figcaption>
-      </figure>
+      {/* 重建对比图已移至文章开头 */}
 
       {/*
        * TODO: 添加随机生成彩色数字网格图
