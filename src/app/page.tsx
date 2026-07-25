@@ -654,46 +654,33 @@ export default function Home() {
               { id: "04", title: T.projColorTitle, desc: T.projColorDesc, tag: T.tagDL, icon: "vae-color", link: "/blog/vae-2-color" },
               { id: "05", title: T.projFlaskTitle, desc: T.projFlaskDesc, tag: T.tagWeb, icon: "📅" },
             ].map((project, index) => {
-              const isVAEBW = project.icon === "vae-bw";
-              const isVAEColor = project.icon === "vae-color";
-
               const cardContent = (
-                <div className="h-full bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 overflow-hidden">
-                  {(isVAEBW || isVAEColor) ? (
-                    <div className="w-full h-40 overflow-hidden bg-zinc-100 dark:bg-zinc-800">
-                      <img
-                        src={`${BASE_PATH}/vae-images/${isVAEBW ? "vae-reconstruction.jpg" : "vae-color-reconstruction.png"}`}
-                        alt=""
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  )}
-                  <div className={isVAEBW || isVAEColor ? "p-5 sm:p-6" : "p-5 sm:p-8"}>
-                    <div className="flex items-start justify-between mb-3 sm:mb-4">
-                      {isVAEBW ? (
-                        <VAEIcon size="sm" className="grayscale" />
-                      ) : isVAEColor ? (
-                        <VAEIcon size="sm" />
-                      ) : project.icon === "sui_xin_ye" ? (
-                        <img src={`${BASE_PATH}/sui_xin_ye_icon.png`} alt="随心耶" className="w-12 h-12 rounded-xl object-contain" />
-                      ) : project.icon === "deepseek-monitor" ? (
-                        <img src={`${BASE_PATH}/deepseek-monitor/deepseek-color.png`} alt="DeepSeek Monitor" className="w-10 h-10 rounded-xl object-contain" />
-                      ) : (
-                        <span className="text-3xl">{project.icon}</span>
-                      )}
-                      <span className="px-3 py-1.5 text-xs font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full">
-                        {project.tag}
-                      </span>
-                    </div>
-                    <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2 sm:mb-3">
-                      {project.title}
-                    </h3>
-                    <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm">
-                      {project.desc}
-                    </p>
+                <div className="h-full p-5 sm:p-8 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1">
+                  <div className="w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full mb-6 sm:mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="flex items-start justify-between mb-4 sm:mb-6">
+                    {project.icon === "vae-bw" ? (
+                      <VAEIcon size="lg" className="grayscale" />
+                    ) : project.icon === "vae-color" ? (
+                      <VAEIcon size="lg" />
+                    ) : project.icon === "sui_xin_ye" ? (
+                      <img src={`${BASE_PATH}/sui_xin_ye_icon.png`} alt="随心耶" className="w-20 h-20 rounded-xl object-contain" />
+                    ) : project.icon === "deepseek-monitor" ? (
+                      <div className="h-20 flex items-center">
+                        <img src={`${BASE_PATH}/deepseek-monitor/deepseek-color.png`} alt="DeepSeek Monitor" className="w-16 h-16 rounded-xl object-contain" />
+                      </div>
+                    ) : (
+                      <span className="text-4xl sm:text-5xl">{project.icon}</span>
+                    )}
+                    <span className="px-3 py-1.5 text-xs font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full">
+                      {project.tag}
+                    </span>
                   </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-3 sm:mb-4">
+                    {project.title}
+                  </h3>
+                  <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm sm:text-base">
+                    {project.desc}
+                  </p>
                 </div>
               );
 
