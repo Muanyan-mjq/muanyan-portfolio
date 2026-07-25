@@ -43,9 +43,9 @@ const t = {
     awardPhotoGuide: "将照片放入 public/awards/ 目录后更新 awards 数组中的 image 路径",
     // 项目
     projVAETitle: "VAE 原理学习与可视化",
-    projVAEDesc: "从零理解变分自编码器：Encoder/Decoder 架构、重参数化、ELBO 损失。100 轮训练全记录。",
+    projVAEDesc: "784 像素 → 4 维向量，压缩比 196:1。从数学推导到代码实现，跑通第一个生成模型。",
     projColorTitle: "VAE 彩色图像与优化",
-    projColorDesc: "一次经典调试：随机染色失败→根因分析→按类修复→loss 降 25.6%。",
+    projColorDesc: "输出全灰不是 bug——颜色信号只占 loss 的 0.6%，模型算了账。一次经典调试，附完整训练优化工具箱。",
     projFlaskTitle: "Flask 智能课表助手",
     projFlaskDesc: "基于 Flask + Ollama 本地大模型的智能课表管理工具。",
     projSXYTitle: "随心耶",
@@ -94,9 +94,9 @@ const t = {
     awardPhotoGuide: "Place photos in public/awards/ and update the image path in the awards array",
     // 项目
     projVAETitle: "VAE Understanding & Visualization",
-    projVAEDesc: "Understanding VAE from scratch: Encoder/Decoder architecture, reparameterization, ELBO loss. Full training log.",
+    projVAEDesc: "784 pixels → 4 numbers. 196:1 compression. From math to code — building a generative model that actually works.",
     projColorTitle: "VAE Color Images & Optimization",
-    projColorDesc: "A classic debugging story: random coloring failure → root cause → per-class fix → 25.6% loss reduction.",
+    projColorDesc: "All-gray output wasn't a bug — color accounted for 0.6% of the loss. The model did the math. A debugging deep-dive with full optimization toolkit.",
     projFlaskTitle: "Flask Smart Timetable Assistant",
     projFlaskDesc: "An intelligent timetable management tool built with Flask + Ollama local LLM.",
     projSXYTitle: "Flowdiary",

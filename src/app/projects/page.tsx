@@ -32,14 +32,14 @@ const translations = {
       },
       {
         title: "VAE 灰度数字生成",
-        desc: "从零理解变分自编码器：Encoder/Decoder 架构、重参数化、ELBO 损失。100 轮训练全记录。",
+        desc: "784 像素 → 4 维向量，压缩比 196:1。从数学推导到代码实现，跑通第一个生成模型。",
         tag: "深度学习",
         icon: "vae-bw",
         link: "/blog/vae-1-introduction",
       },
       {
         title: "VAE 彩色图像与优化",
-        desc: "一次经典调试：随机染色失败→根因分析→按类修复→loss 降 25.6%。完整训练优化工具箱。",
+        desc: "输出全灰不是 bug——颜色信号只占 loss 的 0.6%，模型算了账。一次经典调试，附完整训练优化工具箱。",
         tag: "深度学习",
         icon: "vae-color",
         link: "/blog/vae-2-color",
@@ -73,14 +73,14 @@ const translations = {
       },
       {
         title: "VAE Grayscale Digit Generation",
-        desc: "Understanding VAE from scratch: encoder-decoder architecture, reparameterization trick, ELBO loss. Full training log.",
+        desc: "784 pixels → 4 numbers. 196:1 compression. From math to code — building a generative model that actually works.",
         tag: "Deep Learning",
         icon: "vae-bw",
         link: "/blog/vae-1-introduction",
       },
       {
         title: "VAE Color Images & Optimization",
-        desc: "A classic debugging story: random coloring failure → root cause → per-class fix → 25.6% loss reduction.",
+        desc: "All-gray output wasn't a bug — color accounted for 0.6% of the loss. The model did the math. A debugging deep-dive with full optimization toolkit.",
         tag: "Deep Learning",
         icon: "vae-color",
         link: "/blog/vae-2-color",
