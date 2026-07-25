@@ -216,7 +216,7 @@ const content = {
     exp_trend_1: "<strong>#1→#2（改染色方式）</strong>：val_loss 302 → 252，↓16.5%。这是最大的一跳——不是改模型、不是调参数，是修正了数据的构造方式。",
     exp_trend_2: "<strong>#2→#3（改架构参数）</strong>：val_loss 252 → 225，↓10.9%。latent_size 翻倍给更大隐空间，β 减半偏向重建精度。",
     exp_trend_3: "<strong>共同特征</strong>：~95% 的学习发生在 KL 预热期（前 20 轮）。预热结束后，后 70 轮的改善不到 6 个 loss 点。训练到 60 轮基本就够用了。",
-    experiments_p3: "完整实验数据（每轮 loss、收敛曲线等）记录在 <a href='https://github.com/Muanyan-mjq/The_simple_vae' target='_blank' rel='noopener noreferrer' class='text-indigo-600 dark:text-indigo-400 hover:underline'>GitHub 仓库</a> 的 <code>EXPERIMENT_LOG.md</code> 中。",
+    experiments_p3: "完整实验数据（每轮 loss、收敛曲线等）记录在 <a href='https://github.com/Muanyan-mjq/vae-color' target='_blank' rel='noopener noreferrer' class='text-indigo-600 dark:text-indigo-400 hover:underline'>GitHub 仓库</a> 的 <code>EXPERIMENT_LOG.md</code> 中。",
 
     // ── 训练代码全貌 ──
     h2_train: "训练代码全貌",
@@ -416,7 +416,7 @@ const content = {
     exp_trend_1: "<strong>#1→#2 (coloring strategy)</strong>: val_loss 302→252, ↓16.5%. The biggest single jump — from fixing data construction, not from changing the model.",
     exp_trend_2: "<strong>#2→#3 (architecture params)</strong>: val_loss 252→225, ↓10.9%. Doubling latent capacity, halving KL weight toward reconstruction.",
     exp_trend_3: "<strong>Common pattern</strong>: ~95% of learning happens during KL warm-up (first 20 epochs). After warm-up, 70+ epochs improve by <6 loss points. Training to 60 epochs is sufficient.",
-    experiments_p3: "Complete experimental data (per-epoch loss, convergence curves) in the <a href='https://github.com/Muanyan-mjq/The_simple_vae' target='_blank' rel='noopener noreferrer' class='text-indigo-600 dark:text-indigo-400 hover:underline'>GitHub repo</a>'s <code>EXPERIMENT_LOG.md</code>.",
+    experiments_p3: "Complete experimental data (per-epoch loss, convergence curves) in the <a href='https://github.com/Muanyan-mjq/vae-color' target='_blank' rel='noopener noreferrer' class='text-indigo-600 dark:text-indigo-400 hover:underline'>GitHub repo</a>'s <code>EXPERIMENT_LOG.md</code>.",
 
     h2_train: "Training Code Overview",
     train_p1: "The complete training loop incorporating all optimizations:",
@@ -1119,9 +1119,9 @@ grad_ema = 0.9 * grad_ema + 0.1 * total_norm                            # 更新
       <h2>{c.h2_ref}</h2>
       <div className="mt-6 space-y-3">
         {[
-          { icon: "💻", title: "vae_color", desc: lang === "zh" ? "本文所有代码与实验记录" : "All code and experiment logs", href: "https://github.com/Muanyan-mjq/The_simple_vae", external: true },
+          { icon: "💻", title: "vae-color", desc: lang === "zh" ? "本文所有代码与实验记录" : "All code and experiment logs", href: "https://github.com/Muanyan-mjq/vae-color", external: true },
           { icon: "📝", title: lang === "zh" ? "VAE 学习笔记（一）：从直觉到实现" : "VAE Notes (1): From Intuition to Implementation", desc: lang === "zh" ? "本篇的前置阅读" : "Prerequisite reading", href: `${BASE_PATH}/blog/vae-1-introduction`, external: false },
-          { icon: "📋", title: "EXPERIMENT_LOG.md / CHANGELOG.md", desc: lang === "zh" ? "4 次实验的完整数据与 57 条修改记录" : "Complete experiment data and 57 change records", href: "https://github.com/Muanyan-mjq/The_simple_vae", external: true },
+          { icon: "📋", title: "EXPERIMENT_LOG.md", desc: lang === "zh" ? "4 次实验的完整数据与 57 条修改记录" : "Complete experiment data and 57 change records", href: "https://github.com/Muanyan-mjq/vae-color", external: true },
           { icon: "📄", title: "Kingma & Welling, Auto-Encoding Variational Bayes, 2013", desc: lang === "zh" ? "VAE 原始论文" : "Original VAE paper", href: "https://arxiv.org/abs/1312.6114", external: true },
         ].map((item, i) => (
           <a
