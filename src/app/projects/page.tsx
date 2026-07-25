@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -21,12 +21,14 @@ const translations = {
         desc: "VAE 原理学习与可视化实验，理解变分自编码器的编码-解码过程。掌握 ELBO 损失函数和重参数化技巧。",
         tag: "深度学习",
         icon: "vae-bw",
+        link: "/projects/vae",
       },
       {
         title: "VAE 彩色图像优化",
         desc: "在基础 VAE 上进行彩色图像生成优化，提升重建质量。实验不同网络结构和损失函数的组合效果。",
         tag: "深度学习",
         icon: "vae-color",
+        link: "/projects/vae",
       },
       {
         title: "Flask 智能课表助手",
@@ -60,12 +62,14 @@ const translations = {
         desc: "Learning VAE principles through visualization experiments. Mastering the encoder-decoder process, ELBO loss function, and reparameterization trick.",
         tag: "Deep Learning",
         icon: "vae-bw",
+        link: "/projects/vae",
       },
       {
         title: "VAE Color Image Optimization",
         desc: "Optimizing color image generation on top of the basic VAE to improve reconstruction quality. Experimenting with different network architectures and loss function combinations.",
         tag: "Deep Learning",
         icon: "vae-color",
+        link: "/projects/vae",
       },
       {
         title: "Flask Smart Timetable Assistant",
