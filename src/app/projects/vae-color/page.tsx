@@ -136,13 +136,13 @@ export default function VAEColorPage() {
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
         {/* Color orbs — light mode: subtle tint; dark mode: vibrant glow */}
         <div className="absolute inset-0 pointer-events-none">
-          {C.map((col, i) => (
+          {C.filter((_, i) => i % 2 === 0).map((col, i) => (
             <div key={i}
-              className="absolute rounded-full blur-[100px] dark:blur-[120px] opacity-[0.06] dark:opacity-[0.12]"
+              className="absolute rounded-full blur-[120px] opacity-[0.04] dark:opacity-[0.08]"
               style={{
                 backgroundColor: col.hex,
-                width: `${180 + i * 25}px`, height: `${180 + i * 25}px`,
-                top: `${10 + (i % 3) * 30}%`, left: `${5 + (i % 4) * 25}%`,
+                width: `${250 + i * 30}px`, height: `${250 + i * 30}px`,
+                top: `${10 + i * 22}%`, left: `${3 + i * 20}%`,
               }}
             />
           ))}
@@ -164,15 +164,15 @@ export default function VAEColorPage() {
               <Reveal delay={100}>
                 {/* Color palette indicator */}
                 <div className="flex items-center gap-1 mb-10">
-                  {C.map((col, i) => (
-                    <div key={i} className="w-5 h-5 rounded-md ring-1 ring-black/5 dark:ring-white/10 transition-transform hover:scale-125" style={{ backgroundColor: col.hex }} title={col.label} />
+                  {C.slice(0, 5).map((col, i) => (
+                    <div key={i} className="w-1.5 h-5 rounded-full transition-transform hover:scale-150" style={{ backgroundColor: col.hex }} title={col.label} />
                   ))}
                   <span className="ml-3 text-[10px] font-semibold tracking-[0.25em] uppercase text-zinc-400 dark:text-zinc-500 border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 rounded-full">{c.tag}</span>
                 </div>
               </Reveal>
               <Reveal delay={200}>
                 <h1 className="text-[clamp(2.8rem,7vw,6rem)] font-black tracking-tighter leading-[0.92] mb-6">
-                  <span className="bg-gradient-to-r from-red-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">{c.heroTitle}</span>
+                  <span className="bg-gradient-to-r from-indigo-600 to-violet-500 dark:from-indigo-300 dark:to-violet-300 bg-clip-text text-transparent">{c.heroTitle}</span>
                 </h1>
               </Reveal>
               <Reveal delay={300}>
@@ -198,7 +198,7 @@ export default function VAEColorPage() {
 
             {/* Right: loss stats */}
             <Reveal delay={600}>
-              <div className="hidden lg:block p-8 rounded-[2rem] bg-zinc-50 dark:bg-white/[0.04] border border-zinc-200 dark:border-white/[0.06]">
+              <div className="hidden lg:block p-8 rounded-[2rem] bg-white dark:bg-[#0a0a12] border border-zinc-200 dark:border-zinc-800 shadow-sm dark:shadow-none">
                 <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-zinc-400 dark:text-zinc-600">{c.statTitle}</span>
                 <div className="mt-6 space-y-4">
                   {c.stats.map((s, i) => (
@@ -214,11 +214,11 @@ export default function VAEColorPage() {
                 </div>
 
                 {/* Mini color swatches */}
-                <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-white/[0.06]">
+                <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
                   <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-400 dark:text-zinc-600 mb-3">Digit → Color</div>
                   <div className="grid grid-cols-5 gap-1.5">
                     {C.map((col, i) => (
-                      <div key={i} className="aspect-square rounded-lg flex items-center justify-center text-[10px] font-bold text-white/80 transition-transform hover:scale-110"
+                      <div key={i} className="aspect-square rounded-md flex items-center justify-center text-[10px] font-bold text-white/90 transition-transform hover:scale-110 shadow-sm"
                         style={{ backgroundColor: col.hex }}>
                         {i}
                       </div>
