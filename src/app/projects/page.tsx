@@ -32,14 +32,14 @@ const translations = {
       },
       {
         title: "VAE 灰度数字生成",
-        desc: "784 像素 → 4 维向量，压缩比 196:1。从数学推导到代码实现，跑通第一个生成模型。",
+        desc: "基于 PyTorch 的变分自编码器实现，在 MNIST 数据集上完成手写数字的重建与生成，附带完整的数学推导与训练过程记录。",
         tag: "深度学习",
         icon: "vae-bw",
         link: "/blog/vae-1-introduction",
       },
       {
         title: "VAE 彩色图像与优化",
-        desc: "输出全灰不是 bug——颜色信号只占 loss 的 0.6%，模型算了账。一次经典调试，附完整训练优化工具箱。",
+        desc: "在灰度 VAE 基础上扩展至 3 通道 RGB，实验按类染色、BCE 损失、β-VAE、KL 预热等优化策略，记录 4 次实验的完整数据。",
         tag: "深度学习",
         icon: "vae-color",
         link: "/blog/vae-2-color",
@@ -73,14 +73,14 @@ const translations = {
       },
       {
         title: "VAE Grayscale Digit Generation",
-        desc: "784 pixels → 4 numbers. 196:1 compression. From math to code — building a generative model that actually works.",
+        desc: "A PyTorch implementation of Variational Autoencoder for MNIST digit reconstruction and generation, with complete mathematical derivations and training logs.",
         tag: "Deep Learning",
         icon: "vae-bw",
         link: "/blog/vae-1-introduction",
       },
       {
         title: "VAE Color Images & Optimization",
-        desc: "All-gray output wasn't a bug — color accounted for 0.6% of the loss. The model did the math. A debugging deep-dive with full optimization toolkit.",
+        desc: "Extending the grayscale VAE to 3-channel RGB, experimenting with per-class coloring, BCE loss, β-VAE, and KL warm-up. Includes data from 4 complete experiments.",
         tag: "Deep Learning",
         icon: "vae-color",
         link: "/blog/vae-2-color",
