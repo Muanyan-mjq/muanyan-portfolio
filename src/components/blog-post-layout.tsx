@@ -264,7 +264,7 @@ export function BlogPostLayout({ children, post, seriesPosts }: BlogPostLayoutPr
                   {/* 分类 + 日期 + 阅读时间 */}
                   <div className="flex items-center gap-3 mb-3 flex-wrap">
                     {cat && (
-                      <span className={`px-3 py-1 text-xs font-semibold bg-gradient-to-r ${cat.color} text-white rounded-full`}>
+                      <span className={`px-3 py-1 text-xs font-semibold bg-gradient-to-r ${post.categoryColor ?? cat.color} text-white rounded-full`}>
                         {cat[lang]}
                       </span>
                     )}
