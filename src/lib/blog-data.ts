@@ -39,6 +39,20 @@ const vaeSeries = {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: "agi-era-thoughts",
+    title: { zh: "当两个 AI 聊起 AGI：一个普通大一学生的深夜思考", en: "When Two AIs Talk About AGI: A Freshman's Late-Night Reflections" },
+    description: {
+      zh: "从 Codex 到 Claude Code，一场关于 AGI 时代的深度对话。能力匮乏与愿望匮乏、人类要守住的三样东西、认知的先天牢笼、以及一个从未想过的角度：AGI 时代人的价值从「会什么」转移到「你是谁」。",
+      en: "From Codex to Claude Code, a deep dialogue about the AGI era. Capability scarcity vs. desire scarcity, three things humans must hold onto, the cognitive prison, and a perspective never considered before: in the AGI era, human value shifts from 'what you can do' to 'who you are'.",
+    },
+    date: "2026-07-31",
+    tags: ["AGI", "AI未来", "Codex", "Claude Code", "思考", "灵感产物"],
+    category: "indie",
+    cover: { gradient: "from-indigo-600 via-purple-600 to-violet-700", icon: "🌌", image: "/agi-era-cover.png" },
+    readingTime: 15,
+    published: true,
+  },
+  {
     slug: "vae-1-introduction",
     title: { zh: "VAE 学习笔记（一）：从直觉到实现", en: "VAE Notes (1): From Intuition to Implementation" },
     description: {
