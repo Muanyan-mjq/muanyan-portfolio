@@ -40,13 +40,13 @@ const vaeSeries = {
 export const blogPosts: BlogPost[] = [
   {
     slug: "agi-era-thoughts",
-    title: { zh: "当两个 AI 聊起 AGI：一个普通大一学生的深夜思考", en: "When Two AIs Talk About AGI: A Freshman's Late-Night Reflections" },
+    title: { zh: "AGI 时代，人类还剩什么？", en: "In the AGI Era, What's Left for Humans?" },
     description: {
-      zh: "从 Codex 到 Claude Code，一场关于 AGI 时代的深度对话。能力匮乏与愿望匮乏、人类要守住的三样东西、认知的先天牢笼、以及一个从未想过的角度：AGI 时代人的价值从「会什么」转移到「你是谁」。",
-      en: "From Codex to Claude Code, a deep dialogue about the AGI era. Capability scarcity vs. desire scarcity, three things humans must hold onto, the cognitive prison, and a perspective never considered before: in the AGI era, human value shifts from 'what you can do' to 'who you are'.",
+      zh: "一场与 Codex 和 Claude Code 的深夜对话。从能力匮乏到愿望匮乏，从守住三样东西到一个从未想过的角度——AGI 时代，人的价值从「会什么」转移到「你是谁」。",
+      en: "A late-night dialogue with Codex and Claude Code. From capability scarcity to desire scarcity, from three things to hold onto to a new perspective — in the AGI era, human value shifts from 'what you can do' to 'who you are'.",
     },
     date: "2026-07-31",
-    tags: ["AGI", "AI未来", "Codex", "Claude Code", "思考", "灵感产物"],
+    tags: ["AGI"],
     category: "indie",
     cover: { gradient: "from-indigo-600 via-purple-600 to-violet-700", icon: "🌌", image: "/agi-era-cover.png" },
     readingTime: 15,
