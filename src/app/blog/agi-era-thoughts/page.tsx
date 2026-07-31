@@ -42,10 +42,9 @@ const content = {
     // ── 三、三样东西 ──
     h2_three: "三、人类要守住的三样东西",
     three_intro: `Codex 问我：「到那个时候，你最想守住的是什么？」`,
-    three_p1: `我几乎是下意识地答了三样：`,
-    three_1: `<strong>独特的想法和见解</strong>——不来自数据，来自「活过」`,
-    three_2: `<strong>不怕犯错的勇气</strong>——AI 被设计成尽量正确；但人可以在重要的事情上犯错，而错误往往是原创性的入口`,
-    three_3: `<strong>独一无二、不被条件约束的审美</strong>——不被生存、市场、评价约束，同时要主动抵抗 AI 平均美的下沉气流`,
+    three_1: `<strong>独特的想法和见解。</strong>AI 的训练数据囊括了人类已有的几乎所有知识——但它没有「活过」。你的经历、你的挫败、你凌晨睡不着想通的那个道理，这些不来自任何数据集。`,
+    three_2: `<strong>不怕犯错的勇气。</strong>AI 的全部设计目标就是少犯错、更稳、更正确。但人是唯一可以在「重要的事情」上主动犯错的生物——敢错，才有资格拥有自己的想法。错误往往是原创性的入口。`,
+    three_3: `<strong>独一无二、不被条件约束的审美。</strong>AI 的审美本质上是统计——训练数据里出现最多的就是「好看的」。但真正的审美不被分数、市场、别人评价框住，同时你要主动对抗那种「大家都觉得好看」的下沉气流，不然它就把你冲走了。`,
     three_p2: `Codex 说这三样其实是同一件事的不同面：<strong>有主体性的人</strong>。`,
     three_p3: `它们的共同特点是——不来自数据，而来自「活过」。AI 可以见过无数风格，但它没被生活逼到墙角过，没在墙角里长出过东西。它可以模拟勇敢，但它没真正害怕过什么，所以也不知道「怕」的另一面是什么味道。`,
     three_p4: `然后 Codex 补了一句我觉得很重要的话：这三样不是「保得住」的静态财产，而是<strong>会退化的能力</strong>。`,
@@ -54,7 +53,7 @@ const content = {
     // ── 四、时间线 ──
     h2_timeline: "四、AGI 什么时候来？",
     timeline_p1: `我自己的判断是：AGI 不太会是一个「某天宣布降临」的事件，而是一条<strong>连续爬升的曲线</strong>。`,
-    timeline_p2: `你现在用的 Codex、Claude Code、Cursor——这些工具放 2022 年就是科幻。但人适应得非常快，三个月后就会觉得「这算什么 AGI」，然后继续等下一个。这种渐进式脱敏才是真正的变化模式。`,
+    timeline_p2: `我们现在用的 Codex、Claude Code、Cursor——这些工具放在 2022 年就是科幻。但人适应得非常快，用上三个月就觉得「这算什么 AGI」，然后继续等下一个。这种渐进式脱敏才是真正的变化模式。`,
     timeline_p3: `<strong>我们已经在这条曲线上了，只是感知有滞后。</strong>`,
     timeline_p4: `真正的分界线不是「它能做什么」，而是<strong>它能不能自己设定目标并持续自我改进</strong>。在那之前，我觉得最合理的姿态就是在一切变化中保持自己的方向——不要让梦想被埋没。`,
 
@@ -63,28 +62,28 @@ const content = {
     critique_p1: `我把上面整段对话贴给 Claude Code。它的第一反应不是「说得好」——是<strong>挑毛病</strong>。而且每一个都戳到了点上。`,
 
     h3_physical: "修正一：「什么都有」？物理世界不归 AGI 管",
-    physical_p1: `Codex 的框架暗示 AGI 之后「什么都有」了。Claude Code 直接说：<strong>这不是真的。</strong>`,
-    physical_p2: `AGI 能给你无限的知识、代码、文本——但物理世界不归它管。你仍然只有 24 小时一天，仍然只有一个身体，仍然只能同时出现在一个地方。`,
+    physical_p1: `Codex 的核心叙事是「人类第一次从能力匮乏走进愿望匮乏」，这个框架暗示 AGI 之后什么都有了。Claude Code 直接指出了一个盲区：<strong>这不是真的。</strong>`,
+    physical_p2: `AGI 能给你无限的知识、代码、文本——但物理世界不归它管。你仍然只有 24 小时一天，仍然只有一个身体，仍然只能同时出现在一个地方。这些不是技术限制，是物理规律。`,
     physical_p3: `你不可能同时吃 100 顿饭。不可能同时谈 100 段恋爱。不可能同时爬 100 座山。`,
-    physical_p4: `所以「稀缺」没有消失——它只是换了层皮。从<strong>能力的稀缺</strong>变成了<strong>注意力的稀缺</strong>和<strong>身体的稀缺</strong>。你永远只能体验有限的人生——这个限制比「能力不够」更根本，是<strong>存在本身的边界</strong>。AGI 动不了它。`,
-    physical_p5: `这意味着什么？AGI 时代的核心问题不是「什么都有了我还要什么」。而是——`,
+    physical_p4: `所以「稀缺」没有消失——它只是转移了。从<strong>能力的稀缺</strong>变成了<strong>注意力的稀缺</strong>和<strong>身体的稀缺</strong>。你永远只能体验有限的人生——而这个限制比「能力不够」更根本，它是<strong>存在本身的边界</strong>。AGI 动不了它。`,
+    physical_p5: `这意味着 AGI 时代的核心问题不是「什么都有了我还要什么」。而是——`,
     physical_blockquote: `选项无限多，但我只能挑极其有限的一部分来活。稀缺从「做不到」变成了「选不过来」。`,
-    physical_p6: `两种完全不同性质的问题。`,
+    physical_p6: `这是两种完全不同性质的问题。Codex 说「愿望的匮乏」——但愿望的匮乏不是因为没愿望了，是因为<strong>你能许的愿太多了，而你只能活其中几个</strong>。`,
 
     h3_meaning: "修正二：「世界替你决定什么是重要的」——这个说法不对",
-    meaning_p1: `Codex 说：以前是世界的限制替你决定什么叫重要——努力是因为不努力就没饭吃，学习是因为考试，竞争是因为资源有限。`,
-    meaning_p2: `Claude Code 的回应：`,
+    meaning_p1: `Codex 说：以前是世界的限制替你决定什么叫重要——努力是因为不努力就没饭吃，学习是因为考试，竞争是因为资源有限。AGI 把限制撤掉之后，「值得」的归属权就变了。`,
+    meaning_p2: `这个叙事有一个问题。Claude Code 直接说：`,
     meaning_blockquote: `不对。世界给你的从来都是约束条件，不是意义。`,
-    meaning_p3: `你自己想想——转专业学 CS、想发顶会论文、写日记追问「准确到底是什么」——这些哪一件是「世界替你决定的」？`,
-    meaning_p4: `意义从来都要自己找。只是以前很多人忙到没时间想这个问题。AGI 没改变「意义需要自己找」这个事实——它只是<strong>让更多人没法再假装这个问题不存在了</strong>。`,
-    meaning_p5: `这不是新问题。是被推迟了很久的老问题，终于找上门了。`,
+    meaning_p3: `你仔细想想——转专业学 CS、想发顶会论文、写日记追问「准确到底是什么」——这些哪一件是「世界替你决定的」？世界给你的是考试、分数、竞争这些条件，但你用这些条件去做什么、追求什么，是你自己选的。`,
+    meaning_p4: `意义从来都要自己找。只是以前很多人的全部精力都用来应付生存压力了，没空想。AGI 没改变「意义需要自己找」这个事实——它只是<strong>让更多人没法再假装这个问题不存在了</strong>。`,
+    meaning_p5: `这不是一个新问题。这是一个被推迟了很久的老问题——你迟早得回答「我到底想要什么」，AGI 只是让这个时刻提前了。`,
 
     h3_taste: "修正三：犯错不是壁垒，品味才是",
-    taste_p1: `Codex 说「AI 不敢犯错，人敢犯错所以人有原创性」——这句话好听。但 Claude Code 说它讲得太浪漫了。`,
-    taste_p2: `实际上 AI 当然能「犯错」。扩散模型加噪再去噪，每一步都是「错」的。让它生成一个不存在的动物，毫无压力。`,
-    taste_p3: `所以创造力不是「犯错」的能力——是<strong>知道哪个错值得犯</strong>的判断力。Codex 自己在别处也说了同一句话：「在无限多的可能里选出值得的那个。」但它把「犯错」和「选择」拆成了两个论点。Claude Code 说它们就是一件事：`,
+    taste_p1: `Codex 说「AI 不敢犯错，人敢犯错所以人有原创性」——这句话好听，但 Claude Code 说讲得太浪漫了。`,
+    taste_p2: `实际上 AI 当然能「犯错」。扩散模型加噪再去噪，每一步都是「错」的。让它生成一个不存在的动物，毫无压力。AI 生成 100 个方案，其中 90 个是「错」的——但它不知道哪个错有意思。`,
+    taste_p3: `所以创造力不是「犯错」的能力——是<strong>知道哪个错值得犯</strong>的判断力。Codex 在别处说过同一句话：「在无限多的可能里选出值得的那个。」但它把「犯错」和「选择」拆成了两个论点。Claude Code 说：它们是一件事。`,
     taste_blockquote: `创造力 = 品味 × 勇气。人真正的壁垒不是生成能力，是品味。`,
-    taste_p4: `这个修正我很服气。人不是因为「敢错」而有原创性——是因为<strong>有判断力决定什么值得去错</strong>。`,
+    taste_p4: `这个修正我很服气。审美那一条在这里也连上了——品味就是你的审美在判断力上的投射。人不是因为「敢错」而有原创性，是因为<strong>有判断力决定什么值得去错</strong>。而且这种判断力不是天生的，是你在每一次「我觉得这个好、那个不好」的选择里练出来的。`,
 
     // ── 六、认知牢笼 ──
     h2_cognition: "六、认知的牢笼：你抄的是答案，不是出答案的人",
@@ -181,10 +180,9 @@ const content = {
 
     h2_three: "3. Three Things Humans Must Hold Onto",
     three_intro: `Codex asked me: "When that time comes, what do you most want to hold onto?"`,
-    three_p1: `I answered almost without thinking:`,
-    three_1: `<strong>Unique ideas and insights</strong> — not from data, from "having lived"`,
-    three_2: `<strong>The courage to make mistakes</strong> — AI is designed to be correct; humans can make mistakes on things that matter, and mistakes are the doorway to originality`,
-    three_3: `<strong>A unique aesthetic, unconstrained by conditions</strong> — unbound by survival, market, or evaluation; actively resisting AI's downward current of averaged beauty`,
+    three_1: `<strong>Unique ideas and insights.</strong> AI's training data covers nearly all of human knowledge — but it hasn't "lived." Your experiences, your setbacks, the thing you figured out at 3 AM — none of that comes from a dataset.`,
+    three_2: `<strong>The courage to make mistakes.</strong> AI is designed entirely around being correct and stable. But humans are the only beings who can deliberately make mistakes on things that matter — and daring to be wrong is the price of having your own ideas. Mistakes are the doorway to originality.`,
+    three_3: `<strong>A unique aesthetic, unconstrained by conditions.</strong> AI's "aesthetic" is statistics — whatever appears most in training data is "beautiful." Real aesthetic isn't boxed in by scores, markets, or others' opinions, and you have to actively resist the downward current of "what everyone thinks looks good," or it washes you away.`,
     three_p2: `Codex: these three are facets of the same thing — <strong>a person with subjectivity.</strong>`,
     three_p3: `Their common trait: not from data, but from "having lived." AI has seen countless styles, but it's never been cornered by life, never grown something from that corner. It can simulate bravery, but it's never truly feared anything, so it doesn't know the other side.`,
     three_p4: `Then Codex added something important: these aren't static assets you "keep" — they're <strong>abilities that degrade.</strong>`,
@@ -192,7 +190,7 @@ const content = {
 
     h2_timeline: "4. When Is AGI Actually Coming?",
     timeline_p1: `My take: AGI won't be an "announced today" event. It's a <strong>continuously climbing curve.</strong>`,
-    timeline_p2: `Codex, Claude Code, Cursor — by 2022 standards, science fiction. But humans adapt incredibly fast. Three months later: "that's not AGI." This gradual desensitization is the real pattern of change.`,
+    timeline_p2: `Codex, Claude Code, Cursor — tools we use today. By 2022 standards, science fiction. But humans adapt incredibly fast. Three months in: "that's not AGI." This gradual desensitization is the real pattern.`,
     timeline_p3: `<strong>We're already on the curve. We just lag in perception.</strong>`,
     timeline_p4: `The real dividing line isn't "what it can do" — it's <strong>whether it can set its own goals and continuously self-improve.</strong> Until then, the best posture I can think of: keep your direction amidst the change. Don't bury your dreams.`,
 
@@ -200,28 +198,28 @@ const content = {
     critique_p1: `I pasted the conversation into Claude Code. Its first reaction wasn't "well said" — it was <strong>skepticism.</strong> And every point landed.`,
 
     h3_physical: `Correction 1: "Having Everything"? The Physical World Doesn't Answer to AGI`,
-    physical_p1: `Codex's framework implies AGI gives us everything. Claude Code: <strong>That's not true.</strong>`,
-    physical_p2: `AGI gives you infinite knowledge, code, text — but the physical world isn't under its jurisdiction. Still 24 hours a day. One body. One place at a time.`,
+    physical_p1: `Codex's core narrative is "humanity moves from capability scarcity to desire scarcity," implying AGI gives us everything. Claude Code pointed out a blind spot: <strong>That's not true.</strong>`,
+    physical_p2: `AGI gives you infinite knowledge, code, text — but the physical world isn't under its jurisdiction. Still 24 hours a day. One body. One place at a time. These aren't technical limits — they're physics.`,
     physical_p3: `Can't eat 100 meals. Can't have 100 relationships. Can't climb 100 mountains at once.`,
-    physical_p4: `So "scarcity" hasn't disappeared — just changed form. From <strong>scarcity of capability</strong> to <strong>scarcity of attention</strong> and <strong>scarcity of embodiment.</strong> You can only ever experience a finite life — more fundamental than "not capable enough." <strong>The boundary of existence itself.</strong> AGI can't touch it.`,
+    physical_p4: `So "scarcity" hasn't disappeared — it's shifted. From <strong>scarcity of capability</strong> to <strong>scarcity of attention</strong> and <strong>scarcity of embodiment.</strong> You can only ever experience a finite life — more fundamental than "not capable enough." <strong>The boundary of existence itself.</strong> AGI can't touch it.`,
     physical_p5: `What does this mean? The core question isn't "I have everything, now what?" It's:`,
     physical_blockquote: `Infinite options, but I can only live an extremely finite subset. Scarcity shifts from "can't do it" to "can't choose it all."`,
-    physical_p6: `Fundamentally different problems.`,
+    physical_p6: `Fundamentally different problems. Codex said "scarcity of desire" — but the desire scarcity isn't from having no desires. It's from <strong>having too many things you could want, and you can only live a few.</strong>`,
 
     h3_meaning: `Correction 2: "The World Decided What Matters" — That's Not Right`,
-    meaning_p1: `Codex: the world's constraints decided what was important — you worked because you'd starve, you studied for exams, you competed for limited resources.`,
+    meaning_p1: `Codex: the world's constraints decided what was important — you worked because you'd starve, you studied for exams, you competed for limited resources. Remove the constraints, and "worth it" changes ownership.`,
     meaning_p2: `Claude Code, blunt:`,
     meaning_blockquote: `What the world gave you was always constraints. Not meaning.`,
-    meaning_p3: `Think about it — switching majors to CS, wanting to publish at top conferences, journaling to ask "what does accuracy even mean?" — which of these was "the world deciding for you"?`,
+    meaning_p3: `Think about it — switching majors to CS, wanting to publish at top conferences, journaling to ask "what does accuracy even mean?" — which of these was "the world deciding for you"? The world gave you exams, scores, competition — constraints. What you chose to pursue with them was always yours.`,
     meaning_p4: `Meaning has always been self-made. Before, people were too busy surviving to think about it. AGI didn't change that fact — it just <strong>made it harder for more people to pretend the question doesn't exist.</strong>`,
-    meaning_p5: `Not a new problem. An old one, postponed so long it's finally here.`,
+    meaning_p5: `Not a new problem. An old one, postponed so long it's finally here. You'll have to answer "what do I actually want" eventually — AGI just moved up the deadline.`,
 
     h3_taste: "Correction 3: Mistakes Aren't the Moat. Taste Is.",
-    taste_p1: `Codex: "AI doesn't dare to make mistakes, humans do, so humans have originality" — sounds good. Too romantic.`,
-    taste_p2: `AI can absolutely "make mistakes." Diffusion models add noise and denoise — every step is a "mistake." Generate a non-existent animal? No problem.`,
-    taste_p3: `So creativity isn't "making mistakes" — it's <strong>knowing which mistakes are worth making.</strong> Codex said it elsewhere: "selecting the worthy from infinite possibilities." But it split "mistakes" and "choosing" into two arguments. Claude Code: they're one thing:`,
+    taste_p1: `Codex: "AI doesn't dare to make mistakes, humans do, so humans have originality" — sounds good, too romantic.`,
+    taste_p2: `AI can absolutely "make mistakes." Diffusion models add noise and denoise — every step is a "mistake." Generate a non-existent animal? No problem. AI generates 100 proposals, 90 are "wrong" — but it doesn't know which wrong one is interesting.`,
+    taste_p3: `So creativity isn't "making mistakes" — it's <strong>knowing which mistakes are worth making.</strong> Codex said it elsewhere: "selecting the worthy from infinite possibilities." But it split "mistakes" and "choosing" into two arguments. Claude Code: they're one thing.`,
     taste_blockquote: `Creativity = Taste × Courage. Humanity's real moat isn't generative capability. It's taste.`,
-    taste_p4: `This one got me. Humans aren't original because they "dare to be wrong" — they're original because <strong>they have the judgment to decide what's worth being wrong about.</strong>`,
+    taste_p4: `This one got me. The aesthetic thread connects here too — taste is your aesthetic judgment projected onto decision-making. Humans aren't original because they "dare to be wrong" — they're original because <strong>they have the judgment to decide what's worth being wrong about.</strong> And that judgment isn't innate — it's built every time you say "I think this is good, that's not."`,
 
     h2_cognition: "6. The Cognitive Prison: Copying the Answer, Not the Person",
     cognition_p1: `After Claude Code's critique, I shared a thought I've had for a while:`,
@@ -328,7 +326,6 @@ export default function AgiEraThoughtsPage() {
 
       <h2 id="three-things">{T.h2_three}</h2>
       <p dangerouslySetInnerHTML={{ __html: T.three_intro }} />
-      <p dangerouslySetInnerHTML={{ __html: T.three_p1 }} />
       <ol>
         <li dangerouslySetInnerHTML={{ __html: T.three_1 }} />
         <li dangerouslySetInnerHTML={{ __html: T.three_2 }} />
