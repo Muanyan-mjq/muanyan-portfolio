@@ -48,6 +48,7 @@ export const blogPosts: BlogPost[] = [
     date: "2026-07-31",
     tags: ["AGI"],
     category: "indie",
+    categoryColor: "from-[#0a0612] via-[#1a1030] to-[#0d0820]",
     cover: { gradient: "from-[#0a0612] via-[#1a1030] to-[#0d0820]", icon: "🌌", image: "/agi-era-cover.png" },
     readingTime: 15,
     published: true,
