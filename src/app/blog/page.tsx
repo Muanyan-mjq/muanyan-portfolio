@@ -247,7 +247,7 @@ function PostCard({ post, lang, T }: { post: BlogPost; lang: "zh" | "en"; T: (ty
           {/* Tags + date */}
           <div className="flex items-center gap-2 mb-3 flex-wrap">
             <span className={`px-2.5 py-1 text-xs font-semibold bg-gradient-to-r ${post.categoryColor ?? cat.color} text-white rounded-full`}>
-              {cat[lang]}
+              {post.categoryLabel?.[lang] ?? cat[lang]}
             </span>
             <span className="text-xs text-zinc-400 dark:text-zinc-500">{post.date}</span>
             <span className="text-xs text-zinc-400 dark:text-zinc-500">· {post.readingTime} {T.readTime}</span>

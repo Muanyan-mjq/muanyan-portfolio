@@ -265,7 +265,7 @@ export function BlogPostLayout({ children, post, seriesPosts }: BlogPostLayoutPr
                   <div className="flex items-center gap-3 mb-3 flex-wrap">
                     {cat && (
                       <span className={`px-3 py-1 text-xs font-semibold bg-gradient-to-r ${post.categoryColor ?? cat.color} text-white rounded-full`}>
-                        {cat[lang]}
+                        {post.categoryLabel?.[lang] ?? cat[lang]}
                       </span>
                     )}
                     <span className="text-sm text-zinc-500 dark:text-zinc-400">{post.date}</span>

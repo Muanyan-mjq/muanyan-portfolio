@@ -7,6 +7,7 @@ export interface BlogPost {
   tags: string[];
   category: "learning" | "project" | "algorithm" | "reading" | "indie";
   categoryColor?: string;   // 覆盖分类默认颜色（Tailwind gradient）
+  categoryLabel?: { zh: string; en: string };  // 覆盖分类显示文字
   series?: {
     name: { zh: string; en: string };
     order: number;        // 第几篇
@@ -48,6 +49,7 @@ export const blogPosts: BlogPost[] = [
     date: "2026-07-31",
     tags: ["AGI"],
     category: "indie",
+    categoryLabel: { zh: "AGI", en: "AGI" },
     categoryColor: "from-[#0a0612] via-[#1a1030] to-[#0d0820]",
     cover: { gradient: "from-[#0a0612] via-[#1a1030] to-[#0d0820]", icon: "🌌", image: "/agi-era-cover.png" },
     readingTime: 15,
