@@ -310,6 +310,8 @@ export default function AgiEraThoughtsPage() {
         <p dangerouslySetInnerHTML={{ __html: T.thesis_blockquote2 }} />
       </blockquote>
 
+      <hr />
+
       {/* ── 二、五个改变 ── */}
       <h2 id="changes">{T.h2_changes}</h2>
       <p dangerouslySetInnerHTML={{ __html: T.changes_intro }} />
@@ -320,6 +322,8 @@ export default function AgiEraThoughtsPage() {
         <li dangerouslySetInnerHTML={{ __html: T.changes_4 }} />
         <li dangerouslySetInnerHTML={{ __html: T.changes_5 }} />
       </ol>
+
+      <hr />
 
       {/* ── 三、三样东西 ── */}
       <h2 id="three-things">{T.h2_three}</h2>
@@ -334,12 +338,16 @@ export default function AgiEraThoughtsPage() {
       <p dangerouslySetInnerHTML={{ __html: T.three_p4 }} />
       <p dangerouslySetInnerHTML={{ __html: T.three_p5 }} />
 
+      <hr />
+
       {/* ── 四、时间线 ── */}
       <h2 id="timeline">{T.h2_timeline}</h2>
       <p dangerouslySetInnerHTML={{ __html: T.timeline_p1 }} />
       <p dangerouslySetInnerHTML={{ __html: T.timeline_p2 }} />
       <p dangerouslySetInnerHTML={{ __html: T.timeline_p3 }} />
       <p dangerouslySetInnerHTML={{ __html: T.timeline_p4 }} />
+
+      <hr />
 
       {/* ── 五、Claude Code 修正 ── */}
       <h2 id="critique">{T.h2_critique}</h2>
@@ -377,6 +385,8 @@ export default function AgiEraThoughtsPage() {
       <p dangerouslySetInnerHTML={{ __html: T.taste_p4 }} />
       <p dangerouslySetInnerHTML={{ __html: T.taste_p5 }} />
 
+      <hr />
+
       {/* ── 六、认知牢笼 ── */}
       <h2 id="cognition">{T.h2_cognition}</h2>
       <p dangerouslySetInnerHTML={{ __html: T.cognition_p1 }} />
@@ -394,6 +404,8 @@ export default function AgiEraThoughtsPage() {
       <p dangerouslySetInnerHTML={{ __html: T.cognition_p7 }} />
       <p dangerouslySetInnerHTML={{ __html: T.cognition_p8 }} />
 
+      <hr />
+
       {/* ── 七、走自己的路 ── */}
       <h2 id="path">{T.h2_path}</h2>
       <p dangerouslySetInnerHTML={{ __html: T.path_p1 }} />
@@ -408,6 +420,8 @@ export default function AgiEraThoughtsPage() {
         <p dangerouslySetInnerHTML={{ __html: T.path_blockquote2 }} />
       </blockquote>
       <p dangerouslySetInnerHTML={{ __html: T.path_p6 }} />
+
+      <hr />
 
       {/* ── 八、能力 vs 状态 ── */}
       <h2 id="capability">{T.h2_capability}</h2>
@@ -425,6 +439,8 @@ export default function AgiEraThoughtsPage() {
       <p dangerouslySetInnerHTML={{ __html: T.capability_p8 }} />
       <p dangerouslySetInnerHTML={{ __html: T.capability_p9 }} />
       <p dangerouslySetInnerHTML={{ __html: T.capability_p10 }} />
+
+      <hr />
 
       {/* ── 九、收束 ── */}
       <h2 id="closing">{T.h2_closing}</h2>
