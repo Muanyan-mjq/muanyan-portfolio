@@ -40,15 +40,16 @@ const vaeSeries = {
 export const blogPosts: BlogPost[] = [
   {
     slug: "agi-era-thoughts",
-    title: { zh: "AGI 时代，人类还剩什么？", en: "In the AGI Era, What's Left for Humans?" },
+    title: { zh: "AGI 时代，人还剩什么？", en: "In the Age of AGI, What Remains Human?" },
     description: {
-      zh: "一场与 Codex 和 Claude Code 的深夜对话。从能力匮乏到愿望匮乏，从守住三样东西到一个从未想过的角度——AGI 时代，人的价值从「会什么」转移到「你是谁」。",
-      en: "A late-night dialogue with Codex and Claude Code. From capability scarcity to desire scarcity, from three things to hold onto to a new perspective — in the AGI era, human value shifts from 'what you can do' to 'who you are'.",
+      zh: "一场横跨 Codex 与 Claude Code 的三方深夜对话。从「能力匮乏」到「愿望匮乏」，从守住三样东西到一个从未想过的角度——当一切都能被生成，价值从「会什么」彻底转移到「你是谁」。",
+      en: "A three-way late-night dialogue with Codex and Claude Code. From capability scarcity to desire scarcity, from what must be held onto to a new perspective — when everything is generatable, value shifts from capability to identity.",
     },
     date: "2026-07-31",
-    tags: ["AGI"],
+    tags: ["AGI", "灵感产物"],
     category: "indie",
-    cover: { gradient: "from-[#0a0612] via-[#1a1030] to-[#0d0820]", icon: "🌌", image: "/agi-era-cover.png" },
+    categoryColor: "from-indigo-600 via-purple-600 to-violet-700",
+    cover: { gradient: "from-indigo-600 via-purple-600 to-violet-700", icon: "🌌", image: "/agi-era-cover.png" },
     readingTime: 15,
     published: true,
   },
