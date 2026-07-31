@@ -43,7 +43,7 @@ export const blogPosts: BlogPost[] = [
     title: { zh: "AGI 之后：从「会什么」到「你是谁」", en: "After AGI: From Capability to Identity" },
     description: {
       zh: "一场横跨 Codex 与 Claude Code 的三方深夜对话。从「能力匮乏」到「愿望匮乏」，从守住三样东西到一个从未想过的角度——当一切都能被生成，价值从「会什么」彻底转移到「你是谁」。",
-      en: "A three-way late-night dialogue with Codex and Claude Code. From capability scarcity to desire scarcity, from what must be held onto to a new perspective — when everything is generatable, value shifts from capability to identity.",
+      en: "A three-way late-night dialogue with Codex and Claude Code. From capability scarcity to desire scarcity, from what must be held onto to a new perspective — when everything is generatable, value shifts entirely from capability to identity.",
     },
     date: "2026-07-31",
     tags: ["AGI"],
