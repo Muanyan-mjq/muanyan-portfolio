@@ -639,7 +639,7 @@ export default function CodexObsidianWorkflowPage() {
       <p dangerouslySetInnerHTML={{ __html: t("prep1_desc") }} />
       <p className="mt-3">{t("prep1_plugins_intro")}</p>
       <ul className="list-disc pl-5 my-3 space-y-2 text-[17px] leading-[1.9]" dangerouslySetInnerHTML={{ __html: t("prep1_plugins") }} />
-      <p className="mt-3">{t("prep1_templater")}</p>
+      <p className="mt-3" dangerouslySetInnerHTML={{ __html: t("prep1_templater") }} />
       <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "Templates/daily.md：" : "Templates/daily.md:"}</p>
       <CodeBlock language="markdown">{cb("dailyTemplate")}</CodeBlock>
 
@@ -650,7 +650,7 @@ export default function CodexObsidianWorkflowPage() {
       <p dangerouslySetInnerHTML={{ __html: t("prep2_step1_desc") }} />
 
       <p className="mt-5 mb-2 text-base font-semibold text-zinc-800 dark:text-zinc-200">{t("prep2_step2_title")}</p>
-      <p>{t("prep2_step2_desc")}</p>
+      <p dangerouslySetInnerHTML={{ __html: t("prep2_step2_desc") }} />
 
       <p className="mt-5 mb-2 text-base font-semibold text-zinc-800 dark:text-zinc-200">{t("prep2_step3_title")}</p>
       <p dangerouslySetInnerHTML={{ __html: t("prep2_step3_desc") }} />
@@ -680,7 +680,7 @@ export default function CodexObsidianWorkflowPage() {
       </div>
 
       <p className="mt-6"><strong>{lang === "zh" ? "装好后的第一件事：" : "First thing after install:"}</strong></p>
-      <p>{t("prep2_first_task")}</p>
+      <p dangerouslySetInnerHTML={{ __html: t("prep2_first_task") }} />
 
       <h3 className="mt-8">{t("prep3_title")}</h3>
       <p className="flex items-center gap-3 my-2">
@@ -692,7 +692,7 @@ export default function CodexObsidianWorkflowPage() {
       <p dangerouslySetInnerHTML={{ __html: t("prep3_desc") }} />
 
       <h3 className="mt-8">{t("prep4_title")}</h3>
-      <p>{t("prep4_desc")}</p>
+      <p dangerouslySetInnerHTML={{ __html: t("prep4_desc") }} />
 
       <h3 className="mt-8">{t("prep5_title")}</h3>
       <p>{t("prep5_desc")}</p>
@@ -764,11 +764,11 @@ export default function CodexObsidianWorkflowPage() {
       <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("radar_solution") }} />
 
       <h3 className="mt-6">{t("radar_config_title")}</h3>
-      <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">{t("radar_config")}</p>
-      <p className="mt-2 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">{t("radar_config_file")}</p>
+      <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("radar_config") }} />
+      <p className="mt-2 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("radar_config_file") }} />
       <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "aihot_keywords.json：" : "aihot_keywords.json:"}</p>
       <CodeBlock language="json">{cb("keywordsJson")}</CodeBlock>
-      <p className="mt-2 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">{t("radar_config_tip")}</p>
+      <p className="mt-2 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("radar_config_tip") }} />
 
       <figure className="my-8">
         <div className="rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-lg max-w-lg mx-auto">
@@ -806,7 +806,7 @@ export default function CodexObsidianWorkflowPage() {
       <CollapsibleCard title={t("faq_q1")}><p>{t("faq_a1")}</p></CollapsibleCard>
       <CollapsibleCard title={t("faq_q2")}><p>{t("faq_a2")}</p></CollapsibleCard>
       <CollapsibleCard title={t("faq_q3")}><p>{t("faq_a3")}</p></CollapsibleCard>
-      <CollapsibleCard title={t("faq_q4")}><p>{t("faq_a4")}</p></CollapsibleCard>
+      <CollapsibleCard title={t("faq_q4")}><p dangerouslySetInnerHTML={{ __html: t("faq_a4") }} /></CollapsibleCard>
       <CollapsibleCard title={t("faq_q5")}><p>{t("faq_a5")}</p></CollapsibleCard>
       <CollapsibleCard title={t("faq_q6")}><p>{t("faq_a6")}</p></CollapsibleCard>
       <CollapsibleCard title={t("faq_q7")}><p>{t("faq_a7")}</p></CollapsibleCard>
