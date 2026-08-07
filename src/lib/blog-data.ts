@@ -185,8 +185,8 @@ export const blogPosts: BlogPost[] = [
     date: "2026-08-07",
     tags: ["Codex", "Obsidian", "自动化", "工作流", "Windows"],
     category: "indie",
-    categoryColor: "from-sky-600 via-indigo-600 to-violet-600",
-    cover: { gradient: "from-sky-600 via-indigo-600 to-violet-600", icon: "🧠", image: "/codex-obsidian-cover.svg" },
+    categoryColor: "from-[#000030] via-[#180048] to-[#241860]",
+    cover: { gradient: "from-[#000030] via-[#180048] to-[#241860]", icon: "🧠", image: "/codex-obsidian-cover.png" },
     readingTime: 18,
     prerequisites: [
       { zh: "Obsidian 已安装并建好笔记库", en: "Obsidian installed with a vault" },

@@ -282,7 +282,7 @@ aihot_keywords.json       # 关键词配置`}
       </CodeBlock>
       <p>{t("get_p2")}</p>
       <figure className="my-8">
-        <div className="rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-lg max-w-2xl mx-auto">
+        <div className="rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-lg max-w-lg mx-auto">
           <img src={`${BASE_PATH}/aihot-popup.png`} alt="AI hot news interest radar popup" className="w-full" />
         </div>
         <figcaption className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">
