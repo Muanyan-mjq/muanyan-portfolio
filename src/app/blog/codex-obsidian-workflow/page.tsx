@@ -749,9 +749,21 @@ export default function CodexObsidianWorkflowPage() {
       </div>
       <div className="mt-4 px-5 py-4 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800/30 rounded-xl text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300">
         {lang === "zh" ? (
-          <>🔧 <strong>以上所有内容都是开放性的。</strong>目录结构觉得不合适？告诉 Codex 换成你喜欢的组织方式。执行时间想改？告诉 Codex。弹窗样式不满意（太暗、太大、位置不对、想加提示音）？告诉 Codex，它都能按你的审美改。这套系统的设计原则是：<strong>你描述需求，Codex 实现，你验证结果。</strong>不要觉得被本文的方案框住了——它只是我在用的版本。</>
+          <div className="space-y-2">
+            <p>🔧 <strong>以上所有内容都是开放性的。</strong></p>
+            <p>目录结构觉得不合适？<br />→ 告诉 Codex 换成你喜欢的组织方式。</p>
+            <p>执行时间想改？<br />→ 告诉 Codex。</p>
+            <p>弹窗样式不满意（太暗、太大、位置不对、想加提示音）？<br />→ 告诉 Codex，它都能按你的审美改。</p>
+            <p className="mt-3">这套系统的设计原则：<strong>你描述需求，Codex 实现，你验证结果。</strong>不要觉得被本文的方案框住了——它只是我在用的版本。</p>
+          </div>
         ) : (
-          <>🔧 <strong>Everything above is open to customization.</strong> Don't like the folder structure? Tell Codex to reorganize it your way. Want a different execution time? Tell Codex. Popup design not to your taste (too dark, too big, wrong position, want a sound)? Tell Codex — it adapts to your preferences. The design principle of this system: <strong>you describe what you want, Codex implements, you verify.</strong> Don't feel locked into what's shown here — it's just my version.</>
+          <div className="space-y-2">
+            <p>🔧 <strong>Everything above is open to customization.</strong></p>
+            <p>Don't like the folder structure?<br />→ Tell Codex to reorganize it your way.</p>
+            <p>Want a different execution time?<br />→ Tell Codex.</p>
+            <p>Popup design not to your taste (too dark, too big, wrong position, want a sound)?<br />→ Tell Codex — it adapts to your preferences.</p>
+            <p className="mt-3">The design principle of this system: <strong>you describe what you want, Codex implements, you verify.</strong> Don't feel locked into what's shown here — it's just my version.</p>
+          </div>
         )}
       </div>
 
