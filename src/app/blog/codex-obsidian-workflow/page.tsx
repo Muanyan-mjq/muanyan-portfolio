@@ -749,20 +749,22 @@ export default function CodexObsidianWorkflowPage() {
       </div>
       <div className="mt-4 px-5 py-4 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800/30 rounded-xl text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300">
         {lang === "zh" ? (
-          <div className="space-y-2">
+          <div className="space-y-3">
             <p>🔧 <strong>以上所有内容都是开放性的。</strong></p>
-            <p>目录结构觉得不合适？<br />→ 告诉 Codex 换成你喜欢的组织方式。</p>
-            <p>执行时间想改？<br />→ 告诉 Codex。</p>
-            <p>弹窗样式不满意（太暗、太大、位置不对、想加提示音）？<br />→ 告诉 Codex，它都能按你的审美改。</p>
-            <p className="mt-3">这套系统的设计原则：<strong>你描述需求，Codex 实现，你验证结果。</strong>不要觉得被本文的方案框住了——它只是我在用的版本。</p>
+            <p>目录结构觉得不合适？比如想多加一层、换英文名、或者不用 PARA 换别的体系？<br />→ 告诉 Codex 你想要的目录长什么样，它会帮你重建，旧文件原封不动。</p>
+            <p>执行时间想改？比如热点改成每天早上 8:00、日记提醒改成 23:30？<br />→ 告诉 Codex 你要的时间点，它会改计划任务——不改脚本一行代码。</p>
+            <p>弹窗样式不满意？太暗、太大、位置不对、想加提示音、想换成自己的图标？<br />→ 告诉 Codex 你的审美偏好，它改 WPF 的 XAML 界面代码，你只管看效果。</p>
+            <p>想加新的自动化？比如自动备份笔记库、提醒复习某篇笔记、抓论文更新？<br />→ 告诉 Codex 你的需求，它会写新脚本、配新规则、注册新任务——和搭这套一样。</p>
+            <p className="mt-3">这套系统的设计原则：<strong>你描述需求，Codex 实现，你验证结果。</strong>不要觉得被本文的方案框住了——它只是我在用的版本。你有想法，Codex 就来。</p>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-3">
             <p>🔧 <strong>Everything above is open to customization.</strong></p>
-            <p>Don't like the folder structure?<br />→ Tell Codex to reorganize it your way.</p>
-            <p>Want a different execution time?<br />→ Tell Codex.</p>
-            <p>Popup design not to your taste (too dark, too big, wrong position, want a sound)?<br />→ Tell Codex — it adapts to your preferences.</p>
-            <p className="mt-3">The design principle of this system: <strong>you describe what you want, Codex implements, you verify.</strong> Don't feel locked into what's shown here — it's just my version.</p>
+            <p>Don't like the folder structure? Want more layers, English names, or a different system than PARA?<br />→ Tell Codex how you want your directories laid out. It rebuilds the structure — your files stay untouched.</p>
+            <p>Want to change the schedule? News at 8am instead of 8pm? Diary reminder at 11:30pm?<br />→ Tell Codex the time you want. It updates the scheduled task — zero code changes needed.</p>
+            <p>Popup not to your taste? Too dark, too big, wrong corner, want a sound effect, want your own icon?<br />→ Tell Codex your aesthetic preferences. It rewrites the WPF XAML — you just look at the result.</p>
+            <p>Want to add new automations? Auto-backup your vault? Remind you to review a note? Track new papers?<br />→ Tell Codex what you need. It writes a new script, adds a rule to rules.md, registers a new task — same process as building this system.</p>
+            <p className="mt-3">The design principle: <strong>you describe what you want, Codex implements, you verify.</strong> Don't feel locked into what's shown here — it's just my version. You have an idea? Codex brings it to life.</p>
           </div>
         )}
       </div>
