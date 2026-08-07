@@ -187,7 +187,7 @@ export const blogPosts: BlogPost[] = [
     category: "indie",
     categoryColor: "from-sky-600 via-indigo-600 to-violet-600",
     cover: { gradient: "from-sky-600 via-indigo-600 to-violet-600", icon: "🧠", image: "/codex-obsidian-cover.svg" },
-    readingTime: 12,
+    readingTime: 18,
     prerequisites: [
       { zh: "Obsidian 已安装并建好笔记库", en: "Obsidian installed with a vault" },
       { zh: "Node.js 已安装（脚本运行需要）", en: "Node.js installed (for scripts)" },
@@ -210,7 +210,7 @@ export const blogPosts: BlogPost[] = [
     category: "indie",
     categoryColor: "from-amber-500 via-orange-500 to-rose-500",
     cover: { gradient: "from-amber-500 via-orange-500 to-rose-500", icon: "📡", image: "/aihot-radar-cover.svg" },
-    readingTime: 15,
+    readingTime: 20,
     prerequisites: [
       { zh: "Windows 10/11", en: "Windows 10/11" },
       { zh: "了解 JSON 配置格式", en: "Familiar with JSON config" },
