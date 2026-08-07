@@ -41,9 +41,9 @@ const post = blogPosts.find((p) => p.slug === "codex-obsidian-workflow")!;
 const content = {
   zh: {
     intro_p1:
-      "我的 Obsidian 笔记库叫 <strong>SecondBrain</strong>，从大一开始用。它的定位很明确：所有值得记住的东西都往这里放。但用了很久，一直有个尴尬——<strong>知识的流入靠手动</strong>。每天刷到的 AI 热点、写下的日记、突然冒出来的想法，都得自己搬进库里：建文件夹、起文件名、写日期、加标签……搬着搬着就懒了，Inbox 越堆越高，日记开始断更，库就荒了。",
+      "如果你用笔记软件做过知识管理，大概率遇到过这几个问题：收藏了但再也没打开过、笔记堆积成山却找不到想要的、坚持几天就断更。它们看起来像「自律问题」，但根子上往往是同一个——<strong>知识的流入完全靠手动</strong>：每条新信息都要自己建文件夹、起文件名、写日期、加标签。手动搬运一旦中断，整个系统就跟着停滞，库慢慢就荒了。",
     intro_p2:
-      "直到我开始用 Codex 当助手，才意识到一件事：搬运信息这件事，恰恰是 AI 最擅长的、也是最该交给它做的。于是有了这套工作流。核心一句话：<strong>笔记库里的东西，尽量自动流进来、自动归位；人只负责读，然后想。</strong>本文就把这套系统完整拆开给你看：目录怎么设计、三个自动化分别做什么、怎么用 Windows 计划任务串起来，以及我踩过的坑。",
+      "我的 Obsidian 笔记库 SecondBrain 也经历过这个阶段，直到我开始用 Codex 当助手，才意识到：<strong>搬运信息这件事，恰恰是 AI 最擅长、也最该交给它的。</strong>与其要求自己每天坚持手动整理，不如把「整理」本身自动化。本文就是这套方案的完整记录：笔记库怎么设计、三个自动化分别做什么、怎么用 Windows 计划任务串起来，以及我踩过的坑。",
     h2_what: "先回答一个问题：为什么要这么搭",
     what_p1:
       "Obsidian 是本地优先的笔记软件，文件就是纯 Markdown，支持双向链接——特别适合当「第二大脑」。Codex 是 AI 编程助手，能读写文件、写脚本、做自动化。两者结合的点在于：<strong>Obsidian 负责存，Codex 负责搬。</strong>",
@@ -117,9 +117,9 @@ const content = {
   },
   en: {
     intro_p1:
-      "My Obsidian vault is called <strong>SecondBrain</strong>, and I've used it since my freshman year. Its purpose is simple: everything worth remembering goes here. But there was always an awkward part — <strong>knowledge flowed in manually</strong>. The AI news I browsed, the diary I wrote, the ideas that popped up — I had to carry each one in myself: create folders, name files, write dates, add tags… Carry enough times and you get lazy. Inbox piles up, diaries go stale, the vault decays.",
+      "If you've managed knowledge in a note app, you've probably hit these: things you saved and never opened again, notes piling up with nothing findable, streaks that break after a few days. They look like discipline problems, but the root cause is usually the same — <strong>knowledge flows in entirely manually</strong>: every new item needs its own folder, filename, date, and tags. Once the manual pipeline stalls, the whole system stalls, and the vault slowly dies.",
     intro_p2:
-      "Until I started using Codex as an assistant and realized: moving information around is exactly what AI is best at — and exactly what should be delegated. That's this workflow. One sentence at its core: <strong>things in the vault should flow in and file themselves automatically — humans only read, then think.</strong> This article breaks the whole system apart: how the vault is designed, what the three automations do, how Windows scheduled tasks tie them together, and the pitfalls I actually hit.",
+      "My Obsidian vault SecondBrain went through exactly this phase — until I started using Codex as an assistant and realized: <strong>moving information around is exactly what AI is best at, and exactly what should be delegated.</strong> Rather than demanding daily manual filing, automate the filing itself. This article is the full record of that solution: how the vault is designed, what the three automations do, how Windows scheduled tasks tie them together, and the pitfalls I hit.",
     h2_what: "First: Why Build It This Way",
     what_p1:
       "Obsidian is a local-first note app — notes are plain Markdown with bidirectional links, great as a \"second brain.\" Codex is an AI coding assistant that can read and write files and build automations. The combination: <strong>Obsidian stores, Codex moves.</strong>",
