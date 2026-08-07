@@ -48,12 +48,13 @@ const content = {
     prep_p1: "动手前确认下面三样东西：",
     prep_check1: "检查 1：上一篇的抓取脚本跑通了吗？",
     prep_check1_desc:
-      "兴趣雷达是接在热点抓取后面的，所以先确认热点文件能正常生成。打开 <code>5-Summaries/2026年8月/</code>，能看到当天的 <code>AI热点-日期.md</code> 就 OK。如果还没有，先看上一篇把抓取脚本搭起来。",
+      "兴趣雷达是接在热点抓取后面的，所以先确认热点文件能正常生成。打开 <code>5-Summaries/2026年8月/</code>，能看到当天的 <code>AI热点-日期.md</code> 就 OK。如果还没有，先回上一篇把抓取脚本搭起来——整个「兴趣雷达」是它的下游。",
     prep_check2: "检查 2：PowerShell 能用吗？",
-    prep_check2_desc: "Windows 自带 PowerShell，按 Win+R 输入 <code>powershell</code> 回车就能打开。能输入命令就行。",
+    prep_check2_desc:
+      "Windows 自带 PowerShell，不用额外安装。按 <strong>Win + R</strong>，输入 <code>powershell</code> 回车，能输入命令就行。",
     prep_check3: "检查 3：知道文件放哪",
     prep_check3_desc:
-      "两个文件会放在 <code>.codex\\scripts\\</code> 下：<code>notify_aihot_keywords.ps1</code>（弹窗脚本）和 <code>aihot_keywords.json</code>（关键词配置）。",
+      "两个文件会放在 <code>.codex/scripts/</code> 下：<code>notify_aihot_keywords.ps1</code>（弹窗脚本）和 <code>aihot_keywords.json</code>（关键词配置）。不会建目录？和上一篇检查 3 一样：文件管理器里新建 <code>.codex/scripts</code> 两级文件夹。",
     h2_what: "兴趣雷达是什么",
     what_p1:
       "一句话：<strong>给热点抓取加一道过滤器。</strong>抓取完成后自动扫描当天文件里的关键词，命中你订阅的主题就弹一个居中的弹窗（带实时倒计时和「打开笔记」按钮），没命中就安静地写一行日志。",
@@ -61,7 +62,9 @@ const content = {
     tell_p1: "把这个需求复制给 Codex：",
     tell_code_title: "给 Codex 的提示词（可以直接复制）",
     tell_p2:
-      "Codex 会生成三个文件：一个关键词配置文件、一个弹窗脚本，并告诉你怎么接进上一篇的计划任务。你只需要在后面两步里按自己的兴趣改关键词。",
+      "Codex 会生成一个关键词配置文件和一个弹窗脚本，并告诉你怎么接进上一篇的计划任务。你只需要在后面两步里按自己的兴趣改关键词。",
+    tell_tip:
+      "💡 如果 Codex 生成的弹窗样式你不喜欢（太暗、太大、位置不对），把需求告诉它——比如「改成小一点、放右下角」——它可以满足你。",
     h2_get: "你会得到什么",
     get_p1: "做完之后，你会得到两个文件 + 一个弹窗：",
     get_code_title: "文件清单",
@@ -73,13 +76,15 @@ const content = {
       "关键词不是一堆散词，而是<strong>「主题 + 别名」</strong>：每个主题下挂多个匹配词，命中任一就归入该主题。这样弹窗告诉你是「哪个主题」，而不是「哪个词」。",
     config_code_title: "aihot_keywords.json",
     config_p2:
-      "想研究新方向？照着格式加一个 topic 就行。脚本每次运行都会重新读这个文件，不用改任何代码。",
+      "想研究新方向？照着格式加一个 topic 就行。脚本每次运行都会重新读这个文件，不用改任何代码。不想手动编辑也没关系——<strong>直接告诉 Codex「帮我加一个 XX 主题」，它会帮你改。</strong>",
     h2_custom: "第三步：按你的习惯定制",
     custom_p1: "四个最常用的定制点：",
     custom_li1: "<strong>换时长：</strong>把脚本里传给 <code>Show()</code> 的秒数改掉，比如 15 或 30",
     custom_li2: "<strong>换样式：</strong>XAML 里改颜色、圆角、宽度、图标",
     custom_li3: "<strong>换位置：</strong><code>WindowStartupLocation</code> 改成 CenterScreen 或 Manual",
     custom_li4: "<strong>手动测试：</strong>运行 <code>powershell -File notify_aihot_keywords.ps1 -Test</code>，立刻弹一个测试窗口",
+    custom_p2:
+      "如果你觉得这样还不够好看，或者有其他想法——加提示音、换成自己的图标、点击卡片直接打开——<strong>告诉 Codex 就行，它可以满足你。</strong>",
     h2_faq: "常见问题",
     faq_intro: "遇到问题先看这里，都是真实踩过的坑：",
     faq_q1: "弹窗根本不显示",
@@ -99,7 +104,7 @@ const content = {
     ref1_title: "Codex + Obsidian 工作流（上一篇）",
     ref1_desc: "这套自动化系统的整体设计",
     ref2_title: "通知脚本 notify_aihot_keywords.ps1",
-    ref2_desc: "SecondBrain\\.codex\\scripts\\ 下，弹窗与倒计时的完整实现",
+    ref2_desc: "SecondBrain/.codex/scripts/ 下，弹窗与倒计时的完整实现",
     ref3_title: "关键词配置 aihot_keywords.json",
     ref3_desc: "同目录下，改主题就改这个文件",
     ref4_title: "AI HOT 数据源",
@@ -107,6 +112,7 @@ const content = {
     bottom_title: "这篇文章是怎么写的",
     bottom_desc:
       "全程用 Codex 撰写。文中的弹窗截图就是我机器上的真实运行画面，FAQ 里的问题也都真真实实发生过——你遇到同样的现象时，直接对号入座。",
+    bottom_tip: "卡住了？把报错复制给 Codex，它会帮你排查。",
   },
   en: {
     intro_p1:
@@ -117,12 +123,13 @@ const content = {
     prep_p1: "Before we start, confirm these three things:",
     prep_check1: "Check 1: Is the fetch script from the previous post working?",
     prep_check1_desc:
-      "The radar hooks onto the news fetch, so first make sure the news file generates. Open <code>5-Summaries/2026年8月/</code> — if today's <code>AI热点-日期.md</code> is there, you're good. If not, set up the fetch script from the previous post first.",
+      "The radar hooks onto the news fetch, so first make sure the news file generates. Open <code>5-Summaries/2026年8月/</code> — if today's <code>AI热点-日期.md</code> is there, you're good. If not, go back to the previous post and set up the fetch script — the radar is its downstream.",
     prep_check2: "Check 2: Is PowerShell available?",
-    prep_check2_desc: "Windows ships with PowerShell — press Win+R, type <code>powershell</code>, Enter. Being able to type commands is enough.",
+    prep_check2_desc:
+      "Windows ships with PowerShell — no install needed. Press <strong>Win + R</strong>, type <code>powershell</code>, Enter. Being able to type commands is enough.",
     prep_check3: "Check 3: Know where the files live",
     prep_check3_desc:
-      "Two files go into <code>.codex\\scripts\\</code>: <code>notify_aihot_keywords.ps1</code> (the popup script) and <code>aihot_keywords.json</code> (keyword config).",
+      "Two files go into <code>.codex/scripts/</code>: <code>notify_aihot_keywords.ps1</code> (the popup script) and <code>aihot_keywords.json</code> (keyword config). Don't know how to create the folder? Same as Check 3 in the previous post: create <code>.codex/scripts</code> in a file manager.",
     h2_what: "What the Interest Radar Is",
     what_p1:
       "In one sentence: <strong>a filter on top of the news fetch.</strong> After fetching, it scans the day's file for keywords; if a topic you subscribe to matches, it pops a centered window (with a live countdown and an \"Open note\" button); otherwise it quietly writes a log line.",
@@ -131,6 +138,8 @@ const content = {
     tell_code_title: "Prompt for Codex (copy-paste ready)",
     tell_p2:
       "Codex will produce a keyword config file, a popup script, and instructions for hooking it into the scheduled task from the previous post. All you do next is customize the keywords to your interests.",
+    tell_tip:
+      "💡 If you don't like the popup Codex generated (too dark, too big, wrong position), tell it — \"make it smaller, bottom-right\" — it can.",
     h2_get: "What You'll Get",
     get_p1: "When it's done, you get two files + one popup:",
     get_code_title: "File list",
@@ -142,13 +151,15 @@ const content = {
       "Keywords aren't loose words — they're <strong>topics with aliases</strong>. Each topic carries several match words; hitting any of them counts as that topic. So the popup tells you \"which topic,\" not \"which word.\"",
     config_code_title: "aihot_keywords.json",
     config_p2:
-      "Want to follow a new direction? Just add a topic in the same format. The script re-reads this file on every run — no code changes.",
+      "Want to follow a new direction? Just add a topic in the same format. The script re-reads this file on every run — no code changes. Don't want to edit JSON by hand? <strong>Just tell Codex \"add a topic for XX\" — it will edit it for you.</strong>",
     h2_custom: "Step 3: Customize to Your Habits",
     custom_p1: "The four most useful customization points:",
     custom_li1: "<strong>Duration:</strong> change the seconds passed to <code>Show()</code>, e.g. 15 or 30",
     custom_li2: "<strong>Style:</strong> change colors, radius, width, icon in the XAML",
     custom_li3: "<strong>Position:</strong> set <code>WindowStartupLocation</code> to CenterScreen or Manual",
     custom_li4: "<strong>Manual test:</strong> run <code>powershell -File notify_aihot_keywords.ps1 -Test</code> — a test window pops immediately",
+    custom_p2:
+      "If it still doesn't look good enough, or you have other ideas — add a sound, use your own icon, click the card to open — <strong>just tell Codex, it can.</strong>",
     h2_faq: "FAQ",
     faq_intro: "Stuck? Check these first — all are real pitfalls:",
     faq_q1: "The popup never shows",
@@ -168,7 +179,7 @@ const content = {
     ref1_title: "Codex + Obsidian Workflow (Previous Post)",
     ref1_desc: "The overall design of this automation system",
     ref2_title: "Notify Script notify_aihot_keywords.ps1",
-    ref2_desc: "Under SecondBrain\\.codex\\scripts\\ — the full popup + countdown implementation",
+    ref2_desc: "Under SecondBrain/.codex/scripts/ — the full popup + countdown implementation",
     ref3_title: "Keyword Config aihot_keywords.json",
     ref3_desc: "In the same directory — edit topics here",
     ref4_title: "AI HOT Source",
@@ -176,6 +187,7 @@ const content = {
     bottom_title: "How This Article Was Written",
     bottom_desc:
       "Written entirely with Codex. The popup screenshot is a real capture from my machine, and every FAQ entry is a pitfall that actually happened — match your symptom, find your fix.",
+    bottom_tip: "Stuck? Paste the error to Codex — it will help you debug.",
   },
 } as const;
 
@@ -259,6 +271,7 @@ export default function AihotInterestRadarPage() {
         {codeBlocks.prompt[lang as keyof typeof codeBlocks.prompt] ?? codeBlocks.prompt.zh}
       </CodeBlock>
       <p dangerouslySetInnerHTML={{ __html: t("tell_p2") }} />
+      <div className="mt-4 px-5 py-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/30 rounded-xl text-[16px] leading-[1.8] text-amber-800 dark:text-amber-200" dangerouslySetInnerHTML={{ __html: t("tell_tip") }} />
 
       <h2 id="get">{t("h2_get")}</h2>
       <p>{t("get_p1")}</p>
@@ -294,6 +307,7 @@ aihot_keywords.json       # 关键词配置`}
         <li dangerouslySetInnerHTML={{ __html: t("custom_li3") }} />
         <li dangerouslySetInnerHTML={{ __html: t("custom_li4") }} />
       </ul>
+      <div className="mt-4 px-5 py-4 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800/30 rounded-xl text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("custom_p2") }} />
 
       <h2 id="faq">{t("h2_faq")}</h2>
       <p>{t("faq_intro")}</p>
@@ -336,6 +350,7 @@ aihot_keywords.json       # 关键词配置`}
       <div className="mt-12 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-700">
         <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">{t("bottom_title")}</p>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">{t("bottom_desc")}</p>
+        <p className="mt-3 text-sm text-zinc-500 dark:text-zinc-400">{t("bottom_tip")}</p>
       </div>
     </BlogPostLayout>
   );
