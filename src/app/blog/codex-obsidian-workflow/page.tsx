@@ -72,6 +72,15 @@ const content = {
     hot_p2: "生成的文件长这样（这是真实文件的一部分）：",
     hot_p3:
       "注意文件名和路径都带月份：<code>AI热点-2026-08-07.md</code> 躺在 <code>2026年8月/</code> 文件夹里。这就是「按月归档」的自动版。",
+    h2_aihot: "顺带安利：AI HOT 这个热点源",
+    aihot_p1:
+      "这套系统能跑起来，数据源很关键。我用的是 <a href='https://aihot.virxact.com/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline font-semibold'>AI HOT</a>——一个每天精选 AI 领域热点的聚合站。它能干什么？简单说：把全网 AI 动态里的「重要信息」捞出来，按天整理好，给每条配上标题、摘要和原文链接，让你不用自己刷一堆信息流。",
+    aihot_p2: "它有这三个优点：",
+    aihot_li1: "<strong>精选而非搬运：</strong>每天只保留真正值得看的 AI 动态，不用自己在一堆噪音里挑",
+    aihot_li2: "<strong>结构化数据：</strong>每条热点都有标题、摘要和原文链接，直接可以二次加工成 Markdown 存进笔记库",
+    aihot_li3: "<strong>有公开 API：</strong>脚本一行请求就能拉到当天内容，自动化零门槛——本文的抓取脚本就是直接调它的 API",
+    aihot_p3:
+      "如果你也在做 AI 相关的知识管理，可以把它当作知识库的「每日输入源」——每天自动进来一批高质量素材，你只需要挑感兴趣的读。",
     h2_diary: "自动化二：日记提醒",
     diary_p1:
       "写日记是最容易断的。所以我设了 22:50 的提醒：脚本检查当天有没有日记文件，没有就弹系统通知「今天还没写日记，快去写两笔」。",
@@ -167,6 +176,15 @@ const content = {
     hot_p2: "The generated file looks like this (a real excerpt):",
     hot_p3:
       "Notice both the filename and the path carry the month: <code>AI热点-2026-08-07.md</code> lives inside <code>2026年8月/</code>. That's the automatic version of monthly archiving.",
+    h2_aihot: "A Side Recommendation: AI HOT as Your News Source",
+    aihot_p1:
+      "This system only works because of its data source. I use <a href='https://aihot.virxact.com/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline font-semibold'>AI HOT</a> — an aggregator that curates AI news every day. What does it do? It pulls the important items out of the whole AI landscape, organizes them by day, and attaches a title, summary, and source link to each — so you don't have to scroll feeds yourself.",
+    aihot_p2: "Three reasons I like it:",
+    aihot_li1: "<strong>Curated, not aggregated:</strong> only genuinely worth-reading AI news survives — no noise to filter yourself",
+    aihot_li2: "<strong>Structured data:</strong> every item has a title, summary, and source link, ready to be re-formatted into Markdown and stored in your vault",
+    aihot_li3: "<strong>Public API:</strong> one request pulls the day's content — zero-friction automation (the fetch script in this article calls it directly)",
+    aihot_p3:
+      "If you manage AI knowledge too, treat it as the \"daily input source\" for your vault — quality material flows in automatically, and you just read what interests you.",
     h2_diary: "Automation 2: Diary Reminder",
     diary_p1:
       "Diaries are the easiest habit to break. So I set a 10:50pm reminder: the script checks whether today's diary exists; if not, it pops a system notification — \"You haven't written your diary today, go write a couple lines.\"",

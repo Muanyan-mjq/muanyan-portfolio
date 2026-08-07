@@ -52,7 +52,7 @@ const content = {
     need_p2: "这三条标准后来帮我做了很多设计取舍——比如关键词要用「主题 + 别名」而不是散词，弹窗要能一键打开笔记，配置要独立成文件。",
     h2_plan: "方案总览",
     plan_p1:
-      "三步：抓取（上一篇的脚本，已有）→ 关键词扫描 → 弹窗。全部在本地跑，每天 20:00 由同一个计划任务触发。流程是这样的：",
+      "三步：抓取（上一篇的脚本，已有）→ 关键词扫描 → 弹窗。全部在本地跑，每天 20:00 由同一个计划任务触发。数据源是上一篇安利过的 <a href='https://aihot.virxact.com/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>AI HOT</a>——每天精选 AI 热点、带标题摘要和原文链接，脚本直接调它的公开 API。流程是这样的：",
     plan_step1: "<strong>抓取：</strong><code>fetch_aihot.js</code> 把热点写成 Markdown（上一篇讲过）",
     plan_step2: "<strong>扫描：</strong>抓取完成后自动调用通知脚本，读当天文件，逐个主题检查关键词",
     plan_step3: "<strong>弹窗：</strong>命中任意主题 → 弹出自定义窗口；否则写一行日志，安静结束",
@@ -142,7 +142,7 @@ const content = {
     ref3_title: "关键词配置 aihot_keywords.json",
     ref3_desc: "同目录下，改主题就改这个文件",
     ref4_title: "AI HOT 数据源",
-    ref4_desc: "每天 20:00 抓取的热点来源",
+    ref4_desc: "每天 20:00 抓取的热点来源：精选 AI 动态、带摘要与原文链接",
     bottom_title: "这篇文章是怎么写的",
     bottom_desc:
       "全程用 Codex 撰写。文中的弹窗截图就是我机器上的真实运行画面，四个坑也都真真实实发生过。",
@@ -161,7 +161,7 @@ const content = {
       "These three requirements later drove many design decisions — keywords as \"topics with aliases\" instead of loose words, a popup that opens the note in one click, and config as a standalone file.",
     h2_plan: "The Plan",
     plan_p1:
-      "Three steps: fetch (the script from the previous post) → keyword scan → popup. Everything runs locally, triggered by the same 8pm scheduled task. The flow:",
+      "Three steps: fetch (the script from the previous post) → keyword scan → popup. Everything runs locally, triggered by the same 8pm scheduled task. The data source is <a href='https://aihot.virxact.com/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>AI HOT</a> from the previous post — curated AI news with titles, summaries, and source links, pulled via its public API. The flow:",
     plan_step1: "<strong>Fetch:</strong> <code>fetch_aihot.js</code> writes the news as Markdown (from the previous post)",
     plan_step2: "<strong>Scan:</strong> after fetching, the notify script is called automatically; it reads today's file and checks each topic's keywords",
     plan_step3: "<strong>Popup:</strong> any topic matched → show a custom window; otherwise write one log line and end quietly",
@@ -252,7 +252,7 @@ const content = {
     ref3_title: "Keyword Config aihot_keywords.json",
     ref3_desc: "In the same directory — edit topics here",
     ref4_title: "AI HOT Source",
-    ref4_desc: "The news source fetched every day at 8pm",
+    ref4_desc: "The curated AI news source fetched at 8pm — titles, summaries, and source links",
     bottom_title: "How This Article Was Written",
     bottom_desc:
       "Written entirely with Codex. The popup screenshot is a real capture from my machine, and all four pitfalls actually happened.",
