@@ -615,11 +615,11 @@ export default function CodexObsidianWorkflowPage() {
         </h3>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role3_desc") }} />
         <p className="mt-3 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">
-          {t("role3_detail_p1")}
+          <span dangerouslySetInnerHTML={{ __html: t("role3_detail_p1") }} />
           <Link href="/blog/claude-code-mcp-setup" className="text-indigo-600 dark:text-indigo-400 hover:underline">{t("role3_link1")}</Link>
           {lang === "zh" ? "、" : ", "}
           <Link href="/blog/claude-code-statusline" className="text-indigo-600 dark:text-indigo-400 hover:underline">{t("role3_link2")}</Link>
-          {t("role3_detail_p2")}
+          <span dangerouslySetInnerHTML={{ __html: t("role3_detail_p2") }} />
         </p>
       </div>
 
