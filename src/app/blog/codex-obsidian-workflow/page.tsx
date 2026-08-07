@@ -223,10 +223,10 @@ const content = {
     faq_a7: "核心逻辑（脚本 + Obsidian + rules.md）跨平台都能跑。但 Windows 任务计划程序是 Windows 专属——Mac 用 launchd，Linux 用 cron/systemd timer。把需求告诉 Codex 时说明你的操作系统，它会用对应的调度工具。",
 
     // ---- 结尾 ----
-    bottom_title: "这篇文章是怎么写的",
+    bottom_title: "最后",
     bottom_desc:
-      "本文的结构设计、内容规划、中英文翻译由 Claude Code 完成；文中的脚本片段、目录结构、自动化流程都来自我真实在用的 SecondBrain 笔记库；Codex 负责这套系统里的日常自动化执行。和前两篇 Claude Code 文章一样——AI 负责执行和辅助，但经验、判断和审美来自人。",
-    bottom_tip: "卡住了？把报错复制给 Claude Code 或 Codex，说明你的操作系统和笔记库路径，它会帮你排查。",
+      "这套系统已经跑了快一个月。每天 20:00 的热点文件、月底自动成型的文件夹、弹窗里跳出的「AGI 主题命中」——这些自动化不是「设好就忘」的背景任务，而是我每天打开 Obsidian 时实实在在看到的反馈。它最重要的作用不是省了多少时间，而是<strong>降低了「开始」的门槛</strong>：日记模板让你不用面对空白文件，Inbox 清零让你不用纠结怎么分类，热点推送让你不用手动搜信息。工具替你做了「启动」，剩下的读和想才是你自己的。",
+    bottom_tip: "期待看到你搭出自己的版本。如果这套结构启发了你，或者你改了点什么让它更适合自己——那就是这篇文章最好的结果。",
   },
 
   en: {
@@ -403,10 +403,10 @@ const content = {
     faq_q7: "Does this work on Mac / Linux?",
     faq_a7: "The core logic (scripts + Obsidian + rules.md) works cross-platform. But Windows Task Scheduler is Windows-only — Mac uses launchd, Linux uses cron/systemd timers. When you describe your requirements to Codex, tell it your OS, and it'll use the appropriate scheduler.",
 
-    bottom_title: "How This Article Was Written",
+    bottom_title: "Closing",
     bottom_desc:
-      "The structure design, content planning, and Chinese-English translation of this article were done with Claude Code. The script snippets, directory structure, and automation flows all come from my real SecondBrain vault. Codex handles the daily automation execution within that system. As with the earlier Claude Code posts — AI handles execution and assistance, but experience, judgment, and taste come from the human.",
-    bottom_tip: "Stuck? Paste the error to Claude Code or Codex, tell it your OS and vault path — it'll help you debug.",
+      "This system has been running for nearly a month. The 8pm news files, the end-of-month folders that shape themselves, the popup that says \"AGI topic matched\" — these automations aren't \"set and forget\" background tasks. They're real feedback I see every time I open Obsidian. Their most important job isn't saving time — it's <strong>lowering the barrier to start</strong>: the diary template means no blank page, Inbox zero means no classification paralysis, news fetching means no manual searching. The tools handle the \"getting started\" part. The reading and thinking that follow — that's yours.",
+    bottom_tip: "I hope to see the version you build. If this structure inspires you, or if you tweak it to fit yourself better — that's the best outcome this article could have.",
   },
 } as const;
 
@@ -591,7 +591,7 @@ export default function CodexObsidianWorkflowPage() {
       {/* Codex — 主角 */}
       <div className="mt-8 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
         <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3">
-          <img src={`${BASE_PATH}/blog-images/codex-logo.svg`} alt="" className="w-6 h-6 inline-block mr-2 align-middle" />
+          <img src={`${BASE_PATH}/blog-images/codex-logo.svg`} alt="" className="w-9 h-9 inline-block mr-2 align-middle" />
           {t("role1_title")}
         </h3>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role1_desc") }} />
@@ -601,7 +601,7 @@ export default function CodexObsidianWorkflowPage() {
       {/* Obsidian — 平台 */}
       <div className="mt-6 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
         <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3">
-          <img src={`${BASE_PATH}/blog-images/obsidian-logo.svg`} alt="" className="w-5 h-5 inline-block mr-2 align-middle" />
+          <img src={`${BASE_PATH}/blog-images/obsidian-logo.svg`} alt="" className="w-8 h-8 inline-block mr-2 align-middle" />
           {t("role2_title")}
         </h3>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role2_desc") }} />
@@ -610,7 +610,7 @@ export default function CodexObsidianWorkflowPage() {
       {/* Claude Code — 辅助 */}
       <div className="mt-6 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
         <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3">
-          <img src={`${BASE_PATH}/blog-images/claude-code-logo.svg`} alt="" className="w-5 h-5 inline-block mr-2 align-middle" />
+          <img src={`${BASE_PATH}/blog-images/claude-code-logo.svg`} alt="" className="w-8 h-8 inline-block mr-2 align-middle" />
           {t("role3_title")}
         </h3>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role3_desc") }} />
