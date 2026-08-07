@@ -65,8 +65,12 @@ const content = {
     role3_title: "Claude Code — 辅助角色（锦上添花）",
     role3_desc:
       "Claude Code 不是必需品——<strong>这套系统只用 Codex + Obsidian 就能完整跑起来。</strong>但在这些场景里它能帮大忙：设计笔记库结构时跟它讨论方案、写 Templater 模板让它给建议、脚本报错了贴给它排查、弹窗样式不满意让它帮忙改 XAML。它的核心优势是理解和推理——你描述不清楚问题时，它能帮你理清思路。",
-    role3_detail:
-      "Claude Code 通过 <strong>Claudian 插件</strong>可以直接嵌入 Obsidian，在 Obsidian 里按快捷键就能调出来，不需要切窗口。和之前写的 <a href='/blog/claude-code-mcp-setup' class='text-indigo-600 dark:text-indigo-400 hover:underline'>MCP 配置</a>、<a href='/blog/claude-code-statusline' class='text-indigo-600 dark:text-indigo-400 hover:underline'>状态栏</a>一样，Claude Code 擅长的是理解和推理。这套系统里它不负责执行——那是 Codex 的活。",
+    role3_detail_p1:
+      "Claude Code 通过 <strong>Claudian 插件</strong>可以直接嵌入 Obsidian——在 Obsidian 里按快捷键就能调出来，不需要切窗口。和之前写的 ",
+    role3_link1: "MCP 配置教程",
+    role3_link2: "状态栏教程",
+    role3_detail_p2:
+      " 一样，Claude Code 擅长的是理解和推理。这套系统里它不负责执行——那是 Codex 的活。",
     roles_summary:
       "<strong>Codex 是引擎，Obsidian 是底盘，Claude Code 是副驾驶。</strong>引擎和底盘就能把车开起来；副驾驶在你迷路时帮你指方向。这篇文章的主角是 Codex 和 Obsidian——后面所有内容围绕它们展开。需要 Claude Code 的时候会单独标注。",
 
@@ -248,8 +252,12 @@ const content = {
     role3_title: "Claude Code — Supporting Role (Nice-to-Have)",
     role3_desc:
       "Claude Code is not required — <strong>this system runs perfectly with just Codex + Obsidian.</strong> But it shines in these moments: discussing vault designs, getting template suggestions, debugging script errors, refining WPF popup styles. Its core strength is understanding and reasoning — when you can't articulate a problem clearly, it helps you think it through.",
-    role3_detail:
-      "Claude Code is embedded directly in Obsidian via the <strong>Claudian plugin</strong> — press a hotkey and it's there. Like the earlier <a href='/blog/claude-code-mcp-setup' class='text-indigo-600 dark:text-indigo-400 hover:underline'>MCP setup</a> and <a href='/blog/claude-code-statusline' class='text-indigo-600 dark:text-indigo-400 hover:underline'>statusline</a> posts, its strength is reasoning — not execution. That's Codex's job here.",
+    role3_detail_p1:
+      "Claude Code is embedded directly in Obsidian via the <strong>Claudian plugin</strong> — press a hotkey and it's there. Like the earlier ",
+    role3_link1: "MCP setup guide",
+    role3_link2: "statusline guide",
+    role3_detail_p2:
+      " posts, its strength is reasoning — not execution. That's Codex's job here.",
     roles_summary:
       "<strong>Codex is the engine, Obsidian is the chassis, Claude Code is the navigator.</strong> Engine + chassis gets the car moving; the navigator helps when you're lost. This article focuses on Codex and Obsidian — everything below revolves around them. Claude Code gets a shout-out where it's genuinely useful.",
 
@@ -582,8 +590,8 @@ export default function CodexObsidianWorkflowPage() {
 
       {/* Codex — 主角 */}
       <div className="mt-8 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <div className="flex items-center gap-4 mb-3">
-          <img src={`${BASE_PATH}/blog-images/codex-logo.svg`} alt="Codex" className="w-9 h-9 shrink-0" />
+        <div className="flex items-center gap-2.5 mb-3">
+          <img src={`${BASE_PATH}/blog-images/codex-logo.svg`} alt="Codex" className="w-6 h-6 shrink-0" />
           <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{t("role1_title")}</h3>
         </div>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role1_desc") }} />
@@ -592,8 +600,8 @@ export default function CodexObsidianWorkflowPage() {
 
       {/* Obsidian — 平台 */}
       <div className="mt-6 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <div className="flex items-center gap-4 mb-3">
-          <img src={`${BASE_PATH}/blog-images/obsidian-logo.svg`} alt="Obsidian" className="w-9 h-9 shrink-0" />
+        <div className="flex items-center gap-2.5 mb-3">
+          <img src={`${BASE_PATH}/blog-images/obsidian-logo.svg`} alt="Obsidian" className="w-6 h-6 shrink-0" />
           <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{t("role2_title")}</h3>
         </div>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role2_desc") }} />
@@ -601,12 +609,18 @@ export default function CodexObsidianWorkflowPage() {
 
       {/* Claude Code — 辅助 */}
       <div className="mt-6 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <div className="flex items-center gap-4 mb-3">
-          <img src={`${BASE_PATH}/blog-images/claude-code-logo.svg`} alt="Claude Code" className="w-9 h-9 shrink-0" />
+        <div className="flex items-center gap-2.5 mb-3">
+          <img src={`${BASE_PATH}/blog-images/claude-code-logo.svg`} alt="Claude Code" className="w-6 h-6 shrink-0" />
           <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{t("role3_title")}</h3>
         </div>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role3_desc") }} />
-        <p className="mt-3 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role3_detail") }} />
+        <p className="mt-3 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">
+          {t("role3_detail_p1")}
+          <Link href="/blog/claude-code-mcp-setup" className="text-indigo-600 dark:text-indigo-400 hover:underline">{t("role3_link1")}</Link>
+          {lang === "zh" ? "、" : ", "}
+          <Link href="/blog/claude-code-statusline" className="text-indigo-600 dark:text-indigo-400 hover:underline">{t("role3_link2")}</Link>
+          {t("role3_detail_p2")}
+        </p>
       </div>
 
       <div className="mt-4 px-5 py-4 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800/30 rounded-xl text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("roles_summary") }} />
@@ -637,12 +651,6 @@ export default function CodexObsidianWorkflowPage() {
 
       <p className="mt-5 mb-2 text-base font-semibold text-zinc-800 dark:text-zinc-200">{t("prep2_step2_title")}</p>
       <p>{t("prep2_step2_desc")}</p>
-      <figure className="my-6">
-        <div className="rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-lg max-w-2xl mx-auto">
-          <img src={`${BASE_PATH}/blog-images/terminal.png`} alt="Terminal running codex" className="w-full" />
-        </div>
-        <figcaption className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">{t("prep2_caption")}</figcaption>
-      </figure>
 
       <p className="mt-5 mb-2 text-base font-semibold text-zinc-800 dark:text-zinc-200">{t("prep2_step3_title")}</p>
       <p dangerouslySetInnerHTML={{ __html: t("prep2_step3_desc") }} />
@@ -739,6 +747,11 @@ export default function CodexObsidianWorkflowPage() {
           ? "💡 如果 Codex 没按你想的做——把它的输出贴回去，告诉它哪里不对。如果描述不清楚问题，先用 Claude Code 理清思路，再把清晰的方案交给 Codex 执行。"
           : "💡 If Codex doesn't do what you want — paste its output back and tell it what's wrong. If you can't articulate the issue clearly, use Claude Code first to reason through it, then hand the clarified plan to Codex."}
       </div>
+      <div className="mt-4 px-5 py-4 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800/30 rounded-xl text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300">
+        {lang === "zh"
+          ? "🔧 <strong>以上所有内容都是开放性的。</strong>目录结构觉得不合适？告诉 Codex 换成你喜欢的组织方式。执行时间想改？告诉 Codex。弹窗样式不满意（太暗、太大、位置不对、想加提示音）？告诉 Codex，它都能按你的审美改。这套系统的设计原则是：<strong>你描述需求，Codex 实现，你验证结果。</strong>不要觉得被本文的方案框住了——它只是我在用的版本。"
+          : "🔧 <strong>Everything above is open to customization.</strong> Don't like the folder structure? Tell Codex to reorganize it your way. Want a different execution time? Tell Codex. Popup design not to your taste (too dark, too big, wrong position, want a sound)? Tell Codex — it adapts to your preferences. The design principle of this system: <strong>you describe what you want, Codex implements, you verify.</strong> Don't feel locked into what's shown here — it's just my version."}
+      </div>
 
       {/* ===== 兴趣雷达 ===== */}
       <h2 id="radar">{t("h2_radar")}</h2>
@@ -799,30 +812,32 @@ export default function CodexObsidianWorkflowPage() {
       {/* ===== 相关资源 ===== */}
       <h2 id="ref">{lang === "zh" ? "相关资源" : "Related Resources"}</h2>
       <div className="mt-6 space-y-3">
-        {[
+        {([
           { icon: "🔌", title: lang === "zh" ? "Claude Code MCP 配置" : "Claude Code MCP Setup", desc: lang === "zh" ? "像 USB 一样给 Claude Code 接上外设" : "Give Claude Code USB-like plug-and-play powers", href: "/blog/claude-code-mcp-setup", external: false },
           { icon: "📊", title: lang === "zh" ? "Claude Code 状态栏" : "Claude Code Statusline", desc: lang === "zh" ? "一行命令让终端活起来" : "One command to bring your terminal to life", href: "/blog/claude-code-statusline", external: false },
           { icon: "🌌", title: lang === "zh" ? "AGI 之后：从「会什么」到「你是谁」" : "After AGI: From Capability to Identity", desc: lang === "zh" ? "Codex 与 Claude Code 的三方深夜对话" : "A three-way late-night dialogue with Codex and Claude Code", href: "/blog/agi-era-thoughts", external: false },
           { icon: "🔥", title: "AI HOT", desc: lang === "zh" ? "每天 20:00 抓取的热点来源" : "The curated news source fetched at 8pm daily", href: "https://aihot.virxact.com/", external: true },
           { icon: "💻", title: lang === "zh" ? "本站仓库" : "Site Repository", desc: lang === "zh" ? "博客与脚本的源码都在 GitHub" : "Source code for this blog and its scripts", href: "https://github.com/Muanyan-mjq/muanyan-portfolio", external: true },
-        ].map((item, i) => (
-          <a
-            key={i}
-            href={item.href}
-            target={item.external ? "_blank" : undefined}
-            rel={item.external ? "noopener noreferrer" : undefined}
-            className="group flex items-center gap-4 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-400 dark:hover:border-indigo-600 bg-white dark:bg-zinc-900 transition-all duration-300 hover:shadow-md hover:shadow-indigo-500/5 hover:-translate-y-0.5"
-          >
-            <span className="text-2xl">{item.icon}</span>
-            <div className="flex-1 min-w-0">
-              <p className="text-lg font-semibold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">{item.title}</p>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">{item.desc}</p>
-            </div>
-            <svg className="w-5 h-5 text-zinc-400 group-hover:text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </a>
-        ))}
+        ] as const).map((item, i) => {
+          const cardClass = "group flex items-center gap-4 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-400 dark:hover:border-indigo-600 bg-white dark:bg-zinc-900 transition-all duration-300 hover:shadow-md hover:shadow-indigo-500/5 hover:-translate-y-0.5";
+          const inner = (
+            <>
+              <span className="text-2xl">{item.icon}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-lg font-semibold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">{item.title}</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">{item.desc}</p>
+              </div>
+              <svg className="w-5 h-5 text-zinc-400 group-hover:text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </>
+          );
+          return item.external ? (
+            <a key={i} href={item.href} target="_blank" rel="noopener noreferrer" className={cardClass}>{inner}</a>
+          ) : (
+            <Link key={i} href={item.href} className={cardClass}>{inner}</Link>
+          );
+        })}
       </div>
 
       {/* ===== 结尾 ===== */}
