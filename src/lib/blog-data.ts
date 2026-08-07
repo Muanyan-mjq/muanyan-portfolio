@@ -175,12 +175,12 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "codex-obsidian-workflow",
     title: {
-      zh: "Claude Code 设计，Codex 执行：我的 Obsidian 全自动笔记系统",
-      en: "Designed by Claude Code, Executed by Codex: My Self-Running Obsidian System",
+      zh: "让 Obsidian 自己运转：Codex 自动化工作流搭建实录",
+      en: "Make Obsidian Run Itself: Building a Codex Automation Workflow",
     },
     description: {
-      zh: "不是「把需求丢给 AI 就完事」——这套系统里 Claude Code 负责思考和设计（笔记库结构、模板、查询），Codex 负责执行自动化（热点抓取、Inbox 整理、周月总结），Obsidian 承载最终的知识网络。从插件配置到四条自动化线，从 Dataview 仪表盘到 WPF 弹窗提醒，完整记录一个能自己运转的 SecondBrain 是怎么搭起来的。",
-      en: "More than just 'throwing requirements at AI' — in this system, Claude Code handles thinking and design (vault structure, templates, queries), Codex executes automation (news fetching, inbox sorting, weekly/monthly reviews), and Obsidian hosts the knowledge graph. From plugin setup to four automation pipelines, from Dataview dashboards to WPF popup reminders, a complete record of building a self-running Second Brain.",
+      zh: "不是「把需求丢给 AI 就完事」——这套系统让 Codex 负责执行自动化（热点抓取、Inbox 整理、周月总结），Obsidian 承载知识网络，Claude Code 在需要时辅助思考和排查问题。从插件配置到四条自动化线，从 Dataview 仪表盘到 WPF 弹窗提醒，完整记录一个能自己运转的 SecondBrain 是怎么搭起来的。",
+      en: "More than just 'throwing requirements at AI' — in this system, Codex executes automation (news fetching, inbox sorting, weekly/monthly reviews), Obsidian hosts the knowledge graph, and Claude Code assists with thinking and debugging when needed. From plugin setup to four automation pipelines, from Dataview dashboards to WPF popup reminders, a complete record of building a self-running Second Brain.",
     },
     date: "2026-08-07",
     tags: ["Claude Code", "Codex", "Obsidian", "自动化", "SecondBrain", "知识管理", "Windows"],

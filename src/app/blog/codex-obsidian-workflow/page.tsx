@@ -45,27 +45,30 @@ const content = {
     intro_p1:
       "想象一个场景：你每天打开 Obsidian，昨天的日记已经躺在 1-Daily 里，末尾自动挂上了昨天的 AI 热点链接；20:00 整，当天的热点自动抓取、筛选、写成 Markdown 存进 5-Summaries——如果命中你关心的主题还会弹窗提醒；晚上写完日记，喊一句「整理一下」，Inbox 清空、日记归位、双向链接补全。你唯一需要做的，是读和想。",
     intro_p2:
-      "这不是「把需求丢给 AI 就完事」——这套系统有三个角色，各自做自己擅长的事：<strong>Claude Code 负责思考和设计</strong>（笔记库结构、模板、查询），<strong>Codex 负责执行自动化</strong>（热点抓取、Inbox 整理、周月总结），<strong>Obsidian 承载最终的知识网络</strong>。本文是这套系统的完整搭建实录——从插件配置到四条自动化线，从 Dataview 仪表盘到 WPF 弹窗提醒。",
+      "这套系统的核心是 <strong>Codex</strong>（执行自动化）和 <strong>Obsidian</strong>（承载知识网络）。Claude Code 在你遇到复杂问题时辅助思考和排查——属于锦上添花，不是必需品。本文是这套系统的完整搭建实录——从插件配置到四条自动化线，从 Dataview 仪表盘到 WPF 弹窗提醒。",
 
     // ---- 工具分工 ----
-    h2_roles: "工具分工：三个角色",
+    h2_roles: "工具分工：主角与配角",
     roles_intro:
-      "在动手之前，先理解三个工具各自的角色——这是整套系统的设计前提。很多人把 AI 工具当万能钥匙，什么都让它做，结果什么都做不深。更好的方式是让每个工具做它擅长的事。",
-    role1_title: "Claude Code — 思考者",
+      "在动手之前，先搞清楚谁干什么——这决定了你不会把精力花在错的地方。",
+
+    role1_title: "Codex — 执行者（主角）",
     role1_desc:
-      "在这套系统里，Claude Code 负责「想清楚再告诉你怎么做」。它不直接操作系统文件，但能帮你设计笔记库的目录结构、写 Templater 模板、配置 Dataview 查询、规划自动化流程。问它「我的笔记库应该怎么组织，才能让自动化脚本稳定运行？」——它能给你一套有理由的方案，而不是随便丢几个文件夹名字。",
+      "Codex 是这套系统的<strong>核心引擎</strong>。它的 <code>.codex/rules.md</code> 里定义了四条自动化线——热点抓取、Inbox 整理、周总结、月总结。每次打开和它的对话，它会自动检查今天的热点有没有抓、Inbox 是不是堆了超过 3 篇——该抓的抓、该提醒的提醒。它不需要你写代码，但需要你给它写清楚规则：什么时候触发、做什么、结果放哪。<code>rules.md</code> 就是你和它的「合同」。",
     role1_detail:
-      "Claude Code 通过 <strong>Claudian 插件</strong>直接嵌入 Obsidian——在 Obsidian 里按快捷键就能调它出来，不需要切窗口。它可以看到你当前打开的笔记、理解上下文，然后给出针对性的建议。和之前写的 <a href='/blog/claude-code-mcp-setup' class='text-indigo-600 dark:text-indigo-400 hover:underline'>MCP 配置</a>、<a href='/blog/claude-code-statusline' class='text-indigo-600 dark:text-indigo-400 hover:underline'>状态栏</a>一样，Claude Code 的核心优势是理解和推理，不是执行。",
-    role2_title: "Codex — 执行者",
+      "Codex 能直接读写笔记库文件、执行 Node.js 和 PowerShell 脚本、注册 Windows 计划任务。脚本可能很长（WPF 弹窗那个有 200+ 行），但你不需要手写——描述清楚需求，Codex 生成，你验证。",
+
+    role2_title: "Obsidian — 承载者（平台）",
     role2_desc:
-      "Codex 负责「动手做」。它的 <code>.codex/rules.md</code> 里定义了四条自动化线——热点抓取、Inbox 整理、周总结、月总结。每次你打开和它的对话，它会自动检查今天的热点有没有抓、Inbox 是不是堆了超过 3 篇——该抓的抓、该提醒的提醒。它不需要你写代码，但需要你给它写清楚规则：什么时候触发、做什么、结果放哪。<code>rules.md</code> 就是你和它的「合同」。",
-    role2_detail:
-      "Codex 能直接读写笔记库文件、执行 Node.js 和 PowerShell 脚本、注册 Windows 计划任务。写好的脚本可能很长（比如 WPF 弹窗那个有 200+ 行），但你不需要手写——描述清楚需求，Codex 生成脚本，你验证结果。",
-    role3_title: "Obsidian — 承载者",
+      "Obsidian 是知识最终落脚的地方。它提供了让知识从「一堆文件」变成「一张网络」的基础设施：<strong>双向链接</strong>让每篇笔记产生关联，<strong>Dataview</strong> 把笔记库变成可查询的数据库，<strong>Templater</strong> 新建笔记时自动套模板，<strong>Calendar</strong> 侧边栏日历一目了然。Codex 把信息灌进来，你负责读和想。",
+
+    role3_title: "Claude Code — 辅助角色（锦上添花）",
     role3_desc:
-      "Obsidian 是知识最终落脚的地方。它本身不生产内容，但提供了让知识从「一堆文件」变成「一张网络」的基础设施：<strong>双向链接</strong>让每篇笔记之间产生关联，<strong>Dataview</strong> 把笔记库变成可查询的数据库，<strong>Templater</strong> 在新建笔记时自动套模板，<strong>Calendar</strong> 让你在侧边栏日历里看到哪天写了日记。自动化脚本把信息灌进来，你负责读和想。",
+      "Claude Code 不是必需品——<strong>这套系统只用 Codex + Obsidian 就能完整跑起来。</strong>但在这些场景里它能帮大忙：设计笔记库结构时跟它讨论方案、写 Templater 模板让它给建议、脚本报错了贴给它排查、弹窗样式不满意让它帮忙改 XAML。它的核心优势是理解和推理——你描述不清楚问题时，它能帮你理清思路。",
+    role3_detail:
+      "Claude Code 通过 <strong>Claudian 插件</strong>可以直接嵌入 Obsidian，在 Obsidian 里按快捷键就能调出来，不需要切窗口。和之前写的 <a href='/blog/claude-code-mcp-setup' class='text-indigo-600 dark:text-indigo-400 hover:underline'>MCP 配置</a>、<a href='/blog/claude-code-statusline' class='text-indigo-600 dark:text-indigo-400 hover:underline'>状态栏</a>一样，Claude Code 擅长的是理解和推理。这套系统里它不负责执行——那是 Codex 的活。",
     roles_summary:
-      "三个工具分工明确：<strong>Claude Code 想、Codex 做、Obsidian 存。</strong>这不是硬凑三个工具——每个都解决了前一个解决不了的问题。Claude Code 不会执行定时任务，Codex 不适合做架构设计，Obsidian 不能自己运转。三者合在一起，才构成一个能自己呼吸的笔记系统。",
+      "<strong>Codex 是引擎，Obsidian 是底盘，Claude Code 是副驾驶。</strong>引擎和底盘就能把车开起来；副驾驶在你迷路时帮你指方向。这篇文章的主角是 Codex 和 Obsidian——后面所有内容围绕它们展开。需要 Claude Code 的时候会单独标注。",
 
     // ---- 准备工作 ----
     h2_prep: "准备工作",
@@ -226,26 +229,29 @@ const content = {
     intro_p1:
       "Imagine this: you open Obsidian each morning. Yesterday's diary is already in 1-Daily, with yesterday's AI news links appended at the bottom. At 8pm sharp, the day's AI news is automatically fetched, filtered, and written into 5-Summaries as Markdown — and if any topic you care about matches, a popup reminds you. In the evening, you write your diary, say \"organize it,\" and your Inbox clears, the diary files itself, and bidirectional links are filled in. All you have to do is read and think.",
     intro_p2:
-      "This isn't \"throw requirements at AI and call it done\" — this system has three roles, each doing what it does best: <strong>Claude Code handles thinking and design</strong> (vault structure, templates, queries), <strong>Codex executes automation</strong> (news fetching, inbox sorting, weekly/monthly reviews), and <strong>Obsidian hosts the knowledge graph</strong>. This article is the complete build record — from plugin setup to four automation pipelines, from Dataview dashboards to WPF popup reminders.",
+      "The core of this system is <strong>Codex</strong> (executing automation) and <strong>Obsidian</strong> (hosting the knowledge graph). Claude Code assists with thinking and debugging when things get complex — it's a nice-to-have, not a requirement. This article is the complete build record — from plugin setup to four automation pipelines, from Dataview dashboards to WPF popup reminders.",
 
-    h2_roles: "The Three Roles: Who Does What",
+    h2_roles: "Who Does What: Lead vs. Supporting Roles",
     roles_intro:
-      "Before we start, understand what each tool is responsible for — this is the design premise of the whole system. Many people treat AI tools as universal wrenches, making one tool do everything. A better approach: let each tool do what it's best at.",
-    role1_title: "Claude Code — The Thinker",
+      "Before we start, understand who does what — this keeps you from spending effort in the wrong places.",
+
+    role1_title: "Codex — The Executor (Lead)",
     role1_desc:
-      "In this system, Claude Code handles \"think it through, then tell you how.\" It doesn't directly manipulate system files, but it designs your vault's directory structure, writes Templater templates, configures Dataview queries, and plans automation workflows. Ask it \"how should I organize my vault so automation scripts run reliably?\" — it gives you a reasoned design, not just a list of folder names.",
+      "Codex is the <strong>core engine</strong> of this system. Its <code>.codex/rules.md</code> defines four automation pipelines — news fetching, inbox sorting, weekly review, monthly review. Every time you start a conversation with it, it checks: is today's news file generated? Has the Inbox piled up past 3 items? It fetches what needs fetching and reminds what needs reminding. It doesn't need you to write code, but it does need clear rules: when to trigger, what to do, where results go. <code>rules.md</code> is your contract with it.",
     role1_detail:
-      "Claude Code is embedded directly in Obsidian via the <strong>Claudian plugin</strong> — press a hotkey in Obsidian and it's there, no window switching. It can see your currently open note, understand the context, and give targeted advice. Like the earlier <a href='/blog/claude-code-mcp-setup' class='text-indigo-600 dark:text-indigo-400 hover:underline'>MCP setup</a> and <a href='/blog/claude-code-statusline' class='text-indigo-600 dark:text-indigo-400 hover:underline'>statusline</a> posts, Claude Code's core strength is understanding and reasoning — not execution.",
-    role2_title: "Codex — The Executor",
+      "Codex reads/writes vault files directly, executes Node.js and PowerShell scripts, and registers Windows scheduled tasks. Scripts can be long (the WPF popup is 200+ lines), but you don't write them — you describe what you want, Codex generates, you verify.",
+
+    role2_title: "Obsidian — The Host (Platform)",
     role2_desc:
-      "Codex handles \"get it done.\" Its <code>.codex/rules.md</code> defines four automation pipelines — news fetching, inbox sorting, weekly review, monthly review. Every time you start a conversation with it, it checks: is today's news file generated? Has the Inbox piled up past 3 items? It fetches what needs fetching and reminds what needs reminding. It doesn't need you to write code, but it does need you to write clear rules: when to trigger, what to do, where results go. <code>rules.md</code> is your contract with it.",
-    role2_detail:
-      "Codex reads and writes vault files directly, executes Node.js and PowerShell scripts, and registers Windows scheduled tasks. The generated scripts can be long (the WPF popup is 200+ lines), but you don't write them — you describe what you want, Codex generates them, and you verify.",
-    role3_title: "Obsidian — The Host",
+      "Obsidian is where knowledge ultimately lives. It provides the infrastructure that turns knowledge from \"a pile of files\" into \"a network\": <strong>bidirectional links</strong> connect notes, <strong>Dataview</strong> turns your vault into a queryable database, <strong>Templater</strong> auto-applies templates, <strong>Calendar</strong> gives you a calendar sidebar. Codex feeds information in; you read and think.",
+
+    role3_title: "Claude Code — Supporting Role (Nice-to-Have)",
     role3_desc:
-      "Obsidian is where knowledge ultimately lives. It doesn't produce content, but it provides the infrastructure that turns knowledge from \"a pile of files\" into \"a network\": <strong>bidirectional links</strong> connect notes to each other, <strong>Dataview</strong> turns your vault into a queryable database, <strong>Templater</strong> auto-applies templates on note creation, and <strong>Calendar</strong> shows which days have diary entries in a sidebar view. Automation scripts feed information in; you read and think.",
+      "Claude Code is not required — <strong>this system runs perfectly with just Codex + Obsidian.</strong> But it shines in these moments: discussing vault designs, getting template suggestions, debugging script errors, refining WPF popup styles. Its core strength is understanding and reasoning — when you can't articulate a problem clearly, it helps you think it through.",
+    role3_detail:
+      "Claude Code is embedded directly in Obsidian via the <strong>Claudian plugin</strong> — press a hotkey and it's there. Like the earlier <a href='/blog/claude-code-mcp-setup' class='text-indigo-600 dark:text-indigo-400 hover:underline'>MCP setup</a> and <a href='/blog/claude-code-statusline' class='text-indigo-600 dark:text-indigo-400 hover:underline'>statusline</a> posts, its strength is reasoning — not execution. That's Codex's job here.",
     roles_summary:
-      "Three tools, three clear responsibilities: <strong>Claude Code thinks, Codex executes, Obsidian hosts.</strong> This isn't forcing three tools together — each solves a problem the previous one can't. Claude Code can't run scheduled tasks. Codex isn't suited for architectural design. Obsidian can't run itself. Together, they form a knowledge system that breathes on its own.",
+      "<strong>Codex is the engine, Obsidian is the chassis, Claude Code is the navigator.</strong> Engine + chassis gets the car moving; the navigator helps when you're lost. This article focuses on Codex and Obsidian — everything below revolves around them. Claude Code gets a shout-out where it's genuinely useful.",
 
     h2_prep: "Preparation",
     prep_intro: "Of the five items below, the first three you must do yourself (install software); the last two Codex handles for you (create folders, register tasks). Each is labeled — just follow along.",
@@ -574,30 +580,33 @@ export default function CodexObsidianWorkflowPage() {
       <h2 id="roles">{t("h2_roles")}</h2>
       <p>{t("roles_intro")}</p>
 
+      {/* Codex — 主角 */}
       <div className="mt-8 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
         <div className="flex items-center gap-4 mb-3">
-          <img src={`${BASE_PATH}/blog-images/claude-code-logo.svg`} alt="Claude Code" className="w-9 h-9 shrink-0" />
+          <img src={`${BASE_PATH}/blog-images/codex-logo.svg`} alt="Codex" className="w-9 h-9 shrink-0" />
           <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{t("role1_title")}</h3>
         </div>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role1_desc") }} />
-        <p className="mt-3 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role1_detail") }} />
+        <p className="mt-3 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">{t("role1_detail")}</p>
       </div>
 
-      <div className="mt-6 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <div className="flex items-center gap-4 mb-3">
-          <img src={`${BASE_PATH}/blog-images/codex-logo.svg`} alt="Codex" className="w-9 h-9 shrink-0" />
-          <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{t("role2_title")}</h3>
-        </div>
-        <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role2_desc") }} />
-        <p className="mt-3 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">{t("role2_detail")}</p>
-      </div>
-
+      {/* Obsidian — 平台 */}
       <div className="mt-6 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
         <div className="flex items-center gap-4 mb-3">
           <img src={`${BASE_PATH}/blog-images/obsidian-logo.svg`} alt="Obsidian" className="w-9 h-9 shrink-0" />
+          <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{t("role2_title")}</h3>
+        </div>
+        <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role2_desc") }} />
+      </div>
+
+      {/* Claude Code — 辅助 */}
+      <div className="mt-6 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <div className="flex items-center gap-4 mb-3">
+          <img src={`${BASE_PATH}/blog-images/claude-code-logo.svg`} alt="Claude Code" className="w-9 h-9 shrink-0" />
           <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{t("role3_title")}</h3>
         </div>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role3_desc") }} />
+        <p className="mt-3 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role3_detail") }} />
       </div>
 
       <div className="mt-4 px-5 py-4 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800/30 rounded-xl text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("roles_summary") }} />
