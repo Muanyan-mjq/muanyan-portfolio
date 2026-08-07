@@ -813,16 +813,16 @@ export default function CodexObsidianWorkflowPage() {
       <h2 id="ref">{lang === "zh" ? "相关资源" : "Related Resources"}</h2>
       <div className="mt-6 space-y-3">
         {([
-          { icon: "🔌", title: lang === "zh" ? "Claude Code MCP 配置" : "Claude Code MCP Setup", desc: lang === "zh" ? "像 USB 一样给 Claude Code 接上外设" : "Give Claude Code USB-like plug-and-play powers", href: "/blog/claude-code-mcp-setup", external: false },
-          { icon: "📊", title: lang === "zh" ? "Claude Code 状态栏" : "Claude Code Statusline", desc: lang === "zh" ? "一行命令让终端活起来" : "One command to bring your terminal to life", href: "/blog/claude-code-statusline", external: false },
-          { icon: "🌌", title: lang === "zh" ? "AGI 之后：从「会什么」到「你是谁」" : "After AGI: From Capability to Identity", desc: lang === "zh" ? "Codex 与 Claude Code 的三方深夜对话" : "A three-way late-night dialogue with Codex and Claude Code", href: "/blog/agi-era-thoughts", external: false },
-          { icon: "🔥", title: "AI HOT", desc: lang === "zh" ? "每天 20:00 抓取的热点来源" : "The curated news source fetched at 8pm daily", href: "https://aihot.virxact.com/", external: true },
-          { icon: "💻", title: lang === "zh" ? "本站仓库" : "Site Repository", desc: lang === "zh" ? "博客与脚本的源码都在 GitHub" : "Source code for this blog and its scripts", href: "https://github.com/Muanyan-mjq/muanyan-portfolio", external: true },
+          { img: `${BASE_PATH}/mcp-cover.png`, title: lang === "zh" ? "Claude Code MCP 配置" : "Claude Code MCP Setup", desc: lang === "zh" ? "像 USB 一样给 Claude Code 接上外设" : "Give Claude Code USB-like plug-and-play powers", href: "/blog/claude-code-mcp-setup", external: false },
+          { img: `${BASE_PATH}/statusline-cover.png`, title: lang === "zh" ? "Claude Code 状态栏" : "Claude Code Statusline", desc: lang === "zh" ? "一行命令让终端活起来" : "One command to bring your terminal to life", href: "/blog/claude-code-statusline", external: false },
+          { img: `${BASE_PATH}/agi-era-cover.png`, title: lang === "zh" ? "AGI 之后：从「会什么」到「你是谁」" : "After AGI: From Capability to Identity", desc: lang === "zh" ? "Codex 与 Claude Code 的三方深夜对话" : "A three-way late-night dialogue with Codex and Claude Code", href: "/blog/agi-era-thoughts", external: false },
+          { img: `${BASE_PATH}/blog-images/aihot.ico`, title: "AI HOT", desc: lang === "zh" ? "每天 20:00 抓取的热点来源" : "The curated news source fetched at 8pm daily", href: "https://aihot.virxact.com/", external: true },
+          { img: `${BASE_PATH}/blog-images/github-logo.svg`, title: lang === "zh" ? "本站仓库" : "Site Repository", desc: lang === "zh" ? "博客与脚本的源码都在 GitHub" : "Source code for this blog and its scripts", href: "https://github.com/Muanyan-mjq/muanyan-portfolio", external: true },
         ] as const).map((item, i) => {
           const cardClass = "group flex items-center gap-4 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-400 dark:hover:border-indigo-600 bg-white dark:bg-zinc-900 transition-all duration-300 hover:shadow-md hover:shadow-indigo-500/5 hover:-translate-y-0.5";
           const inner = (
             <>
-              <span className="text-2xl">{item.icon}</span>
+              <img src={item.img} alt="" className="w-10 h-10 rounded-lg object-contain shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-lg font-semibold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">{item.title}</p>
                 <p className="text-sm text-zinc-500 dark:text-zinc-400">{item.desc}</p>
