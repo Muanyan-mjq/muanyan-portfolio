@@ -60,6 +60,11 @@ const content = {
     vault_code_title: "目录结构（真实截图版）",
     vault_p2:
       "几个关键设计：一是 <strong>Inbox 清零原则</strong>——所有东西先落 Inbox，处理完必须归位，绝不堆积；二是 <strong>按月份归档</strong>——日记和热点都按月分文件夹，查询时「2026 年 7 月发生了什么」一目了然；三是 <strong>双向链接</strong>——每篇日记末尾自动补上关联笔记，让知识自动长成网络。",
+    deep_vault_title: "深入理解：为什么「结构稳定」是第一原则",
+    deep_vault_p1:
+      "自动化的本质是「重复执行同一套动作」。如果文件夹结构不稳定——今天按主题、明天按项目——脚本的路径规则就得跟着改，等于把自动化做成了手工。<strong>先定结构，再写脚本，顺序不能反。</strong>",
+    deep_vault_p2:
+      "另一个容易被忽略的点：结构要「一看就懂」。半年后你回来看这个库，不需要回忆就能知道什么东西该放哪里。好的知识库结构，是让未来的自己不用思考。",
     h2_hot: "自动化一：AI 热点每天自动归档",
     hot_p1:
       "我每天会看 AI 热点（数据源是 AI HOT，一个聚合站），但不想手动复制粘贴。于是写了个 Node 脚本 <code>fetch_aihot.js</code>，每天 20:00 由计划任务触发：抓当天的热点 → 整理成 Markdown → 写到 <code>5-Summaries/2026年8月/AI热点-2026-08-07.md</code>。",
@@ -82,6 +87,11 @@ const content = {
       "脚本都放在 <code>D:\\DeepLearning_Code\\SecondBrain\\.codex\\scripts\\</code> 下，一共五个文件，职责单一：抓热点、查日记、查 Inbox、发提醒、周总结。",
     tasks_p3:
       "选计划任务而不是插件，原因很简单：<strong>透明、可改、不依赖别人</strong>。想改逻辑直接改代码，出了问题看日志就知道是哪一步。",
+    deep_tasks_title: "深入理解：为什么选计划任务而不是插件",
+    deep_tasks_p1:
+      "插件把一切都封装好，但封装也意味着「不可见」：你不知道它什么时候跑、跑了什么、为什么失败。计划任务 + 脚本正好相反——触发条件、执行命令、输出日志全部透明，出问题看日志就知道是哪一步。",
+    deep_tasks_p2:
+      "代价是要自己维护一点代码。但对一个「每天都会用到、坏了很影响生活」的系统来说，可排查性比省事重要得多。",
     h2_day: "一天的实际流程",
     day_p1: "这套系统跑起来之后，我的一天是这样的：",
     day_li1: "<strong>早上：</strong>打开 Obsidian，昨天的日记已经在 1-Daily 里，末尾带着昨天的 AI 热点链接",
@@ -111,6 +121,15 @@ const content = {
     next_p1:
       "这套工作流还在长。下一篇写它的最新成员：<strong>兴趣雷达</strong>——热点抓完后自动扫描关键词，只有命中我关心的主题（AGI、self、注意力…）才弹窗提醒，不命中就不打扰。",
     next_link: "兴趣雷达：Windows 自定义弹窗实战 →",
+    h2_ref: "相关资源",
+    ref1_title: "兴趣雷达（本系列下一篇）",
+    ref1_desc: "给 AI 热点装上关键词提醒弹窗",
+    ref2_title: "本站仓库",
+    ref2_desc: "这套博客与脚本的源码都在 GitHub",
+    ref3_title: "AI HOT 数据源",
+    ref3_desc: "每天 20:00 抓取的热点来源",
+    ref4_title: "Windows 任务计划程序",
+    ref4_desc: "搜索「任务计划程序」即可管理所有自动化任务",
     bottom_title: "这篇文章是怎么写的",
     bottom_desc:
       "本文全程用 Codex 撰写。文中的目录结构、脚本片段和计划任务都是真实运行中的那套——包括那些坑，也都是真踩过的。",
@@ -136,6 +155,11 @@ const content = {
     vault_code_title: "Folder structure (from the real vault)",
     vault_p2:
       "Three key design decisions: the <strong>Inbox-zero principle</strong> — everything lands in Inbox and must be filed, never left to pile up; <strong>monthly archiving</strong> — diaries and news are grouped by month so \"what happened in July 2026\" is instantly clear; and <strong>bidirectional links</strong> — each diary automatically links to related notes, letting knowledge grow into a network on its own.",
+    deep_vault_title: "Deep Dive: Why a Stable Structure Comes First",
+    deep_vault_p1:
+      "Automation is essentially \"repeating the same actions.\" If the folder structure keeps changing — topics one week, projects the next — scripts must follow, turning automation back into manual work. <strong>Define the structure first, then write the scripts. Don't reverse the order.</strong>",
+    deep_vault_p2:
+      "Another easy-to-miss point: the structure should be self-explanatory. Six months later, you should be able to tell where something belongs without recalling your own rules. A good vault structure lets your future self think less.",
     h2_hot: "Automation 1: AI News Auto-Archived Every Day",
     hot_p1:
       "I read AI news daily (sourced from AI HOT, an aggregator), but I didn't want to copy-paste it by hand. So I wrote a Node script, <code>fetch_aihot.js</code>, triggered by a scheduled task at 8pm: fetch the day's news → format as Markdown → write to <code>5-Summaries/2026年8月/AI热点-2026-08-07.md</code>.",
@@ -158,6 +182,11 @@ const content = {
       "Scripts live in <code>D:\\DeepLearning_Code\\SecondBrain\\.codex\\scripts\\</code> — five files, each with one job: fetch news, check diary, check Inbox, send reminders, weekly summary.",
     tasks_p3:
       "Why scheduled tasks instead of plugins? Simple: <strong>transparent, editable, and independent</strong>. Change the logic by editing code; when something breaks, the logs tell you exactly which step.",
+    deep_tasks_title: "Deep Dive: Scheduled Tasks over Plugins",
+    deep_tasks_p1:
+      "Plugins wrap everything neatly, but wrapping means \"invisible\": you don't know when they run, what they did, or why they failed. Scheduled tasks + scripts are the opposite — trigger, command, and output logs are all transparent. When something breaks, the log points straight at the failing step.",
+    deep_tasks_p2:
+      "The cost is maintaining a little code yourself. But for a system you rely on daily, debuggability matters more than convenience.",
     h2_day: "A Day in the Life",
     day_p1: "Once this system runs, my day looks like this:",
     day_li1: "<strong>Morning:</strong> open Obsidian — yesterday's diary is already in 1-Daily, with yesterday's AI news link at the end",
@@ -187,6 +216,15 @@ const content = {
     next_p1:
       "This workflow keeps growing. The next post covers its newest member: the <strong>Interest Radar</strong> — after fetching news, it scans keywords and pops a notification only when topics you care about (AGI, self, attention…) appear. No match, no interruption.",
     next_link: "Interest Radar: Custom Windows Popups in Practice →",
+    h2_ref: "Related Resources",
+    ref1_title: "Interest Radar (Next in Series)",
+    ref1_desc: "Keyword-alert popups for AI news",
+    ref2_title: "This Site's Repository",
+    ref2_desc: "Source code for this blog and its scripts on GitHub",
+    ref3_title: "AI HOT Source",
+    ref3_desc: "The news source fetched every day at 8pm",
+    ref4_title: "Windows Task Scheduler",
+    ref4_desc: "Search \"Task Scheduler\" to manage all automation tasks",
     bottom_title: "How This Article Was Written",
     bottom_desc:
       "Written entirely with Codex. The folder structure, scripts, and scheduled tasks here are the real ones running on my machine — including the pitfalls, which really happened.",
@@ -309,6 +347,12 @@ export default function CodexObsidianWorkflowPage() {
       </CodeBlock>
       <p dangerouslySetInnerHTML={{ __html: t("vault_p2") }} />
 
+      <div className="mt-8 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <p className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">{t("deep_vault_title")}</p>
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200 mb-2" dangerouslySetInnerHTML={{ __html: t("deep_vault_p1") }} />
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200">{t("deep_vault_p2")}</p>
+      </div>
+
       <h2 id="hot">{t("h2_hot")}</h2>
       <p dangerouslySetInnerHTML={{ __html: t("hot_p1") }} />
       <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{t("hot_code_title")}</p>
@@ -336,6 +380,12 @@ export default function CodexObsidianWorkflowPage() {
       </CodeBlock>
       <p dangerouslySetInnerHTML={{ __html: t("tasks_p2") }} />
       <p dangerouslySetInnerHTML={{ __html: t("tasks_p3") }} />
+
+      <div className="mt-8 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <p className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">{t("deep_tasks_title")}</p>
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200 mb-2">{t("deep_tasks_p1")}</p>
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200">{t("deep_tasks_p2")}</p>
+      </div>
 
       <h2 id="day">{t("h2_day")}</h2>
       <p>{t("day_p1")}</p>
@@ -375,6 +425,33 @@ export default function CodexObsidianWorkflowPage() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </Link>
+
+      <h2 id="ref">{t("h2_ref")}</h2>
+      <div className="mt-6 space-y-3">
+        {[
+          { icon: "📡", title: t("ref1_title"), desc: t("ref1_desc"), href: "/blog/aihot-interest-radar", external: false },
+          { icon: "💻", title: t("ref2_title"), desc: t("ref2_desc"), href: "https://github.com/Muanyan-mjq/muanyan-portfolio", external: true },
+          { icon: "🔥", title: t("ref3_title"), desc: t("ref3_desc"), href: "https://aihot.virxact.com/", external: true },
+          { icon: "⏰", title: t("ref4_title"), desc: t("ref4_desc"), href: "#tasks", external: false },
+        ].map((item, i) => (
+          <a
+            key={i}
+            href={item.href}
+            target={item.external ? "_blank" : undefined}
+            rel={item.external ? "noopener noreferrer" : undefined}
+            className="group flex items-center gap-4 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-400 dark:hover:border-indigo-600 bg-white dark:bg-zinc-900 transition-all duration-300 hover:shadow-md hover:shadow-indigo-500/5 hover:-translate-y-0.5"
+          >
+            <span className="text-2xl">{item.icon}</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-lg font-semibold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">{item.title}</p>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">{item.desc}</p>
+            </div>
+            <svg className="w-5 h-5 text-zinc-400 group-hover:text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+        ))}
+      </div>
 
       <div className="mt-12 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-700">
         <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">{t("bottom_title")}</p>

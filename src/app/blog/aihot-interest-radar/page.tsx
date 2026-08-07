@@ -41,9 +41,9 @@ const post = blogPosts.find((p) => p.slug === "aihot-interest-radar")!;
 const content = {
   zh: {
     intro_p1:
-      "上一篇搭好了每日 AI 热点自动归档——每天 20:00，7 条热点整整齐齐地躺进 Obsidian。但很快发现一个新问题：<strong>7 条里我真正关心的可能只有一两条</strong>。AGI、self、注意力、算子……我每天都要打开那份文件，从头翻到尾，就为了确认「今天有没有我关心的」。翻到没有的时候，那种失落感特别真实。",
+      "上一篇搭好了每日 AI 热点自动归档——每天 20:00，7 条热点整整齐齐地躺进 Obsidian。但很快发现一个新问题：<strong>7 条里我真正关心的可能只有一两条</strong>。AGI、self、注意力、算子……我每天都要打开那份文件，从头翻到尾，就为了确认「今天有没有我关心的」。没有命中时，这一晚的热点就只是 7 条标题，翻它纯属浪费时间。",
     intro_p2:
-      "于是有了「兴趣雷达」：热点抓取完成后自动扫描关键词，命中我订阅的主题就弹窗提醒，没命中就静默。原则一句话：<strong>命中才打扰，不命中不打扰。</strong>本文讲清楚它怎么设计、踩了哪四个坑、以及怎么改成你自己的。",
+      "于是有了「兴趣雷达」：热点抓取完成后自动扫描关键词，命中我订阅的主题就弹窗提醒，没命中就静默。原则一句话：<strong>命中才打扰，不命中不打扰</strong>——就像聊天软件的「特别关心」，只有被标记的人才弹提醒。本文讲清楚它怎么设计、踩了哪四个坑、以及怎么改成你自己的。",
     h2_need: "需求：什么样的提醒才算是「好提醒」",
     need_p1: "动手前，我先把需求写成了三条硬标准：",
     need_li1: "<strong>精准：</strong>只在我关心的主题出现时提醒，其他一概静默",
@@ -64,12 +64,22 @@ const content = {
     config_code_title: "aihot_keywords.json（真实配置）",
     config_p3:
       "想研究新方向？加一个 topic 就行。脚本每次运行都会重新读这个文件，不用改任何代码——这满足了需求里的第三条「可定制」。",
+    deep_config_title: "深入理解：为什么「散词」会失灵",
+    deep_config_p1:
+      "散词有三个问题：一是<strong>词义歧义</strong>——「self」可能命中 self-hosted、self-improving，跟你想看的 Self-Initialization 毫无关系；二是<strong>同义词漏配</strong>——写了「注意力」漏了「attention」，中文来源命中、英文来源就漏掉；三是<strong>缺少归属</strong>——就算命中了，你也只知道「有个词出现了」，不知道它属于哪个主题、值不值得看。",
+    deep_config_p2:
+      "「主题 + 别名」把「匹配」升级成了「归类」：每个主题下挂一组同义词，命中任意一个就归入该主题。弹窗输出的是可理解的语义单元（「命中主题：Self-Initialization / 注意力」），而不是一个孤零零的词。",
     h2_design: "弹窗交互是怎么设计的",
     design_p1: "弹窗不是随便画的，每个选择都有理由：",
     design_li1: "<strong>为什么居中：</strong>右下角太容易被忽略，居中一定会被看到",
     design_li2: "<strong>为什么亮色 Fluent 风：</strong>和 Windows 11 的视觉语言一致，白底圆角阴影，看着不突兀",
     design_li3: "<strong>为什么实时倒计时：</strong>告诉你它「会自己走」，不会一直占着屏幕；20 秒够读完一条标题",
     design_li4: "<strong>为什么有按钮：</strong>「打开热点笔记」直接跳 Obsidian，看到感兴趣的当场就读",
+    deep_popup_title: "深入理解：弹窗交互的取舍",
+    deep_popup_p1:
+      "提醒类交互最怕变成「常驻干扰」——一旦弹窗不自己消失，用户要么手动关、要么习惯性忽略，提醒就失效了。所以倒计时的意义是<strong>让提醒「自毁」</strong>：20 秒刚好够读完一条标题、判断值不值得打开，之后自动消失，不欠用户一个「关闭」操作。",
+    deep_popup_p2:
+      "按钮的设计同理：「打开热点笔记」把从「看到提醒」到「读到内容」的摩擦降到一次点击。提醒的价值不在于「弹出来了」，而在于<strong>弹出来之后能多快读到内容</strong>。",
     h2_popup: "弹窗长什么样",
     popup_p1: "最终效果（这是我机器上的真实截图）：",
     popup_p2:
@@ -83,6 +93,11 @@ const content = {
       "换成 WPF 窗口后，按钮和计时器都「不工作」——点了没反应，窗口也不自动关。排查了很久才明白：PowerShell 的事件处理脚本需要运行空间有空闲，而 <code>Dispatcher.Run()</code> 把主运行空间堵死了，事件永远轮不到执行。",
     pit2_p2:
       "解法：把弹窗逻辑整体用 <code>Add-Type</code> 编译成原生 C# 类，按钮、计时器全部走 .NET 原生事件，跟 PowerShell 的事件机制彻底解耦。改完之后按钮和倒计时立刻正常。",
+    deep_pit2_title: "深入理解：PowerShell 事件为什么卡住",
+    deep_pit2_p1:
+      "PowerShell 的事件处理脚本需要一个「有空闲的运行空间」来执行。而 <code>Dispatcher.Run()</code> 是一个同步阻塞调用——它把唯一的运行空间占死，事件回调永远排不上队。这不是代码写错，是<strong>机制层面的冲突</strong>。",
+    deep_pit2_p2:
+      "解法是把 UI 逻辑整体搬进 C#：WPF 窗口在自己的 UI 线程上直接调度 .NET 事件，完全不经过 PowerShell 的运行空间。这也是「界面程序别用脚本语言写」这条经验的实际案例。",
     h2_pit3: "坑 3：窗口关了，进程还赖着不走",
     pit3_p1:
       "原生 C# 里计时器正常跳了（每秒写日志为证），窗口也关了，但进程就是不退出。原因：直接 <code>Dispatcher.Run()</code> 不会因为窗口关闭而返回。正确做法是 WPF 的标准用法：<strong><code>Application.Run(window)</code></strong>——窗口一关，应用就退出。",
@@ -119,15 +134,24 @@ const content = {
     h2_next: "下一步",
     next_p1:
       "这个「兴趣雷达」的思路还能延伸：不只是热点——论文、视频、播客，任何每天会新增的内容源都能接。下一篇可能是把弹窗做成一个更通用的「订阅提醒器」。",
+    h2_ref: "相关资源",
+    ref1_title: "Codex + Obsidian 工作流（上一篇）",
+    ref1_desc: "这套自动化系统的整体设计",
+    ref2_title: "通知脚本 notify_aihot_keywords.ps1",
+    ref2_desc: "SecondBrain\\.codex\\scripts\\ 下，弹窗与倒计时的完整实现",
+    ref3_title: "关键词配置 aihot_keywords.json",
+    ref3_desc: "同目录下，改主题就改这个文件",
+    ref4_title: "AI HOT 数据源",
+    ref4_desc: "每天 20:00 抓取的热点来源",
     bottom_title: "这篇文章是怎么写的",
     bottom_desc:
       "全程用 Codex 撰写。文中的弹窗截图就是我机器上的真实运行画面，四个坑也都真真实实发生过。",
   },
   en: {
     intro_p1:
-      "The previous post set up daily AI news archiving — at 8pm, seven items land neatly in Obsidian. But a new problem appeared fast: <strong>of those seven, I really only care about one or two</strong>. AGI, self, attention, operators… every day I'd open the file and skim from top to bottom, just to check \"is there anything for me today?\" And on the days there wasn't, the letdown was real.",
+      "The previous post set up daily AI news archiving — at 8pm, seven items land neatly in Obsidian. But a new problem appeared fast: <strong>of those seven, I really only care about one or two</strong>. AGI, self, attention, operators… every day I'd open the file and skim from top to bottom, just to check \"is there anything for me today?\" On days with no match, those seven items were just seven headlines — skimming them was pure waste.",
     intro_p2:
-      "So I built the \"Interest Radar\": after the news is fetched, keywords are scanned automatically; if a topic I subscribe to matches, a popup appears; otherwise it stays silent. One principle: <strong>interrupt only on a match — otherwise, don't interrupt.</strong> This post covers how it's designed, the four pitfalls I hit, and how to make it yours.",
+      "So I built the \"Interest Radar\": after the news is fetched, keywords are scanned automatically; if a topic I subscribe to matches, a popup appears; otherwise it stays silent. One principle: <strong>interrupt only on a match — otherwise, don't interrupt</strong> — like \"close friends\" notifications in a chat app. This post covers how it's designed, the four pitfalls I hit, and how to make it yours.",
     h2_need: "Requirements: What Makes a Good Notification",
     need_p1: "Before building, I wrote down three hard requirements:",
     need_li1: "<strong>Precise:</strong> only notify when a topic I care about appears — everything else stays silent",
@@ -149,12 +173,22 @@ const content = {
     config_code_title: "aihot_keywords.json (real config)",
     config_p3:
       "Want to follow a new direction? Just add a topic. The script re-reads this file on every run — no code changes. That satisfies requirement three: customizable.",
+    deep_config_title: "Deep Dive: Why Loose Keywords Fail",
+    deep_config_p1:
+      "Loose words have three problems: <strong>ambiguity</strong> — \"self\" can match self-hosted or self-improving, nothing to do with the Self-Initialization you care about; <strong>missing synonyms</strong> — write \"attention\" but forget \"注意力,\" and Chinese sources slip through; and <strong>no attribution</strong> — even on a hit, you only know \"a word appeared,\" not which topic it belongs to or whether it's worth reading.",
+    deep_config_p2:
+      "\"Topics with aliases\" upgrades matching into classification: each topic carries a group of synonyms, and hitting any of them counts as that topic. The popup outputs a meaningful unit (\"Matched topic: Self-Initialization / Attention\"), not a lonely word.",
     h2_design: "Designing the Popup Interaction",
     design_p1: "The popup wasn't drawn casually — every choice has a reason:",
     design_li1: "<strong>Centered:</strong> the bottom-right corner is too easy to miss; center-screen gets seen",
     design_li2: "<strong>Light Fluent style:</strong> consistent with Windows 11's visual language — white, rounded, soft shadow, unobtrusive",
     design_li3: "<strong>Live countdown:</strong> tells you it will go away on its own; 20 seconds is enough to read one headline",
     design_li4: "<strong>Buttons:</strong> \"Open news note\" jumps straight to Obsidian — read it the moment you're interested",
+    deep_popup_title: "Deep Dive: Trade-offs in Popup Interaction",
+    deep_popup_p1:
+      "Reminder interactions fear nothing more than becoming permanent clutter — if a popup doesn't dismiss itself, users either close it manually or start ignoring it, and the reminder stops working. So the countdown exists to make the reminder <strong>self-destruct</strong>: 20 seconds is just enough to read one headline and decide whether to open it, then it's gone — no \"close\" action owed.",
+    deep_popup_p2:
+      "The button works the same way: \"Open news note\" reduces the friction from seeing a reminder to reading the content to a single click. A reminder's value isn't \"it popped up\" — it's <strong>how fast you can reach the content after it pops</strong>.",
     h2_popup: "What the Popup Looks Like",
     popup_p1: "The final result (a real screenshot from my machine):",
     popup_p2:
@@ -168,6 +202,11 @@ const content = {
       "After switching to a WPF window, the buttons and timer \"didn't work\" — clicks did nothing and the window never auto-closed. It took a while to realize: PowerShell event scripts need the runspace to be free, but <code>Dispatcher.Run()</code> blocks the main runspace, so events never get a chance to run.",
     pit2_p2:
       "Fix: compile the whole popup logic into a native C# class with <code>Add-Type</code>, so buttons and timers use plain .NET events — completely decoupled from PowerShell's event machinery. After that, buttons and the countdown worked immediately.",
+    deep_pit2_title: "Deep Dive: Why PowerShell Events Got Stuck",
+    deep_pit2_p1:
+      "PowerShell event handlers need a free runspace to execute. But <code>Dispatcher.Run()</code> is a synchronous blocking call — it occupies the only runspace, so event callbacks never get a chance to run. The code wasn't wrong; it was a <strong>mechanism-level conflict</strong>.",
+    deep_pit2_p2:
+      "The fix is moving all UI logic into C#: the WPF window schedules .NET events directly on its own UI thread, never touching PowerShell's runspace. It's a concrete case of the old rule: \"don't write GUI programs in a scripting language.\"",
     h2_pit3: "Pit 3: The Process Refused to Exit",
     pit3_p1:
       "In native C#, the timer ticked correctly (proven by per-second log lines), the window closed — but the process stayed alive. Why: a bare <code>Dispatcher.Run()</code> doesn't return when the window closes. The right way is WPF's standard pattern: <strong><code>Application.Run(window)</code></strong> — when the window closes, the app exits.",
@@ -205,6 +244,15 @@ const content = {
     h2_next: "What's Next",
     next_p1:
       "This \"interest radar\" idea extends beyond news — papers, videos, podcasts, any source that grows daily. The next step might be turning the popup into a general-purpose \"subscription notifier.\"",
+    h2_ref: "Related Resources",
+    ref1_title: "Codex + Obsidian Workflow (Previous Post)",
+    ref1_desc: "The overall design of this automation system",
+    ref2_title: "Notify Script notify_aihot_keywords.ps1",
+    ref2_desc: "Under SecondBrain\\.codex\\scripts\\ — the full popup + countdown implementation",
+    ref3_title: "Keyword Config aihot_keywords.json",
+    ref3_desc: "In the same directory — edit topics here",
+    ref4_title: "AI HOT Source",
+    ref4_desc: "The news source fetched every day at 8pm",
     bottom_title: "How This Article Was Written",
     bottom_desc:
       "Written entirely with Codex. The popup screenshot is a real capture from my machine, and all four pitfalls actually happened.",
@@ -310,6 +358,12 @@ export default function AihotInterestRadarPage() {
       </CodeBlock>
       <p dangerouslySetInnerHTML={{ __html: t("config_p3") }} />
 
+      <div className="mt-8 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <p className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">{t("deep_config_title")}</p>
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200 mb-2" dangerouslySetInnerHTML={{ __html: t("deep_config_p1") }} />
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200" dangerouslySetInnerHTML={{ __html: t("deep_config_p2") }} />
+      </div>
+
       <h2 id="design">{t("h2_design")}</h2>
       <p>{t("design_p1")}</p>
       <ul className="list-disc pl-5 my-3 space-y-2 text-[17px] leading-[1.9]">
@@ -319,13 +373,26 @@ export default function AihotInterestRadarPage() {
         <li dangerouslySetInnerHTML={{ __html: t("design_li4") }} />
       </ul>
 
+      <div className="mt-8 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <p className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">{t("deep_popup_title")}</p>
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200 mb-2" dangerouslySetInnerHTML={{ __html: t("deep_popup_p1") }} />
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200" dangerouslySetInnerHTML={{ __html: t("deep_popup_p2") }} />
+      </div>
+
       <h2 id="popup">{t("h2_popup")}</h2>
       <p>{t("popup_p1")}</p>
-      <img
-        src={`${BASE_PATH}/aihot-popup.png`}
-        alt="AI hot news interest radar popup"
-        className="w-full max-w-2xl rounded-xl border border-zinc-200 dark:border-zinc-700 shadow-lg my-3"
-      />
+      <figure className="my-8">
+        <div className="rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-lg max-w-2xl mx-auto">
+          <img
+            src={`${BASE_PATH}/aihot-popup.png`}
+            alt="AI hot news interest radar popup"
+            className="w-full"
+          />
+        </div>
+        <figcaption className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">
+          {lang === "zh" ? "▲ 命中主题时的弹窗：标签、命中标题、倒计时、一键打开" : "▲ The popup on a match: topic chips, matched headline, countdown, one-click open"}
+        </figcaption>
+      </figure>
       <p dangerouslySetInnerHTML={{ __html: t("popup_p2") }} />
 
       <h2 id="pit1">{t("h2_pit1")}</h2>
@@ -335,6 +402,12 @@ export default function AihotInterestRadarPage() {
       <h2 id="pit2">{t("h2_pit2")}</h2>
       <p dangerouslySetInnerHTML={{ __html: t("pit2_p1") }} />
       <p dangerouslySetInnerHTML={{ __html: t("pit2_p2") }} />
+
+      <div className="mt-8 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <p className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">{t("deep_pit2_title")}</p>
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200 mb-2" dangerouslySetInnerHTML={{ __html: t("deep_pit2_p1") }} />
+        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200" dangerouslySetInnerHTML={{ __html: t("deep_pit2_p2") }} />
+      </div>
 
       <h2 id="pit3">{t("h2_pit3")}</h2>
       <p dangerouslySetInnerHTML={{ __html: t("pit3_p1") }} />
@@ -373,6 +446,33 @@ export default function AihotInterestRadarPage() {
 
       <h2 id="next">{t("h2_next")}</h2>
       <p dangerouslySetInnerHTML={{ __html: t("next_p1") }} />
+
+      <h2 id="ref">{t("h2_ref")}</h2>
+      <div className="mt-6 space-y-3">
+        {[
+          { icon: "🧠", title: t("ref1_title"), desc: t("ref1_desc"), href: "/blog/codex-obsidian-workflow", external: false },
+          { icon: "📜", title: t("ref2_title"), desc: t("ref2_desc"), href: "#code", external: false },
+          { icon: "⚙️", title: t("ref3_title"), desc: t("ref3_desc"), href: "#config", external: false },
+          { icon: "🔥", title: t("ref4_title"), desc: t("ref4_desc"), href: "https://aihot.virxact.com/", external: true },
+        ].map((item, i) => (
+          <a
+            key={i}
+            href={item.href}
+            target={item.external ? "_blank" : undefined}
+            rel={item.external ? "noopener noreferrer" : undefined}
+            className="group flex items-center gap-4 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-400 dark:hover:border-indigo-600 bg-white dark:bg-zinc-900 transition-all duration-300 hover:shadow-md hover:shadow-indigo-500/5 hover:-translate-y-0.5"
+          >
+            <span className="text-2xl">{item.icon}</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-lg font-semibold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">{item.title}</p>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">{item.desc}</p>
+            </div>
+            <svg className="w-5 h-5 text-zinc-400 group-hover:text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+        ))}
+      </div>
 
       <div className="mt-12 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-700">
         <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">{t("bottom_title")}</p>
