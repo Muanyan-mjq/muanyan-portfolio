@@ -41,94 +41,82 @@ const post = blogPosts.find((p) => p.slug === "codex-obsidian-workflow")!;
 const content = {
   zh: {
     intro_p1:
-      "如果你用笔记软件做过知识管理，大概率遇到过这几个问题：收藏了但再也没打开过、笔记堆积成山却找不到想要的、坚持几天就断更。它们看起来像「自律问题」，但根子上往往是同一个——<strong>知识的流入完全靠手动</strong>：每条新信息都要自己建文件夹、起文件名、写日期、加标签。手动搬运一旦中断，整个系统就跟着停滞，库慢慢就荒了。",
+      "如果你用笔记软件做过知识管理，大概率遇到过这几个问题：收藏了但再也没打开过、笔记堆积成山却找不到想要的、坚持几天就断更。它们看起来像「自律问题」，但根子上往往是同一个——<strong>知识的流入完全靠手动</strong>：每条新信息都要自己建文件夹、起文件名、写日期、加标签。",
     intro_p2:
-      "我的 Obsidian 笔记库 SecondBrain 也经历过这个阶段，直到我开始用 Codex 当助手，才意识到：<strong>搬运信息这件事，恰恰是 AI 最擅长、也最该交给它的。</strong>与其要求自己每天坚持手动整理，不如把「整理」本身自动化。本文就是这套方案的完整记录：笔记库怎么设计、三个自动化分别做什么、怎么用 Windows 计划任务串起来，以及我踩过的坑。",
-    h2_what: "先回答一个问题：为什么要这么搭",
-    what_p1:
-      "Obsidian 是本地优先的笔记软件，文件就是纯 Markdown，支持双向链接——特别适合当「第二大脑」。Codex 是 AI 编程助手，能读写文件、写脚本、做自动化。两者结合的点在于：<strong>Obsidian 负责存，Codex 负责搬。</strong>",
-    what_p2:
-      "具体到我的使用场景，最值钱的自动化是这三件：每天 20:00 自动抓取 AI 热点归档、22:50 提醒写日记、每月自动整理归档。下面一个个讲。",
-    h2_vault: "第一步：笔记库怎么设计",
+      "这篇教你用 Codex 把这套「整理」本身自动化：每天 20:00 热点自动归档、22:50 提醒写日记、按月自动整理。全程不需要你自己写代码——<strong>你只需要告诉 Codex 你想要什么，剩下的它来做。</strong>",
+    h2_prep: "准备工作",
+    prep_p1: "动手前确认下面三样东西，每项都配了说明。没有装过的跟着做就行。",
+    prep_check1: "检查 1：Obsidian 装了吗？",
+    prep_check1_desc:
+      "打开 Obsidian（<a href='https://obsidian.md/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>obsidian.md</a> 免费下载），新建一个笔记库，比如就叫 SecondBrain。能正常创建和打开笔记就说明 OK。",
+    prep_check2: "检查 2：Node.js 装了吗？",
+    prep_check2_desc:
+      "打开终端（Windows 上按 Win+R，输入 <code>powershell</code> 回车），输入 <code>node --version</code>。能显示版本号就行——我们的脚本靠它运行。没有的话去 <a href='https://nodejs.org/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>nodejs.org</a> 下载 LTS 版；国内网络慢就换淘宝镜像：<code>npm config set registry https://registry.npmmirror.com</code>。",
+    prep_check3: "检查 3：知道脚本放哪",
+    prep_check3_desc:
+      "脚本会放在笔记库下的 <code>.codex\\scripts\\</code> 目录。可以提前在 Obsidian 库文件夹里建好这个目录（不会显示在笔记列表里，因为它以点开头，但你用文件管理器能看到）。",
+    h2_tell: "第一步：告诉 Codex 你想要什么",
+    tell_p1: "不需要自己写代码。直接把这个需求复制给 Codex：",
+    tell_code_title: "给 Codex 的提示词（可以直接复制）",
+    tell_p2:
+      "Codex 会先问你几个问题——笔记库的路径、热点数据源、几点执行。回答完，它会自动帮你：建好目录结构、写好三个脚本、注册好 Windows 计划任务。",
+    h2_get: "你会得到什么",
+    get_p1: "做完之后，你的笔记库会变成这样：",
+    get_code_title: "目录结构",
+    get_p2: "以及三个各司其职的脚本：",
+    get_li1: "<strong>fetch_aihot.js</strong>——每天抓取 AI 热点，写成 Markdown 放进 5-Summaries",
+    get_li2: "<strong>check_diary.js + remind_diary.ps1</strong>——每天 22:50 检查日记写没写，没写就弹提醒",
+    get_li3: "<strong>check_inbox.js + remind_inbox.ps1</strong>——Inbox 里有东西就提醒你处理",
+    get_p3: "Windows 任务计划程序里会多出三个定时任务，到点自动跑，不需要你手动开任何东西。",
+    h2_vault: "笔记库为什么这么设计",
     vault_p1:
-      "自动化的前提是结构稳定。如果文件夹三天两头变，脚本也跟着乱。我的库分五层，每层一个职责，新东西永远先落在 0-Inbox，处理完再归位到对应层：",
-    vault_li1: "<strong>0-Inbox</strong>（入口）——所有新东西先落这里，统一处理",
-    vault_li2: "<strong>1-Daily</strong>——日记，按 <code>2026年8月/</code> 这样按月归档",
-    vault_li3: "<strong>2-Projects / 3-Areas</strong>——项目与领域思考，中长期沉淀",
+      "自动化能跑起来的前提是结构稳定。库分成五层，每层一个职责，新东西永远先落 0-Inbox，处理完再归位：",
+    vault_li1: "<strong>0-Inbox</strong>（入口）——所有新东西先落这里",
+    vault_li2: "<strong>1-Daily</strong>——日记，按 <code>2026年8月/</code> 按月归档",
+    vault_li3: "<strong>2-Projects / 3-Areas</strong>——项目与领域思考",
     vault_li4: "<strong>4-Resources</strong>——资料收藏",
-    vault_li5: "<strong>5-Summaries</strong>——汇总类：AI 热点、周总结都在这",
-    vault_code_title: "目录结构（真实截图版）",
+    vault_li5: "<strong>5-Summaries</strong>——汇总类：AI 热点、周总结",
     vault_p2:
-      "几个关键设计：一是 <strong>Inbox 清零原则</strong>——所有东西先落 Inbox，处理完必须归位，绝不堆积；二是 <strong>按月份归档</strong>——日记和热点都按月分文件夹，查询时「2026 年 7 月发生了什么」一目了然；三是 <strong>双向链接</strong>——每篇日记末尾自动补上关联笔记，让知识自动长成网络。",
-    deep_vault_title: "深入理解：为什么「结构稳定」是第一原则",
-    deep_vault_p1:
-      "自动化的本质是「重复执行同一套动作」。如果文件夹结构不稳定——今天按主题、明天按项目——脚本的路径规则就得跟着改，等于把自动化做成了手工。<strong>先定结构，再写脚本，顺序不能反。</strong>",
-    deep_vault_p2:
-      "另一个容易被忽略的点：结构要「一看就懂」。半年后你回来看这个库，不需要回忆就能知道什么东西该放哪里。好的知识库结构，是让未来的自己不用思考。",
-    h2_hot: "自动化一：AI 热点每天自动归档",
+      "三个关键设计：一是 <strong>Inbox 清零原则</strong>——所有东西先落 Inbox，处理完必须归位；二是 <strong>按月归档</strong>——日记和热点都按月分文件夹，「2026 年 7 月发生了什么」一目了然；三是 <strong>双向链接</strong>——每篇日记末尾自动补上关联笔记，让知识长成网络。",
+    h2_hot: "热点是怎么自动归档的",
     hot_p1:
-      "我每天会看 AI 热点（数据源是 AI HOT，一个聚合站），但不想手动复制粘贴。于是写了个 Node 脚本 <code>fetch_aihot.js</code>，每天 20:00 由计划任务触发：抓当天的热点 → 整理成 Markdown → 写到 <code>5-Summaries/2026年8月/AI热点-2026-08-07.md</code>。",
-    hot_code_title: "抓取脚本的核心逻辑（简化）",
-    hot_p2: "生成的文件长这样（这是真实文件的一部分）：",
-    hot_p3:
-      "注意文件名和路径都带月份：<code>AI热点-2026-08-07.md</code> 躺在 <code>2026年8月/</code> 文件夹里。这就是「按月归档」的自动版。",
+      "每天 20:00，<code>fetch_aihot.js</code> 从 AI HOT 抓当天的热点，整理成 Markdown，写到 <code>5-Summaries/2026年8月/AI热点-2026-08-07.md</code>。生成的文件长这样（真实文件的一部分）：",
+    hot_p2: "验证方法：到点后打开 5-Summaries，能看到当天的文件，就说明跑通了。",
     h2_aihot: "顺带安利：AI HOT 这个热点源",
     aihot_p1:
-      "这套系统能跑起来，数据源很关键。我用的是 <a href='https://aihot.virxact.com/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline font-semibold'>AI HOT</a>——一个每天精选 AI 领域热点的聚合站。它能干什么？简单说：把全网 AI 动态里的「重要信息」捞出来，按天整理好，给每条配上标题、摘要和原文链接，让你不用自己刷一堆信息流。",
-    aihot_p2: "它有这三个优点：",
-    aihot_li1: "<strong>精选而非搬运：</strong>每天只保留真正值得看的 AI 动态，不用自己在一堆噪音里挑",
-    aihot_li2: "<strong>结构化数据：</strong>每条热点都有标题、摘要和原文链接，直接可以二次加工成 Markdown 存进笔记库",
-    aihot_li3: "<strong>有公开 API：</strong>脚本一行请求就能拉到当天内容，自动化零门槛——本文的抓取脚本就是直接调它的 API",
-    aihot_p3:
-      "如果你也在做 AI 相关的知识管理，可以把它当作知识库的「每日输入源」——每天自动进来一批高质量素材，你只需要挑感兴趣的读。",
-    h2_diary: "自动化二：日记提醒",
+      "这套系统能跑起来，数据源很关键。我用的是 <a href='https://aihot.virxact.com/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline font-semibold'>AI HOT</a>——一个每天精选 AI 领域热点的聚合站。它能干什么？把全网 AI 动态里的「重要信息」捞出来，按天整理好，给每条配上标题、摘要和原文链接，让你不用自己刷一堆信息流。",
+    aihot_p2: "三个优点：",
+    aihot_li1: "<strong>精选而非搬运：</strong>每天只保留真正值得看的 AI 动态",
+    aihot_li2: "<strong>结构化数据：</strong>每条都有标题、摘要和原文链接，直接能加工成 Markdown",
+    aihot_li3: "<strong>有公开 API：</strong>脚本一行请求就能拉到当天内容，自动化零门槛",
+    aihot_p3: "如果你也在做 AI 相关的知识管理，可以把它当作知识库的「每日输入源」。",
+    h2_diary: "日记提醒是怎么工作的",
     diary_p1:
-      "写日记是最容易断的。所以我设了 22:50 的提醒：脚本检查当天有没有日记文件，没有就弹系统通知「今天还没写日记，快去写两笔」。",
+      "22:50 脚本检查当天有没有日记，没有就弹系统通知「今天还没写日记，快去写两笔」。",
     diary_p2:
-      "写完后，我只要跟 Codex 说一句「今天的日记整理一下」，它就会：把 Inbox 里的日记移到 <code>1-Daily/2026年8月/</code>、加上日期和标签、在末尾补上当天的 AI 热点链接和关联笔记——正文一个字不动。整理完 Inbox 又空了。",
-    h2_archive: "自动化三：月度归档",
-    archive_p1:
-      "每月初自动建 <code>{YYYY年M月}</code> 文件夹。8 月的文件夹 7 月底就建好了，等 9 月到来时，8 月的日记和热点已经整整齐齐，随时能查。这个逻辑写在抓取脚本和日记脚本里：路径永远按「当前月份」生成，所以归档是自动发生的，不需要专门的归档步骤。",
-    h2_tasks: "这些是怎么串起来的",
-    tasks_p1: "全部是 Windows 计划任务 + Node/PowerShell 脚本，不依赖任何第三方服务。任务清单（真实配置）：",
-    tasks_code_title: "计划任务清单",
-    tasks_p2:
-      "脚本都放在 <code>D:\\DeepLearning_Code\\SecondBrain\\.codex\\scripts\\</code> 下，一共五个文件，职责单一：抓热点、查日记、查 Inbox、发提醒、周总结。",
-    tasks_p3:
-      "选计划任务而不是插件，原因很简单：<strong>透明、可改、不依赖别人</strong>。想改逻辑直接改代码，出了问题看日志就知道是哪一步。",
-    deep_tasks_title: "深入理解：为什么选计划任务而不是插件",
-    deep_tasks_p1:
-      "插件把一切都封装好，但封装也意味着「不可见」：你不知道它什么时候跑、跑了什么、为什么失败。计划任务 + 脚本正好相反——触发条件、执行命令、输出日志全部透明，出问题看日志就知道是哪一步。",
-    deep_tasks_p2:
-      "代价是要自己维护一点代码。但对一个「每天都会用到、坏了很影响生活」的系统来说，可排查性比省事重要得多。",
+      "写完后，跟 Codex 说一句「今天的日记整理一下」，它就会把 Inbox 里的日记移到 <code>1-Daily/2026年8月/</code>、加上日期和标签、在末尾补上当天的 AI 热点链接和关联笔记——正文一个字不动。",
     h2_day: "一天的实际流程",
-    day_p1: "这套系统跑起来之后，我的一天是这样的：",
+    day_p1: "系统跑起来之后，你的一天是这样的：",
     day_li1: "<strong>早上：</strong>打开 Obsidian，昨天的日记已经在 1-Daily 里，末尾带着昨天的 AI 热点链接",
-    day_li2: "<strong>20:00：</strong>热点自动抓取，今晚的热点出现在 5-Summaries，命中我订阅的主题时还会弹窗提醒",
+    day_li2: "<strong>20:00：</strong>热点自动抓取，出现在 5-Summaries；命中你订阅的主题时还会弹窗提醒（下一篇）",
     day_li3: "<strong>晚上：</strong>写日记 → 喊一句「整理一下」→ Inbox 清空、日记归位",
     day_li4: "<strong>月底：</strong>当月文件夹自动成型，月度总结直接用当月的日记和热点写",
-    day_p2: "我需要做的，只剩读和想。",
-    h2_pit: "踩过的坑（真实经验）",
-    pit_p1: "这套系统不是一次搭成的，以下四个坑我都实际踩过：",
-    pit_li1: "<strong>中文乱码：</strong>PowerShell 5.1 读脚本默认按系统编码，UTF-8 无 BOM 的中文脚本会乱码报错。所有 .ps1 脚本必须存成 UTF-8 with BOM。",
-    pit_li2: "<strong>日期错位：</strong>脚本里如果用 UTC 日期（toISOString），晚上 8 点之后会变成第二天。要按本地时区取日期。",
-    pit_li3: "<strong>重复任务：</strong>我一度配了两个一模一样的抓取任务，每天跑两遍、弹两次提醒。清理时保留带日志的那个，禁用了另一个。",
-    pit_li4: "<strong>误删恢复：</strong>有次误删了整个 Inbox 文件夹，好在 Windows 回收站能恢复，加上脚本路径都是按月份生成的，重建很快。养成「重要操作前先备份」的习惯。",
+    day_p2: "你需要做的，只剩读和想。",
     h2_faq: "常见问题",
-    faq_intro: "读者问得最多的几个问题：",
-    faq_q1: "这套系统需要会写代码吗？",
-    faq_a1: "不需要从零写。把本文的脚本和任务配置当作模板，让 Codex 或 Claude 帮你改成自己的路径和文件名即可。重点是理解「目录结构稳定 + 定时任务触发脚本」这个思路。",
-    faq_q2: "脚本放在哪里？",
-    faq_a2: "我的脚本统一放在 <code>SecondBrain\\.codex\\scripts\\</code> 下，和笔记库放一起，方便备份。你也可以放任何位置，只要计划任务里的路径对得上。",
-    faq_q3: "怎么改抓取时间？",
-    faq_a3: "打开 Windows 任务计划程序（搜索「任务计划程序」），找到对应的任务，右键 → 属性 → 触发器 → 编辑时间即可。",
-    faq_q4: "出问题了怎么看日志？",
-    faq_a4: "每个脚本都往 <code>scripts\\</code> 目录写日志（比如 <code>aihot_keywords.log</code>）。先看日志里最后几行，把报错复制给 Codex，它一般能直接定位。",
+    faq_intro: "最常被问到的问题：",
+    faq_q1: "需要会写代码吗？",
+    faq_a1: "不需要从零写。把需求告诉 Codex，它帮你生成脚本和任务配置；你只需要会复制粘贴提示词、会看验证结果。",
+    faq_q2: "Codex 没按我说的做怎么办？",
+    faq_a2: "把它的输出贴回去，告诉它哪里不对（比如「热点文件放错文件夹了」），它会修正。它的能力边界在于你描述得清不清楚。",
+    faq_q3: "怎么改执行时间？",
+    faq_a3: "打开 Windows「任务计划程序」，找到对应任务，右键 → 属性 → 触发器 → 编辑时间。",
+    faq_q4: "出问题了怎么看？",
+    faq_a4: "脚本会往 <code>scripts\\</code> 目录写日志（如 <code>aihot_keywords.log</code>）。把日志最后几行复制给 Codex，它一般直接定位。",
     faq_q5: "不想用了怎么停？",
-    faq_a5: "在任务计划程序里禁用对应任务即可，脚本文件留着不碍事。想彻底卸载就删脚本 + 删任务。",
+    faq_a5: "在任务计划程序里禁用对应任务即可；想彻底卸载就删脚本 + 删任务。",
     h2_next: "下一步",
     next_p1:
-      "这套工作流还在长。下一篇写它的最新成员：<strong>兴趣雷达</strong>——热点抓完后自动扫描关键词，只有命中我关心的主题（AGI、self、注意力…）才弹窗提醒，不命中就不打扰。",
+      "这套工作流还在长。下一篇给热点加一个「兴趣雷达」：抓完后自动扫描关键词，只有命中你关心的主题（AGI、self、注意力…）才弹窗提醒，不命中就不打扰。",
     next_link: "兴趣雷达：Windows 自定义弹窗实战 →",
     h2_ref: "相关资源",
     ref1_title: "兴趣雷达（本系列下一篇）",
@@ -141,98 +129,86 @@ const content = {
     ref4_desc: "搜索「任务计划程序」即可管理所有自动化任务",
     bottom_title: "这篇文章是怎么写的",
     bottom_desc:
-      "本文全程用 Codex 撰写。文中的目录结构、脚本片段和计划任务都是真实运行中的那套——包括那些坑，也都是真踩过的。",
+      "本文全程用 Codex 撰写。文中的目录结构、脚本片段和计划任务，都是这套系统真实运行的样子——你照着「第一步」把需求告诉 Codex，也能得到同一套。",
   },
   en: {
     intro_p1:
-      "If you've managed knowledge in a note app, you've probably hit these: things you saved and never opened again, notes piling up with nothing findable, streaks that break after a few days. They look like discipline problems, but the root cause is usually the same — <strong>knowledge flows in entirely manually</strong>: every new item needs its own folder, filename, date, and tags. Once the manual pipeline stalls, the whole system stalls, and the vault slowly dies.",
+      "If you've managed knowledge in a note app, you've probably hit these: things you saved and never opened again, notes piling up with nothing findable, streaks that break after a few days. They look like discipline problems, but the root cause is usually the same — <strong>knowledge flows in entirely manually</strong>: every new item needs its own folder, filename, date, and tags.",
     intro_p2:
-      "My Obsidian vault SecondBrain went through exactly this phase — until I started using Codex as an assistant and realized: <strong>moving information around is exactly what AI is best at, and exactly what should be delegated.</strong> Rather than demanding daily manual filing, automate the filing itself. This article is the full record of that solution: how the vault is designed, what the three automations do, how Windows scheduled tasks tie them together, and the pitfalls I hit.",
-    h2_what: "First: Why Build It This Way",
-    what_p1:
-      "Obsidian is a local-first note app — notes are plain Markdown with bidirectional links, great as a \"second brain.\" Codex is an AI coding assistant that can read and write files and build automations. The combination: <strong>Obsidian stores, Codex moves.</strong>",
-    what_p2:
-      "In my setup, the three most valuable automations are: fetching AI news every day at 8pm, reminding me to write a diary at 10:50pm, and archiving everything by month. Let's go through them one by one.",
-    h2_vault: "Step 1: Designing the Vault",
+      "This post shows you how to automate that \"organizing\" itself with Codex: news auto-archived at 8pm, diary reminders at 10:50pm, automatic monthly filing. No coding from scratch — <strong>you tell Codex what you want, and it builds it for you.</strong>",
+    h2_prep: "Preparation",
+    prep_p1: "Before we start, confirm these three things. Each has instructions if you haven't set it up.",
+    prep_check1: "Check 1: Is Obsidian installed?",
+    prep_check1_desc:
+      "Open Obsidian (<a href='https://obsidian.md/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>obsidian.md</a>, free) and create a vault — call it SecondBrain if you like. Being able to create and open notes means you're good.",
+    prep_check2: "Check 2: Is Node.js installed?",
+    prep_check2_desc:
+      "Open a terminal (press Win+R, type <code>powershell</code>, Enter) and run <code>node --version</code>. Seeing a version number is enough — our scripts run on it. If not installed, get the LTS version from <a href='https://nodejs.org/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>nodejs.org</a>.",
+    prep_check3: "Check 3: Know where the scripts live",
+    prep_check3_desc:
+      "Scripts will live in <code>.codex\\scripts\\</code> inside your vault. You can create that folder in advance with a file manager (it starts with a dot, so Obsidian won't list it as a note).",
+    h2_tell: "Step 1: Tell Codex What You Want",
+    tell_p1: "No need to write code yourself. Just paste this request to Codex:",
+    tell_code_title: "Prompt for Codex (copy-paste ready)",
+    tell_p2:
+      "Codex will ask a few questions — your vault path, the news source, what time things should run. Answer them, and it will build the folder structure, write the three scripts, and register the Windows scheduled tasks for you.",
+    h2_get: "What You'll Get",
+    get_p1: "When it's done, your vault looks like this:",
+    get_code_title: "Folder structure",
+    get_p2: "Plus three single-purpose scripts:",
+    get_li1: "<strong>fetch_aihot.js</strong> — fetches AI news daily and writes Markdown into 5-Summaries",
+    get_li2: "<strong>check_diary.js + remind_diary.ps1</strong> — at 10:50pm, checks whether today's diary exists and reminds you if not",
+    get_li3: "<strong>check_inbox.js + remind_inbox.ps1</strong> — reminds you when Inbox has items",
+    get_p3: "Windows Task Scheduler will have three new tasks that run on their own — no need to open anything manually.",
+    h2_vault: "Why the Vault Is Designed This Way",
     vault_p1:
-      "Automation needs a stable structure. If folders change every few days, scripts get confused too. My vault has five layers, one job each. Everything new lands in 0-Inbox first, then moves to its layer once processed:",
-    vault_li1: "<strong>0-Inbox</strong> (inbox) — everything new lands here first",
+      "Automation needs a stable structure to run against. Five layers, one job each. Everything new lands in 0-Inbox first, then moves to its layer:",
+    vault_li1: "<strong>0-Inbox</strong> (inbox) — everything new lands here",
     vault_li2: "<strong>1-Daily</strong> — diaries, archived by month like <code>2026-08/</code>",
-    vault_li3: "<strong>2-Projects / 3-Areas</strong> — projects and area thinking, long-term",
+    vault_li3: "<strong>2-Projects / 3-Areas</strong> — projects and area thinking",
     vault_li4: "<strong>4-Resources</strong> — saved materials",
     vault_li5: "<strong>5-Summaries</strong> — summaries: AI news, weekly recaps",
-    vault_code_title: "Folder structure (from the real vault)",
     vault_p2:
-      "Three key design decisions: the <strong>Inbox-zero principle</strong> — everything lands in Inbox and must be filed, never left to pile up; <strong>monthly archiving</strong> — diaries and news are grouped by month so \"what happened in July 2026\" is instantly clear; and <strong>bidirectional links</strong> — each diary automatically links to related notes, letting knowledge grow into a network on its own.",
-    deep_vault_title: "Deep Dive: Why a Stable Structure Comes First",
-    deep_vault_p1:
-      "Automation is essentially \"repeating the same actions.\" If the folder structure keeps changing — topics one week, projects the next — scripts must follow, turning automation back into manual work. <strong>Define the structure first, then write the scripts. Don't reverse the order.</strong>",
-    deep_vault_p2:
-      "Another easy-to-miss point: the structure should be self-explanatory. Six months later, you should be able to tell where something belongs without recalling your own rules. A good vault structure lets your future self think less.",
-    h2_hot: "Automation 1: AI News Auto-Archived Every Day",
+      "Three key design decisions: the <strong>Inbox-zero principle</strong> — everything lands in Inbox and must be filed; <strong>monthly archiving</strong> — diaries and news grouped by month, so \"what happened in July 2026\" is instantly clear; and <strong>bidirectional links</strong> — each diary links to related notes, letting knowledge grow into a network.",
+    h2_hot: "How News Gets Archived Automatically",
     hot_p1:
-      "I read AI news daily (sourced from AI HOT, an aggregator), but I didn't want to copy-paste it by hand. So I wrote a Node script, <code>fetch_aihot.js</code>, triggered by a scheduled task at 8pm: fetch the day's news → format as Markdown → write to <code>5-Summaries/2026年8月/AI热点-2026-08-07.md</code>.",
-    hot_code_title: "Core fetch logic (simplified)",
-    hot_p2: "The generated file looks like this (a real excerpt):",
-    hot_p3:
-      "Notice both the filename and the path carry the month: <code>AI热点-2026-08-07.md</code> lives inside <code>2026年8月/</code>. That's the automatic version of monthly archiving.",
+      "At 8pm, <code>fetch_aihot.js</code> fetches the day's AI news from AI HOT, formats it as Markdown, and writes to <code>5-Summaries/2026年8月/AI热点-2026-08-07.md</code>. The generated file looks like this (a real excerpt):",
+    hot_p2: "Verify: after 8pm, open 5-Summaries — if today's file is there, it works.",
     h2_aihot: "A Side Recommendation: AI HOT as Your News Source",
     aihot_p1:
-      "This system only works because of its data source. I use <a href='https://aihot.virxact.com/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline font-semibold'>AI HOT</a> — an aggregator that curates AI news every day. What does it do? It pulls the important items out of the whole AI landscape, organizes them by day, and attaches a title, summary, and source link to each — so you don't have to scroll feeds yourself.",
+      "This system only works because of its data source. I use <a href='https://aihot.virxact.com/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline font-semibold'>AI HOT</a> — an aggregator that curates AI news every day. What does it do? It pulls the important items out of the whole AI landscape, organizes them by day, and attaches a title, summary, and source link to each.",
     aihot_p2: "Three reasons I like it:",
-    aihot_li1: "<strong>Curated, not aggregated:</strong> only genuinely worth-reading AI news survives — no noise to filter yourself",
-    aihot_li2: "<strong>Structured data:</strong> every item has a title, summary, and source link, ready to be re-formatted into Markdown and stored in your vault",
-    aihot_li3: "<strong>Public API:</strong> one request pulls the day's content — zero-friction automation (the fetch script in this article calls it directly)",
-    aihot_p3:
-      "If you manage AI knowledge too, treat it as the \"daily input source\" for your vault — quality material flows in automatically, and you just read what interests you.",
-    h2_diary: "Automation 2: Diary Reminder",
+    aihot_li1: "<strong>Curated, not aggregated:</strong> only genuinely worth-reading AI news survives",
+    aihot_li2: "<strong>Structured data:</strong> title, summary, and source link per item — ready to become Markdown",
+    aihot_li3: "<strong>Public API:</strong> one request pulls the day's content — zero-friction automation",
+    aihot_p3: "If you manage AI knowledge too, treat it as the \"daily input source\" for your vault.",
+    h2_diary: "How the Diary Reminder Works",
     diary_p1:
-      "Diaries are the easiest habit to break. So I set a 10:50pm reminder: the script checks whether today's diary exists; if not, it pops a system notification — \"You haven't written your diary today, go write a couple lines.\"",
+      "At 10:50pm, a script checks whether today's diary exists; if not, it pops a system notification — \"You haven't written your diary today, go write a couple lines.\"",
     diary_p2:
-      "After I write it, I just tell Codex \"organize today's diary.\" It moves the note from Inbox to <code>1-Daily/2026年8月/</code>, adds date and tags, and appends today's AI news link plus related notes — without touching a word of the body. Inbox is empty again.",
-    h2_archive: "Automation 3: Monthly Archiving",
-    archive_p1:
-      "At the start of each month the <code>{YYYY年M月}</code> folder is created automatically. August's folder was ready at the end of July — when September arrives, August's diaries and news are already tidy and searchable. This logic lives inside the fetch and diary scripts: paths are always generated from the current month, so archiving happens on its own, with no dedicated step.",
-    h2_tasks: "How It All Connects",
-    tasks_p1: "Everything runs on Windows scheduled tasks + Node/PowerShell scripts — no third-party services. The task list (real config):",
-    tasks_code_title: "Scheduled task list",
-    tasks_p2:
-      "Scripts live in <code>D:\\DeepLearning_Code\\SecondBrain\\.codex\\scripts\\</code> — five files, each with one job: fetch news, check diary, check Inbox, send reminders, weekly summary.",
-    tasks_p3:
-      "Why scheduled tasks instead of plugins? Simple: <strong>transparent, editable, and independent</strong>. Change the logic by editing code; when something breaks, the logs tell you exactly which step.",
-    deep_tasks_title: "Deep Dive: Scheduled Tasks over Plugins",
-    deep_tasks_p1:
-      "Plugins wrap everything neatly, but wrapping means \"invisible\": you don't know when they run, what they did, or why they failed. Scheduled tasks + scripts are the opposite — trigger, command, and output logs are all transparent. When something breaks, the log points straight at the failing step.",
-    deep_tasks_p2:
-      "The cost is maintaining a little code yourself. But for a system you rely on daily, debuggability matters more than convenience.",
+      "After you write it, tell Codex \"organize today's diary.\" It moves the note from Inbox to <code>1-Daily/2026年8月/</code>, adds date and tags, and appends today's AI news link plus related notes — without touching a word of the body.",
     h2_day: "A Day in the Life",
-    day_p1: "Once this system runs, my day looks like this:",
+    day_p1: "Once the system runs, your day looks like this:",
     day_li1: "<strong>Morning:</strong> open Obsidian — yesterday's diary is already in 1-Daily, with yesterday's AI news link at the end",
-    day_li2: "<strong>8pm:</strong> news is fetched automatically and appears in 5-Summaries; if it matches my subscribed topics, a popup reminds me",
+    day_li2: "<strong>8pm:</strong> news is fetched automatically into 5-Summaries; matching topics even pop a reminder (next post)",
     day_li3: "<strong>Evening:</strong> write the diary → say \"organize it\" → Inbox clears, diary files itself",
-    day_li4: "<strong>End of month:</strong> the month's folder is already shaped; the monthly recap writes itself from the diaries and news",
-    day_p2: "All I have to do is read and think.",
-    h2_pit: "Pitfalls (Real Experience)",
-    pit_p1: "This system wasn't built in one go. Four pitfalls I actually hit:",
-    pit_li1: "<strong>Garbled Chinese:</strong> PowerShell 5.1 reads scripts using the system codepage, so UTF-8 without BOM gets mangled. Every .ps1 must be saved as UTF-8 with BOM.",
-    pit_li2: "<strong>Off-by-one dates:</strong> if the script uses UTC dates (toISOString), after 8pm it rolls to the next day. Always take the date from the local timezone.",
-    pit_li3: "<strong>Duplicate tasks:</strong> I once had two identical fetch tasks — it ran twice a day and popped double reminders. Keep the one with logs, disable the other.",
-    pit_li4: "<strong>Accidental deletion:</strong> I once deleted the whole Inbox folder by mistake. The Windows Recycle Bin saved it, and because script paths are month-based, rebuilding was fast. Backup before any big operation.",
+    day_li4: "<strong>End of month:</strong> the month's folder is already shaped; the monthly recap writes itself",
+    day_p2: "All you have to do is read and think.",
     h2_faq: "FAQ",
     faq_intro: "The questions readers ask most:",
     faq_q1: "Do I need to know how to code?",
-    faq_a1: "Not from scratch. Use this article's scripts and task config as templates, and have Codex or Claude adapt them to your paths and filenames. The core idea to grasp: \"stable folder structure + scheduled tasks running scripts.\"",
-    faq_q2: "Where do the scripts live?",
-    faq_a2: "Mine live in <code>SecondBrain\\.codex\\scripts\\</code>, inside the vault so they're backed up together. Any location works as long as the scheduled task paths match.",
-    faq_q3: "How do I change the fetch time?",
-    faq_a3: "Open Task Scheduler (search \"Task Scheduler\"), find the task, right-click → Properties → Triggers → Edit the time.",
+    faq_a1: "Not from scratch. Tell Codex what you want and it generates the scripts and task config; you just copy prompts and check results.",
+    faq_q2: "What if Codex doesn't do what I asked?",
+    faq_a2: "Paste its output back and tell it what's wrong (e.g., \"the news file went to the wrong folder\"). It will fix it. How well it works depends on how clearly you describe the problem.",
+    faq_q3: "How do I change the execution time?",
+    faq_a3: "Open Windows Task Scheduler, find the task, right-click → Properties → Triggers → Edit the time.",
     faq_q4: "How do I debug when something breaks?",
-    faq_a4: "Every script writes a log in the <code>scripts\\</code> folder (e.g. <code>aihot_keywords.log</code>). Read the last few lines and paste the error to Codex — it usually pinpoints the issue directly.",
+    faq_a4: "Scripts write logs to <code>scripts\\</code> (e.g., <code>aihot_keywords.log</code>). Paste the last few lines to Codex — it usually pinpoints the issue.",
     faq_q5: "How do I stop it?",
-    faq_a5: "Disable the task in Task Scheduler; the scripts can stay. To uninstall completely, delete the scripts and the tasks.",
+    faq_a5: "Disable the task in Task Scheduler; scripts can stay. To uninstall completely, delete the scripts and tasks.",
     h2_next: "What's Next",
     next_p1:
-      "This workflow keeps growing. The next post covers its newest member: the <strong>Interest Radar</strong> — after fetching news, it scans keywords and pops a notification only when topics you care about (AGI, self, attention…) appear. No match, no interruption.",
+      "This workflow keeps growing. The next post adds an \"Interest Radar\" to the news: after fetching, keywords are scanned, and a popup appears only when topics you care about (AGI, self, attention…) match — no match, no interruption.",
     next_link: "Interest Radar: Custom Windows Popups in Practice →",
     h2_ref: "Related Resources",
     ref1_title: "Interest Radar (Next in Series)",
@@ -240,16 +216,36 @@ const content = {
     ref2_title: "This Site's Repository",
     ref2_desc: "Source code for this blog and its scripts on GitHub",
     ref3_title: "AI HOT Source",
-    ref3_desc: "The news source fetched every day at 8pm",
+    ref3_desc: "The curated AI news source fetched at 8pm",
     ref4_title: "Windows Task Scheduler",
     ref4_desc: "Search \"Task Scheduler\" to manage all automation tasks",
     bottom_title: "How This Article Was Written",
     bottom_desc:
-      "Written entirely with Codex. The folder structure, scripts, and scheduled tasks here are the real ones running on my machine — including the pitfalls, which really happened.",
+      "Written entirely with Codex. The folder structure, scripts, and scheduled tasks here are how this system really runs — follow Step 1 and tell Codex what you want, and you'll get the same thing.",
   },
 } as const;
 
 const codeBlocks = {
+  prompt: {
+    zh: `帮我搭一套 Obsidian 笔记库自动化：
+1. 写一个 Node 脚本，每天抓 AI HOT 的热点，整理成 Markdown，
+   存到 5-Summaries/{年份年月份}/AI热点-{日期}.md
+2. 写一个 PowerShell 提醒脚本，每天 22:50 检查当天日记有没有写，
+   没写就弹系统通知
+3. 帮我注册 Windows 计划任务：每天 20:00 跑抓取，22:50 跑提醒
+
+笔记库结构：0-Inbox、1-Daily、2-Projects、3-Areas、4-Resources、5-Summaries
+脚本统一放在 .codex/scripts/ 下，每个脚本要有日志`,
+    en: `Build me an Obsidian vault automation:
+1. A Node script that fetches AI HOT news daily, formats it as Markdown,
+   and saves to 5-Summaries/{YYYY年M月}/AI热点-{YYYY-MM-DD}.md
+2. A PowerShell reminder that checks at 10:50pm whether today's diary exists
+   and pops a system notification if not
+3. Register Windows scheduled tasks: fetch at 8pm, remind at 10:50pm
+
+Vault structure: 0-Inbox, 1-Daily, 2-Projects, 3-Areas, 4-Resources, 5-Summaries
+Put all scripts under .codex/scripts/ and give each one a log`,
+  },
   vaultTree: {
     zh: `SecondBrain/
 ├── 0-Inbox/          # 入口：新想法、未整理的东西
@@ -265,26 +261,6 @@ const codeBlocks = {
 ├── 3-Areas/          # area thinking (AGI, Agents…)
 ├── 4-Resources/      # saved materials
 └── 5-Summaries/      # summaries: AI news, weekly recaps`,
-  },
-  fetchCore: {
-    zh: `// fetch_aihot.js（简化）
-const data = await get('https://aihot.virxact.com/api/public/items?mode=selected&since=...');
-const main = data.items.slice(0, 7);
-
-let md = \`# AI 热点 · \${today}\\n\\n\`;
-main.forEach(i => {
-  md += \`## [\${i.title}](\${i.permalink})\\n\\n\${i.summary}\\n\\n\`;
-});
-fs.writeFileSync(\`5-Summaries/\${monthDir}/AI热点-\${today}.md\`, md);`,
-    en: `// fetch_aihot.js (simplified)
-const data = await get('https://aihot.virxact.com/api/public/items?mode=selected&since=...');
-const main = data.items.slice(0, 7);
-
-let md = \`# AI News · \${today}\\n\\n\`;
-main.forEach(i => {
-  md += \`## [\${i.title}](\${i.permalink})\\n\\n\${i.summary}\\n\\n\`;
-});
-fs.writeFileSync(\`5-Summaries/\${monthDir}/AI热点-\${today}.md\`, md);`,
   },
   hotMd: {
     zh: `---
@@ -322,16 +298,6 @@ Usage among users 35+ is rising…
 ---
 *Source: AI HOT — curated from the last 24 hours*`,
   },
-  tasks: {
-    zh: `20:00  Codex_AI热点推送        node fetch_aihot.js        fetch news → 5-Summaries
-22:50  SecondBrain_DiaryReminder  remind_diary.ps1           diary reminder
-10:00  SecondBrain_InboxMonitor   remind_inbox.ps1           Inbox reminder
-18:00  SecondBrain_InboxMonitor   remind_inbox.ps1`,
-    en: `20:00  Codex_AI热点推送        node fetch_aihot.js        fetch news → 5-Summaries
-22:50  SecondBrain_DiaryReminder  remind_diary.ps1           diary reminder
-10:00  SecondBrain_InboxMonitor   remind_inbox.ps1           Inbox reminder
-18:00  SecondBrain_InboxMonitor   remind_inbox.ps1`,
-  },
 };
 
 export default function CodexObsidianWorkflowPage() {
@@ -346,9 +312,36 @@ export default function CodexObsidianWorkflowPage() {
       <p dangerouslySetInnerHTML={{ __html: t("intro_p1") }} />
       <p dangerouslySetInnerHTML={{ __html: t("intro_p2") }} />
 
-      <h2 id="what">{t("h2_what")}</h2>
-      <p dangerouslySetInnerHTML={{ __html: t("what_p1") }} />
-      <p>{t("what_p2")}</p>
+      <h2 id="prep">{t("h2_prep")}</h2>
+      <p>{t("prep_p1")}</p>
+      <h3>{t("prep_check1")}</h3>
+      <p dangerouslySetInnerHTML={{ __html: t("prep_check1_desc") }} />
+      <h3 className="mt-8">{t("prep_check2")}</h3>
+      <p dangerouslySetInnerHTML={{ __html: t("prep_check2_desc") }} />
+      <h3 className="mt-8">{t("prep_check3")}</h3>
+      <p dangerouslySetInnerHTML={{ __html: t("prep_check3_desc") }} />
+
+      <h2 id="tell">{t("h2_tell")}</h2>
+      <p>{t("tell_p1")}</p>
+      <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{t("tell_code_title")}</p>
+      <CodeBlock language="text">
+        {codeBlocks.prompt[lang as keyof typeof codeBlocks.prompt] ?? codeBlocks.prompt.zh}
+      </CodeBlock>
+      <p dangerouslySetInnerHTML={{ __html: t("tell_p2") }} />
+
+      <h2 id="get">{t("h2_get")}</h2>
+      <p>{t("get_p1")}</p>
+      <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{t("get_code_title")}</p>
+      <CodeBlock language="text">
+        {codeBlocks.vaultTree[lang as keyof typeof codeBlocks.vaultTree] ?? codeBlocks.vaultTree.zh}
+      </CodeBlock>
+      <p>{t("get_p2")}</p>
+      <ul className="list-disc pl-5 my-3 space-y-2 text-[17px] leading-[1.9]">
+        <li dangerouslySetInnerHTML={{ __html: t("get_li1") }} />
+        <li dangerouslySetInnerHTML={{ __html: t("get_li2") }} />
+        <li dangerouslySetInnerHTML={{ __html: t("get_li3") }} />
+      </ul>
+      <p>{t("get_p3")}</p>
 
       <h2 id="vault">{t("h2_vault")}</h2>
       <p>{t("vault_p1")}</p>
@@ -359,51 +352,28 @@ export default function CodexObsidianWorkflowPage() {
         <li dangerouslySetInnerHTML={{ __html: t("vault_li4") }} />
         <li dangerouslySetInnerHTML={{ __html: t("vault_li5") }} />
       </ul>
-      <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{t("vault_code_title")}</p>
-      <CodeBlock language="text">
-        {codeBlocks.vaultTree[lang as keyof typeof codeBlocks.vaultTree] ?? codeBlocks.vaultTree.zh}
-      </CodeBlock>
       <p dangerouslySetInnerHTML={{ __html: t("vault_p2") }} />
-
-      <div className="mt-8 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <p className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">{t("deep_vault_title")}</p>
-        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200 mb-2" dangerouslySetInnerHTML={{ __html: t("deep_vault_p1") }} />
-        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200">{t("deep_vault_p2")}</p>
-      </div>
 
       <h2 id="hot">{t("h2_hot")}</h2>
       <p dangerouslySetInnerHTML={{ __html: t("hot_p1") }} />
-      <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{t("hot_code_title")}</p>
-      <CodeBlock language="javascript">
-        {codeBlocks.fetchCore[lang as keyof typeof codeBlocks.fetchCore] ?? codeBlocks.fetchCore.zh}
-      </CodeBlock>
-      <p>{t("hot_p2")}</p>
       <CodeBlock language="markdown">
         {codeBlocks.hotMd[lang as keyof typeof codeBlocks.hotMd] ?? codeBlocks.hotMd.zh}
       </CodeBlock>
-      <p dangerouslySetInnerHTML={{ __html: t("hot_p3") }} />
+      <p>{t("hot_p2")}</p>
+
+      <h2 id="aihot">{t("h2_aihot")}</h2>
+      <p dangerouslySetInnerHTML={{ __html: t("aihot_p1") }} />
+      <p>{t("aihot_p2")}</p>
+      <ul className="list-disc pl-5 my-3 space-y-2 text-[17px] leading-[1.9]">
+        <li dangerouslySetInnerHTML={{ __html: t("aihot_li1") }} />
+        <li dangerouslySetInnerHTML={{ __html: t("aihot_li2") }} />
+        <li dangerouslySetInnerHTML={{ __html: t("aihot_li3") }} />
+      </ul>
+      <p dangerouslySetInnerHTML={{ __html: t("aihot_p3") }} />
 
       <h2 id="diary">{t("h2_diary")}</h2>
       <p>{t("diary_p1")}</p>
       <p dangerouslySetInnerHTML={{ __html: t("diary_p2") }} />
-
-      <h2 id="archive">{t("h2_archive")}</h2>
-      <p dangerouslySetInnerHTML={{ __html: t("archive_p1") }} />
-
-      <h2 id="tasks">{t("h2_tasks")}</h2>
-      <p>{t("tasks_p1")}</p>
-      <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{t("tasks_code_title")}</p>
-      <CodeBlock language="text">
-        {codeBlocks.tasks[lang as keyof typeof codeBlocks.tasks] ?? codeBlocks.tasks.zh}
-      </CodeBlock>
-      <p dangerouslySetInnerHTML={{ __html: t("tasks_p2") }} />
-      <p dangerouslySetInnerHTML={{ __html: t("tasks_p3") }} />
-
-      <div className="mt-8 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <p className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">{t("deep_tasks_title")}</p>
-        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200 mb-2">{t("deep_tasks_p1")}</p>
-        <p className="text-[19px] leading-[1.9] text-zinc-800 dark:text-zinc-200">{t("deep_tasks_p2")}</p>
-      </div>
 
       <h2 id="day">{t("h2_day")}</h2>
       <p>{t("day_p1")}</p>
@@ -414,15 +384,6 @@ export default function CodexObsidianWorkflowPage() {
         <li dangerouslySetInnerHTML={{ __html: t("day_li4") }} />
       </ul>
       <p>{t("day_p2")}</p>
-
-      <h2 id="pit">{t("h2_pit")}</h2>
-      <p>{t("pit_p1")}</p>
-      <ul className="list-disc pl-5 my-3 space-y-2 text-[17px] leading-[1.9]">
-        <li dangerouslySetInnerHTML={{ __html: t("pit_li1") }} />
-        <li dangerouslySetInnerHTML={{ __html: t("pit_li2") }} />
-        <li dangerouslySetInnerHTML={{ __html: t("pit_li3") }} />
-        <li dangerouslySetInnerHTML={{ __html: t("pit_li4") }} />
-      </ul>
 
       <h2 id="faq">{t("h2_faq")}</h2>
       <p>{t("faq_intro")}</p>
