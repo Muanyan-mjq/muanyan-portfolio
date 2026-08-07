@@ -590,29 +590,29 @@ export default function CodexObsidianWorkflowPage() {
 
       {/* Codex — 主角 */}
       <div className="mt-8 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <div className="flex items-center gap-2.5 mb-3">
-          <img src={`${BASE_PATH}/blog-images/codex-logo.svg`} alt="Codex" className="w-6 h-6 shrink-0" />
-          <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{t("role1_title")}</h3>
-        </div>
+        <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3">
+          <img src={`${BASE_PATH}/blog-images/codex-logo.svg`} alt="" className="w-5 h-5 inline-block mr-2 align-middle" />
+          {t("role1_title")}
+        </h3>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role1_desc") }} />
         <p className="mt-3 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">{t("role1_detail")}</p>
       </div>
 
       {/* Obsidian — 平台 */}
       <div className="mt-6 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <div className="flex items-center gap-2.5 mb-3">
-          <img src={`${BASE_PATH}/blog-images/obsidian-logo.svg`} alt="Obsidian" className="w-6 h-6 shrink-0" />
-          <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{t("role2_title")}</h3>
-        </div>
+        <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3">
+          <img src={`${BASE_PATH}/blog-images/obsidian-logo.svg`} alt="" className="w-5 h-5 inline-block mr-2 align-middle" />
+          {t("role2_title")}
+        </h3>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role2_desc") }} />
       </div>
 
       {/* Claude Code — 辅助 */}
       <div className="mt-6 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <div className="flex items-center gap-2.5 mb-3">
-          <img src={`${BASE_PATH}/blog-images/claude-code-logo.svg`} alt="Claude Code" className="w-6 h-6 shrink-0" />
-          <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{t("role3_title")}</h3>
-        </div>
+        <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3">
+          <img src={`${BASE_PATH}/blog-images/claude-code-logo.svg`} alt="" className="w-5 h-5 inline-block mr-2 align-middle" />
+          {t("role3_title")}
+        </h3>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role3_desc") }} />
         <p className="mt-3 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">
           {t("role3_detail_p1")}
