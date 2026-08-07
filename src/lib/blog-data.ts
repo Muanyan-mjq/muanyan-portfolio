@@ -175,12 +175,12 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "codex-obsidian-workflow",
     title: {
-      zh: "让 AI 住进笔记库：Codex + Obsidian 自动化工作流",
-      en: "Let AI Move Into Your Notes: A Codex + Obsidian Automation Workflow",
+      zh: "让 Obsidian 自己整理自己：Codex 自动化工作流",
+      en: "Make Obsidian Organize Itself: A Codex Automation Workflow",
     },
     description: {
-      zh: "每天 20:00 热点自动归档、22:50 日记提醒、按月整理——用 Codex 把 Obsidian 变成一套会自动运转的第二大脑。从目录设计到计划任务，附完整脚本与真实踩坑记录。",
-      en: "News auto-archived at 8pm, diary reminders at 10:50pm, monthly organization — using Codex to turn Obsidian into a second brain that runs itself. From folder design to scheduled tasks, with real scripts and real pitfalls.",
+      zh: "不用写代码——复制一段需求给 Codex，它帮你把 Obsidian 变成会自动运转的系统：每天 20:00 热点自动归档、22:50 提醒写日记、按月整理。从准备工作到计划任务，一步步跟着做。",
+      en: "No coding — paste a request to Codex and it turns Obsidian into a self-running system: news auto-archived at 8pm, diary reminders at 10:50pm, monthly filing. Follow along from preparation to scheduled tasks.",
     },
     date: "2026-08-07",
     tags: ["Codex", "Obsidian", "自动化", "工作流", "Windows"],
@@ -198,12 +198,12 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "aihot-interest-radar",
     title: {
-      zh: "给 AI 热点装上「兴趣雷达」：Windows 自定义弹窗实战",
-      en: "An \"Interest Radar\" for AI News: Custom Windows Popups in Practice",
+      zh: "给 AI 热点装一个「特别关心」：Windows 弹窗实战",
+      en: "Give AI News a \"Close Friends\" Alert: Custom Windows Popups",
     },
     description: {
-      zh: "热点抓完自动扫描关键词，只在 AGI、self、注意力这些你关心的主题出现时弹窗提醒。从系统通知踩坑到原生 C# 弹窗，附实时倒计时与完整代码。",
-      en: "After fetching, keywords are scanned automatically — a popup appears only when topics you care about (AGI, self, attention…) show up. From broken system toasts to a native C# popup with a live countdown — full code included.",
+      zh: "热点抓完自动扫描关键词，只在你在意的主题（AGI、self、注意力…）出现时弹窗提醒，没命中就不打扰。不需要写代码——告诉 Codex 你想要什么，剩下的它来做。",
+      en: "After fetching, keywords are scanned automatically — a popup appears only when topics you care about (AGI, self, attention…) show up; otherwise, silence. No coding — tell Codex what you want and it builds it.",
     },
     date: "2026-08-07",
     tags: ["Windows", "PowerShell", "WPF", "自动化", "弹窗"],

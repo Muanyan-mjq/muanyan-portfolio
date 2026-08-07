@@ -46,21 +46,27 @@ const content = {
     intro_p2:
       "这篇教你用 Codex 把这套「整理」本身自动化：每天 20:00 热点自动归档、22:50 提醒写日记、按月自动整理。全程不需要你自己写代码——<strong>你只需要告诉 Codex 你想要什么，剩下的它来做。</strong>",
     h2_prep: "准备工作",
-    prep_p1: "动手前确认下面四样东西，每项都配了图标、说明和验证方法。没装过的跟着做就行。",
-    prep_check1: "检查 1：Obsidian 装了吗？",
-    prep_check1_desc:
-      "Obsidian 是本地优先的笔记软件，完全免费。打开 <a href='https://obsidian.md/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>obsidian.md</a> 下载安装，然后新建一个笔记库（Vault），名字随意，比如 SecondBrain。能正常创建并打开笔记，就说明 OK。",
-    prep_check2: "检查 2：Node.js 装了吗？",
+    prep_p1: "动手前确认下面五样东西，每项都配了说明和验证方法。最重要的是第一项：Codex 本身。",
+    prep_check1: "检查 1：Codex 能用吗？（最重要）",
+    prep_check1_desc: "打开终端，输入 <code>codex</code> 回车。能看到 Codex 的对话界面就说明 OK。",
+    prep_check1_fast: "更快地打开终端：<strong>右键 Windows 图标（开始按钮）→ 选择「终端」</strong>，或者按 Win+R 输入 <code>powershell</code> 回车。",
+    prep_check1_caption: "▲ 终端里输入 codex 后进入对话界面，就说明 Codex 可用",
+    prep_check1_no: "没装 Codex？直接告诉它「帮我安装 Codex CLI」，它可以满足你；也可以去 Codex 官网下载。",
+    prep_check2: "检查 2：Obsidian 装了吗？",
     prep_check2_desc:
-      "我们的脚本靠 Node.js 运行，装一次一劳永逸。先打开终端：按 <strong>Win + R</strong>，输入 <code>powershell</code> 回车。然后输入 <code>node --version</code>——能看到版本号（比如 v20.x）就说明装好了。",
-    prep_check2_step: "没有的话，分两步装：",
-    prep_check2_s1: "去 <a href='https://nodejs.org/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>nodejs.org</a> 下载 <strong>LTS 版</strong>（左边绿色的那个），一路 Next 安装。国内下载慢可以换淘宝镜像，装完在终端执行 <code>npm config set registry https://registry.npmmirror.com</code>。",
-    prep_check2_s2: "<strong>重新打开终端</strong>，再跑一次 <code>node --version</code>，显示版本号就成功了。",
-    prep_check3: "检查 3：知道脚本放哪",
+      "Obsidian 是本地优先的笔记软件，完全免费。点击旁边的图标（或 <a href='https://obsidian.md/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>obsidian.md</a>）下载安装，然后新建一个笔记库（Vault），名字随意，比如 SecondBrain。能正常创建并打开笔记，就说明 OK。",
+    prep_check3: "检查 3：Node.js 装了吗？",
     prep_check3_desc:
-      "所有脚本统一放在笔记库下的 <code>.codex/scripts/</code> 目录。用文件管理器打开你的笔记库文件夹，新建 <code>.codex</code> 和 <code>scripts</code> 两级目录。注意：以点开头的文件夹在 Obsidian 笔记列表里看不到，但文件管理器里能看到，这是正常的。",
-    prep_check4: "检查 4：能找到 Windows 任务计划程序",
+      "我们的脚本靠 Node.js 运行，装一次一劳永逸。点击旁边的图标（或 <a href='https://nodejs.org/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>nodejs.org</a>）下载 <strong>LTS 版</strong>。然后在终端输入 <code>node --version</code>——能看到版本号（比如 v20.x）就说明装好了。",
+    prep_check3_step: "装好后验证：",
+    prep_check3_s1: "<strong>重新打开终端</strong>，输入 <code>node --version</code>",
+    prep_check3_s2: "显示版本号就成功了；国内下载慢可以换镜像：<code>npm config set registry https://registry.npmmirror.com</code>",
+    prep_check4: "检查 4：知道脚本放哪",
     prep_check4_desc:
+      "所有脚本统一放在笔记库下的 <code>.codex/scripts/</code> 目录。用文件管理器打开你的笔记库文件夹，新建 <code>.codex</code> 和 <code>scripts</code> 两级目录。注意：以点开头的文件夹在 Obsidian 笔记列表里看不到，但文件管理器里能看到，这是正常的。",
+    prep_check4_tip: "💡 不会建目录？没关系，直接告诉 Codex「帮我建好 .codex/scripts 目录」，它可以实现你所有需求。",
+    prep_check5: "检查 5：能找到 Windows 任务计划程序",
+    prep_check5_desc:
       "后面注册自动化任务要用它。按 Win 键，搜索「任务计划程序」并打开。能打开这个窗口就 OK——先不用做任何操作。",
     h2_tell: "第一步：告诉 Codex 你想要什么",
     tell_p1: "不需要自己写代码。直接把这个需求复制给 Codex：",
@@ -148,21 +154,27 @@ const content = {
     intro_p2:
       "This post shows you how to automate that \"organizing\" itself with Codex: news auto-archived at 8pm, diary reminders at 10:50pm, automatic monthly filing. No coding from scratch — <strong>you tell Codex what you want, and it builds it for you.</strong>",
     h2_prep: "Preparation",
-    prep_p1: "Before we start, confirm these four things. Each has an icon, instructions, and a way to verify.",
-    prep_check1: "Check 1: Is Obsidian installed?",
-    prep_check1_desc:
-      "Obsidian is a local-first note app, completely free. Open <a href='https://obsidian.md/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>obsidian.md</a>, download and install it, then create a vault — any name, e.g., SecondBrain. If you can create and open notes, you're good.",
-    prep_check2: "Check 2: Is Node.js installed?",
+    prep_p1: "Before we start, confirm these five things. Each has instructions and a way to verify. The most important one is the first: Codex itself.",
+    prep_check1: "Check 1: Is Codex available? (Most Important)",
+    prep_check1_desc: "Open a terminal and run <code>codex</code>. If you land in Codex's conversation interface, you're good.",
+    prep_check1_fast: "Faster way to open a terminal: <strong>right-click the Windows icon (Start button) → choose \"Terminal\"</strong>, or press Win+R and type <code>powershell</code>.",
+    prep_check1_caption: "▲ Run codex in the terminal and reach its conversation interface — Codex is ready",
+    prep_check1_no: "Codex not installed? Just tell it \"help me install Codex CLI\" — it can; or download it from the official site.",
+    prep_check2: "Check 2: Is Obsidian installed?",
     prep_check2_desc:
-      "Our scripts run on Node.js — install once, done. First open a terminal: press <strong>Win + R</strong>, type <code>powershell</code>, Enter. Then run <code>node --version</code> — seeing a version (e.g., v20.x) means it's installed.",
-    prep_check2_step: "Not installed? Two steps:",
-    prep_check2_s1: "Download the <strong>LTS version</strong> (the green one on the left) from <a href='https://nodejs.org/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>nodejs.org</a> and click Next all the way through. If downloads are slow, set the mirror with <code>npm config set registry https://registry.npmmirror.com</code>.",
-    prep_check2_s2: "<strong>Reopen the terminal</strong> and run <code>node --version</code> again — a version number means success.",
-    prep_check3: "Check 3: Know where the scripts live",
+      "Obsidian is a local-first note app, completely free. Click the icon next to this text (or <a href='https://obsidian.md/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>obsidian.md</a>) to download and install it, then create a vault — any name, e.g., SecondBrain. If you can create and open notes, you're good.",
+    prep_check3: "Check 3: Is Node.js installed?",
     prep_check3_desc:
-      "All scripts go into <code>.codex/scripts/</code> inside your vault. Open the vault folder in a file manager and create the <code>.codex</code> and <code>scripts</code> folders. Note: dot-folders don't appear in Obsidian's note list, but they do in the file manager — that's normal.",
-    prep_check4: "Check 4: Can you find Task Scheduler?",
+      "Our scripts run on Node.js — install once, done. Click the icon next to this text (or <a href='https://nodejs.org/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>nodejs.org</a>) to download the <strong>LTS version</strong>. Then run <code>node --version</code> in the terminal — seeing a version (e.g., v20.x) means it's installed.",
+    prep_check3_step: "Verify after installing:",
+    prep_check3_s1: "<strong>Reopen the terminal</strong> and run <code>node --version</code>",
+    prep_check3_s2: "A version number means success; if downloads are slow, set the mirror with <code>npm config set registry https://registry.npmmirror.com</code>",
+    prep_check4: "Check 4: Know where the scripts live",
     prep_check4_desc:
+      "All scripts go into <code>.codex/scripts/</code> inside your vault. Open the vault folder in a file manager and create the <code>.codex</code> and <code>scripts</code> folders. Note: dot-folders don't appear in Obsidian's note list, but they do in the file manager — that's normal.",
+    prep_check4_tip: "💡 Don't know how to create folders? Just tell Codex \"create the .codex/scripts folder for me\" — it can handle all your needs.",
+    prep_check5: "Check 5: Can you find Task Scheduler?",
+    prep_check5_desc:
       "We'll use it to register the automation tasks. Press the Win key, search \"Task Scheduler,\" and open it. Being able to open the window is enough — don't touch anything yet.",
     h2_tell: "Step 1: Tell Codex What You Want",
     tell_p1: "No need to write code yourself. Just paste this request to Codex:",
@@ -337,29 +349,41 @@ export default function CodexObsidianWorkflowPage() {
       <p>{t("prep_p1")}</p>
 
       <h3>{t("prep_check1")}</h3>
-      <p className="flex items-center gap-3 my-2">
-        <img src={`${BASE_PATH}/blog-images/obsidian-logo.svg`} alt="Obsidian logo" className="w-9 h-9" />
-        <span className="text-[15px] text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "Obsidian 官网：" : "Official site:"} <a href="https://obsidian.md/" target="_blank" className="text-indigo-600 dark:text-indigo-400 hover:underline">obsidian.md</a></span>
-      </p>
       <p dangerouslySetInnerHTML={{ __html: t("prep_check1_desc") }} />
+      <p dangerouslySetInnerHTML={{ __html: t("prep_check1_fast") }} />
+      <figure className="my-6">
+        <div className="rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-lg max-w-2xl mx-auto">
+          <img src={`${BASE_PATH}/blog-images/terminal.png`} alt="Terminal running codex" className="w-full" />
+        </div>
+        <figcaption className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">{t("prep_check1_caption")}</figcaption>
+      </figure>
+      <div className="mt-4 px-5 py-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/30 rounded-xl text-[16px] leading-[1.8] text-amber-800 dark:text-amber-200" dangerouslySetInnerHTML={{ __html: t("prep_check1_no") }} />
 
       <h3 className="mt-8">{t("prep_check2")}</h3>
       <p className="flex items-center gap-3 my-2">
-        <img src={`${BASE_PATH}/blog-images/nodejs-logo.svg`} alt="Node.js logo" className="w-9 h-9" />
-        <span className="text-[15px] text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "Node.js 官网：" : "Official site:"} <a href="https://nodejs.org/" target="_blank" className="text-indigo-600 dark:text-indigo-400 hover:underline">nodejs.org</a></span>
+        <a href="https://obsidian.md/" target="_blank" rel="noopener noreferrer" title="Obsidian 官网"><img src={`${BASE_PATH}/blog-images/obsidian-logo.svg`} alt="Obsidian logo" className="w-9 h-9" /></a>
+        <span className="text-[15px] text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "Obsidian 官网：" : "Official site:"} <a href="https://obsidian.md/" target="_blank" className="text-indigo-600 dark:text-indigo-400 hover:underline">obsidian.md</a></span>
       </p>
       <p dangerouslySetInnerHTML={{ __html: t("prep_check2_desc") }} />
-      <p>{t("prep_check2_step")}</p>
-      <ul className="list-disc pl-5 my-3 space-y-2 text-[17px] leading-[1.9]">
-        <li dangerouslySetInnerHTML={{ __html: t("prep_check2_s1") }} />
-        <li dangerouslySetInnerHTML={{ __html: t("prep_check2_s2") }} />
-      </ul>
 
       <h3 className="mt-8">{t("prep_check3")}</h3>
+      <p className="flex items-center gap-3 my-2">
+        <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer" title="Node.js 官网"><img src={`${BASE_PATH}/blog-images/nodejs-logo.svg`} alt="Node.js logo" className="w-9 h-9" /></a>
+        <span className="text-[15px] text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "Node.js 官网：" : "Official site:"} <a href="https://nodejs.org/" target="_blank" className="text-indigo-600 dark:text-indigo-400 hover:underline">nodejs.org</a></span>
+      </p>
       <p dangerouslySetInnerHTML={{ __html: t("prep_check3_desc") }} />
+      <p>{t("prep_check3_step")}</p>
+      <ul className="list-disc pl-5 my-3 space-y-2 text-[17px] leading-[1.9]">
+        <li dangerouslySetInnerHTML={{ __html: t("prep_check3_s1") }} />
+        <li dangerouslySetInnerHTML={{ __html: t("prep_check3_s2") }} />
+      </ul>
 
       <h3 className="mt-8">{t("prep_check4")}</h3>
       <p dangerouslySetInnerHTML={{ __html: t("prep_check4_desc") }} />
+      <div className="mt-4 px-5 py-4 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800/30 rounded-xl text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("prep_check4_tip") }} />
+
+      <h3 className="mt-8">{t("prep_check5")}</h3>
+      <p dangerouslySetInnerHTML={{ __html: t("prep_check5_desc") }} />
 
       <h2 id="tell">{t("h2_tell")}</h2>
       <p>{t("tell_p1")}</p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useLang } from "@/components/language-context";
 import { BlogPostLayout } from "@/components/blog-post-layout";
 import { CodeBlock } from "@/components/code-block";
@@ -45,16 +46,20 @@ const content = {
     intro_p2:
       "这篇教你给热点加一个「兴趣雷达」：抓完后自动扫描关键词，命中你订阅的主题就弹窗提醒，没命中就静默——就像聊天软件的「特别关心」，只有被标记的人才弹提醒。全程不需要你自己写代码，<strong>你告诉 Codex 你想要什么，剩下的它来做。</strong>",
     h2_prep: "准备工作",
-    prep_p1: "动手前确认下面三样东西：",
-    prep_check1: "检查 1：上一篇的抓取脚本跑通了吗？",
-    prep_check1_desc:
-      "兴趣雷达是接在热点抓取后面的，所以先确认热点文件能正常生成。打开 <code>5-Summaries/2026年8月/</code>，能看到当天的 <code>AI热点-日期.md</code> 就 OK。如果还没有，先回上一篇把抓取脚本搭起来——整个「兴趣雷达」是它的下游。",
-    prep_check2: "检查 2：PowerShell 能用吗？",
+    prep_p1: "动手前确认下面四样东西。大部分在上一篇已经讲过——没搭过的，先点链接回上一篇看。",
+    prep_check1: "检查 1：Codex 能用吗？",
+    prep_check1_desc: "和上一篇检查 1 一样：打开终端输入 <code>codex</code>，能进入对话界面就 OK。",
+    prep_check1_link: "Codex 安装与终端教程（上一篇）→",
+    prep_check2: "检查 2：上一篇的抓取脚本跑通了吗？",
     prep_check2_desc:
-      "Windows 自带 PowerShell，不用额外安装。按 <strong>Win + R</strong>，输入 <code>powershell</code> 回车，能输入命令就行。",
-    prep_check3: "检查 3：知道文件放哪",
-    prep_check3_desc:
-      "两个文件会放在 <code>.codex/scripts/</code> 下：<code>notify_aihot_keywords.ps1</code>（弹窗脚本）和 <code>aihot_keywords.json</code>（关键词配置）。不会建目录？和上一篇检查 3 一样：文件管理器里新建 <code>.codex/scripts</code> 两级文件夹。",
+      "兴趣雷达是接在热点抓取后面的，先确认热点文件能正常生成：打开 <code>5-Summaries/2026年8月/</code>，能看到当天的 <code>AI热点-日期.md</code> 就 OK。",
+    prep_check2_link: "没搭好？先看这一篇 →",
+    prep_check3: "检查 3：终端能打开吗？",
+    prep_check3_desc: "本篇的弹窗脚本要用终端运行。更快的方式：<strong>右键 Windows 图标（开始按钮）→ 选择「终端」</strong>，能打开下面这样的窗口就 OK：",
+    prep_check3_caption: "▲ Windows 终端正常打开（Windows Terminal）",
+    prep_check4: "检查 4：知道文件放哪",
+    prep_check4_desc:
+      "两个文件会放在 <code>.codex/scripts/</code> 下：<code>notify_aihot_keywords.ps1</code>（弹窗脚本）和 <code>aihot_keywords.json</code>（关键词配置）。不会建目录？直接告诉 Codex「帮我建好 .codex/scripts 目录」，它可以实现你所有需求。",
     h2_what: "兴趣雷达是什么",
     what_p1:
       "一句话：<strong>给热点抓取加一道过滤器。</strong>抓取完成后自动扫描当天文件里的关键词，命中你订阅的主题就弹一个居中的弹窗（带实时倒计时和「打开笔记」按钮），没命中就安静地写一行日志。",
@@ -120,16 +125,20 @@ const content = {
     intro_p2:
       "This post shows you how to add an \"Interest Radar\" to that news: after fetching, keywords are scanned automatically; a popup appears only when a topic you subscribe to matches, and stays silent otherwise — like \"close friends\" notifications in a chat app. No coding from scratch — <strong>you tell Codex what you want, and it builds it for you.</strong>",
     h2_prep: "Preparation",
-    prep_p1: "Before we start, confirm these three things:",
-    prep_check1: "Check 1: Is the fetch script from the previous post working?",
-    prep_check1_desc:
-      "The radar hooks onto the news fetch, so first make sure the news file generates. Open <code>5-Summaries/2026年8月/</code> — if today's <code>AI热点-日期.md</code> is there, you're good. If not, go back to the previous post and set up the fetch script — the radar is its downstream.",
-    prep_check2: "Check 2: Is PowerShell available?",
+    prep_p1: "Before we start, confirm these four things. Most were covered in the previous post — if you haven't set them up, follow the links back first.",
+    prep_check1: "Check 1: Is Codex available?",
+    prep_check1_desc: "Same as Check 1 in the previous post: open a terminal, run <code>codex</code>, and reach its conversation interface.",
+    prep_check1_link: "Codex install & terminal guide (previous post) →",
+    prep_check2: "Check 2: Is the fetch script from the previous post working?",
     prep_check2_desc:
-      "Windows ships with PowerShell — no install needed. Press <strong>Win + R</strong>, type <code>powershell</code>, Enter. Being able to type commands is enough.",
-    prep_check3: "Check 3: Know where the files live",
-    prep_check3_desc:
-      "Two files go into <code>.codex/scripts/</code>: <code>notify_aihot_keywords.ps1</code> (the popup script) and <code>aihot_keywords.json</code> (keyword config). Don't know how to create the folder? Same as Check 3 in the previous post: create <code>.codex/scripts</code> in a file manager.",
+      "The radar hooks onto the news fetch, so first confirm the news file generates: open <code>5-Summaries/2026年8月/</code> — if today's <code>AI热点-日期.md</code> is there, you're good.",
+    prep_check2_link: "Not set up yet? Read this post first →",
+    prep_check3: "Check 3: Can you open a terminal?",
+    prep_check3_desc: "This post's popup script runs in a terminal. Faster way: <strong>right-click the Windows icon (Start button) → choose \"Terminal\"</strong> — a window like this means you're good:",
+    prep_check3_caption: "▲ Windows Terminal opens normally (Windows Terminal)",
+    prep_check4: "Check 4: Know where the files live",
+    prep_check4_desc:
+      "Two files go into <code>.codex/scripts/</code>: <code>notify_aihot_keywords.ps1</code> (the popup script) and <code>aihot_keywords.json</code> (keyword config). Don't know how to create folders? Just tell Codex \"create the .codex/scripts folder for me\" — it can handle all your needs.",
     h2_what: "What the Interest Radar Is",
     what_p1:
       "In one sentence: <strong>a filter on top of the news fetch.</strong> After fetching, it scans the day's file for keywords; if a topic you subscribe to matches, it pops a centered window (with a live countdown and an \"Open note\" button); otherwise it quietly writes a log line.",
@@ -256,10 +265,39 @@ export default function AihotInterestRadarPage() {
       <p>{t("prep_p1")}</p>
       <h3>{t("prep_check1")}</h3>
       <p dangerouslySetInnerHTML={{ __html: t("prep_check1_desc") }} />
+      <Link
+        href="/blog/codex-obsidian-workflow"
+        className="group inline-flex items-center gap-2 mt-3 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500/50 transition-all duration-300 hover:shadow-md bg-zinc-50 dark:bg-zinc-900/50"
+      >
+        <span className="text-indigo-600 dark:text-indigo-400 font-semibold text-sm group-hover:underline">{t("prep_check1_link")}</span>
+        <svg className="w-4 h-4 text-zinc-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </Link>
+
       <h3 className="mt-8">{t("prep_check2")}</h3>
       <p dangerouslySetInnerHTML={{ __html: t("prep_check2_desc") }} />
+      <Link
+        href="/blog/codex-obsidian-workflow"
+        className="group inline-flex items-center gap-2 mt-3 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500/50 transition-all duration-300 hover:shadow-md bg-zinc-50 dark:bg-zinc-900/50"
+      >
+        <span className="text-indigo-600 dark:text-indigo-400 font-semibold text-sm group-hover:underline">{t("prep_check2_link")}</span>
+        <svg className="w-4 h-4 text-zinc-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </Link>
+
       <h3 className="mt-8">{t("prep_check3")}</h3>
       <p dangerouslySetInnerHTML={{ __html: t("prep_check3_desc") }} />
+      <figure className="my-6">
+        <div className="rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-lg max-w-2xl mx-auto">
+          <img src={`${BASE_PATH}/blog-images/terminal.png`} alt="Windows Terminal open" className="w-full" />
+        </div>
+        <figcaption className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">{t("prep_check3_caption")}</figcaption>
+      </figure>
+
+      <h3 className="mt-8">{t("prep_check4")}</h3>
+      <p dangerouslySetInnerHTML={{ __html: t("prep_check4_desc") }} />
 
       <h2 id="what">{t("h2_what")}</h2>
       <p dangerouslySetInnerHTML={{ __html: t("what_p1") }} />
