@@ -220,7 +220,7 @@ function BlogContent() {
 function PostCard({ post, lang, T }: { post: BlogPost; lang: "zh" | "en"; T: (typeof blogText)[keyof typeof blogText] }) {
   const cat = categories[post.category];
   // 封面图片使用大尺寸的 slug 白名单
-  const isLargeCover = post.slug === "claude-code-statusline" || post.slug === "claude-code-mcp-setup" || post.slug === "hermes-agent-qq-wechat" || post.slug === "agi-era-thoughts" || post.slug === "codex-obsidian-workflow" || post.slug === "aihot-interest-radar";
+  const isLargeCover = post.slug === "claude-code-statusline" || post.slug === "claude-code-mcp-setup" || post.slug === "hermes-agent-qq-wechat" || post.slug === "agi-era-thoughts" || post.slug === "codex-obsidian-workflow";
   const coverSize = post.slug === "codex-obsidian-workflow" ? "w-56 h-56" : isLargeCover ? "w-48 h-48" : "w-28 h-28";
 
   return (

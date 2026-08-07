@@ -175,23 +175,24 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "codex-obsidian-workflow",
     title: {
-      zh: "让 Obsidian 自己整理自己：Codex 自动化工作流",
-      en: "Make Obsidian Organize Itself: A Codex Automation Workflow",
+      zh: "Claude Code 设计，Codex 执行：我的 Obsidian 全自动笔记系统",
+      en: "Designed by Claude Code, Executed by Codex: My Self-Running Obsidian System",
     },
     description: {
-      zh: "不用写代码——复制一段需求给 Codex，它帮你把 Obsidian 变成会自动运转的系统：每天 20:00 热点自动归档、22:50 提醒写日记、按月整理。从准备工作到计划任务，一步步跟着做。",
-      en: "No coding — paste a request to Codex and it turns Obsidian into a self-running system: news auto-archived at 8pm, diary reminders at 10:50pm, monthly filing. Follow along from preparation to scheduled tasks.",
+      zh: "不是「把需求丢给 AI 就完事」——这套系统里 Claude Code 负责思考和设计（笔记库结构、模板、查询），Codex 负责执行自动化（热点抓取、Inbox 整理、周月总结），Obsidian 承载最终的知识网络。从插件配置到四条自动化线，从 Dataview 仪表盘到 WPF 弹窗提醒，完整记录一个能自己运转的 SecondBrain 是怎么搭起来的。",
+      en: "More than just 'throwing requirements at AI' — in this system, Claude Code handles thinking and design (vault structure, templates, queries), Codex executes automation (news fetching, inbox sorting, weekly/monthly reviews), and Obsidian hosts the knowledge graph. From plugin setup to four automation pipelines, from Dataview dashboards to WPF popup reminders, a complete record of building a self-running Second Brain.",
     },
     date: "2026-08-07",
-    tags: ["Codex", "Obsidian", "自动化", "工作流", "Windows"],
+    tags: ["Claude Code", "Codex", "Obsidian", "自动化", "SecondBrain", "知识管理", "Windows"],
     category: "indie",
     categoryColor: "from-[#000030] via-[#180048] to-[#241860]",
     cover: { gradient: "from-[#000030] via-[#180048] to-[#241860]", icon: "🧠", image: "/codex-obsidian-cover.png" },
-    readingTime: 18,
+    readingTime: 25,
     prerequisites: [
       { zh: "Obsidian 已安装并建好笔记库", en: "Obsidian installed with a vault" },
       { zh: "Node.js 已安装（脚本运行需要）", en: "Node.js installed (for scripts)" },
       { zh: "Windows 10/11（用到计划任务）", en: "Windows 10/11 (scheduled tasks)" },
+      { zh: "Claude Code 终端版（可选，用于设计和思考阶段）", en: "Claude Code CLI (optional, for design & thinking phases)" },
     ],
     published: true,
   },
@@ -216,7 +217,7 @@ export const blogPosts: BlogPost[] = [
       { zh: "了解 JSON 配置格式", en: "Familiar with JSON config" },
       { zh: "PowerShell 基础（能看懂脚本）", en: "Basic PowerShell (able to read scripts)" },
     ],
-    published: true,
+    published: false,
   },
 ];
 

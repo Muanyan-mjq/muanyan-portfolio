@@ -41,295 +41,441 @@ const post = blogPosts.find((p) => p.slug === "codex-obsidian-workflow")!;
 
 const content = {
   zh: {
+    // ---- 开头 ----
     intro_p1:
-      "如果你用笔记软件做过知识管理，大概率遇到过这几个问题：收藏了但再也没打开过、笔记堆积成山却找不到想要的、坚持几天就断更。它们看起来像「自律问题」，但根子上往往是同一个——<strong>知识的流入完全靠手动</strong>：每条新信息都要自己建文件夹、起文件名、写日期、加标签。",
+      "想象一个场景：你每天打开 Obsidian，昨天的日记已经躺在 1-Daily 里，末尾自动挂上了昨天的 AI 热点链接；20:00 整，当天的热点自动抓取、筛选、写成 Markdown 存进 5-Summaries——如果命中你关心的主题还会弹窗提醒；晚上写完日记，喊一句「整理一下」，Inbox 清空、日记归位、双向链接补全。你唯一需要做的，是读和想。",
     intro_p2:
-      "这篇教你用 Codex 把这套「整理」本身自动化：每天 20:00 热点自动归档、22:50 提醒写日记、按月自动整理。全程不需要你自己写代码——<strong>你只需要告诉 Codex 你想要什么，剩下的它来做。</strong>",
+      "这不是「把需求丢给 AI 就完事」——这套系统有三个角色，各自做自己擅长的事：<strong>Claude Code 负责思考和设计</strong>（笔记库结构、模板、查询），<strong>Codex 负责执行自动化</strong>（热点抓取、Inbox 整理、周月总结），<strong>Obsidian 承载最终的知识网络</strong>。本文是这套系统的完整搭建实录——从插件配置到四条自动化线，从 Dataview 仪表盘到 WPF 弹窗提醒。",
+
+    // ---- 工具分工 ----
+    h2_roles: "工具分工：三个角色",
+    roles_intro:
+      "在动手之前，先理解三个工具各自的角色——这是整套系统的设计前提。很多人把 AI 工具当万能钥匙，什么都让它做，结果什么都做不深。更好的方式是让每个工具做它擅长的事。",
+    role1_title: "Claude Code — 思考者",
+    role1_desc:
+      "在这套系统里，Claude Code 负责「想清楚再告诉你怎么做」。它不直接操作系统文件，但能帮你设计笔记库的目录结构、写 Templater 模板、配置 Dataview 查询、规划自动化流程。问它「我的笔记库应该怎么组织，才能让自动化脚本稳定运行？」——它能给你一套有理由的方案，而不是随便丢几个文件夹名字。",
+    role1_detail:
+      "Claude Code 通过 <strong>Claudian 插件</strong>直接嵌入 Obsidian——在 Obsidian 里按快捷键就能调它出来，不需要切窗口。它可以看到你当前打开的笔记、理解上下文，然后给出针对性的建议。和之前写的 <a href='/blog/claude-code-mcp-setup' class='text-indigo-600 dark:text-indigo-400 hover:underline'>MCP 配置</a>、<a href='/blog/claude-code-statusline' class='text-indigo-600 dark:text-indigo-400 hover:underline'>状态栏</a>一样，Claude Code 的核心优势是理解和推理，不是执行。",
+    role2_title: "Codex — 执行者",
+    role2_desc:
+      "Codex 负责「动手做」。它的 <code>.codex/rules.md</code> 里定义了四条自动化线——热点抓取、Inbox 整理、周总结、月总结。每次你打开和它的对话，它会自动检查今天的热点有没有抓、Inbox 是不是堆了超过 3 篇——该抓的抓、该提醒的提醒。它不需要你写代码，但需要你给它写清楚规则：什么时候触发、做什么、结果放哪。<code>rules.md</code> 就是你和它的「合同」。",
+    role2_detail:
+      "Codex 能直接读写笔记库文件、执行 Node.js 和 PowerShell 脚本、注册 Windows 计划任务。写好的脚本可能很长（比如 WPF 弹窗那个有 200+ 行），但你不需要手写——描述清楚需求，Codex 生成脚本，你验证结果。",
+    role3_title: "Obsidian — 承载者",
+    role3_desc:
+      "Obsidian 是知识最终落脚的地方。它本身不生产内容，但提供了让知识从「一堆文件」变成「一张网络」的基础设施：<strong>双向链接</strong>让每篇笔记之间产生关联，<strong>Dataview</strong> 把笔记库变成可查询的数据库，<strong>Templater</strong> 在新建笔记时自动套模板，<strong>Calendar</strong> 让你在侧边栏日历里看到哪天写了日记。自动化脚本把信息灌进来，你负责读和想。",
+    roles_summary:
+      "三个工具分工明确：<strong>Claude Code 想、Codex 做、Obsidian 存。</strong>这不是硬凑三个工具——每个都解决了前一个解决不了的问题。Claude Code 不会执行定时任务，Codex 不适合做架构设计，Obsidian 不能自己运转。三者合在一起，才构成一个能自己呼吸的笔记系统。",
+
+    // ---- 准备工作 ----
     h2_prep: "准备工作",
-    prep_p1: "动手前确认下面五样东西，每项都配了说明和验证方法。最重要的是第一项：Codex 本身。",
-    prep_check1: "检查 1：Codex 能用吗？（最重要）",
-    prep_check1_desc: "打开终端，输入 <code>codex</code> 回车。能看到 Codex 的对话界面就说明 OK。",
-    prep_check1_fast: "更快地打开终端：<strong>右键 Windows 图标（开始按钮）→ 选择「终端」</strong>，或者按 Win+R 输入 <code>powershell</code> 回车。",
-    prep_check1_caption: "▲ 终端里输入 codex 后进入对话界面，就说明 Codex 可用",
-    prep_check1_no: "没装 Codex？直接告诉它「帮我安装 Codex CLI」，它可以满足你；也可以去 Codex 官网下载。",
-    prep_check2: "检查 2：Obsidian 装了吗？",
-    prep_check2_desc:
-      "Obsidian 是本地优先的笔记软件，完全免费。点击旁边的图标（或 <a href='https://obsidian.md/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>obsidian.md</a>）下载安装，然后新建一个笔记库（Vault），名字随意，比如 SecondBrain。能正常创建并打开笔记，就说明 OK。",
-    prep_check3: "检查 3：Node.js 装了吗？",
-    prep_check3_desc:
-      "我们的脚本靠 Node.js 运行，装一次一劳永逸。点击旁边的图标（或 <a href='https://nodejs.org/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>nodejs.org</a>）下载 <strong>LTS 版</strong>。然后在终端输入 <code>node --version</code>——能看到版本号（比如 v20.x）就说明装好了。",
-    prep_check3_step: "装好后验证：",
-    prep_check3_s1: "<strong>重新打开终端</strong>，输入 <code>node --version</code>",
-    prep_check3_s2: "显示版本号就成功了；国内下载慢可以换镜像：<code>npm config set registry https://registry.npmmirror.com</code>",
-    prep_check4: "检查 4：知道脚本放哪",
-    prep_check4_desc:
-      "所有脚本统一放在笔记库下的 <code>.codex/scripts/</code> 目录。用文件管理器打开你的笔记库文件夹，新建 <code>.codex</code> 和 <code>scripts</code> 两级目录。注意：以点开头的文件夹在 Obsidian 笔记列表里看不到，但文件管理器里能看到，这是正常的。",
-    prep_check4_tip: "💡 不会建目录？没关系，直接告诉 Codex「帮我建好 .codex/scripts 目录」，它可以实现你所有需求。",
-    prep_check5: "检查 5：能找到 Windows 任务计划程序",
-    prep_check5_desc:
-      "后面注册自动化任务要用它。按 Win 键，搜索「任务计划程序」并打开。能打开这个窗口就 OK——先不用做任何操作。",
-    h2_tell: "第一步：告诉 Codex 你想要什么",
-    tell_p1: "不需要自己写代码。直接把这个需求复制给 Codex：",
-    tell_code_title: "给 Codex 的提示词（可以直接复制）",
-    tell_p2:
-      "Codex 会先问你几个问题——笔记库的路径、热点数据源、几点执行。回答完，它会自动帮你：建好目录结构、写好三个脚本、注册好 Windows 计划任务。",
-    tell_tip:
-      "💡 如果 Codex 没按你想的做，把它的输出贴回去，告诉它哪里不对（比如「热点文件放错文件夹了」），它会自己修正。",
-    h2_get: "你会得到什么",
-    get_p1: "做完之后，你的笔记库会变成这样：",
-    get_code_title: "目录结构",
-    get_p2: "以及三个各司其职的脚本：",
-    get_li1: "<strong>fetch_aihot.js</strong>——每天抓取 AI 热点，写成 Markdown 放进 5-Summaries",
-    get_li2: "<strong>check_diary.js + remind_diary.ps1</strong>——每天 22:50 检查日记写没写，没写就弹提醒",
-    get_li3: "<strong>check_inbox.js + remind_inbox.ps1</strong>——Inbox 里有东西就提醒你处理",
-    get_p3: "Windows 任务计划程序里会多出三个定时任务，到点自动跑，不需要你手动开任何东西。",
-    get_tip: "觉得目录结构不合口味？告诉 Codex 换成你喜欢的组织方式，它可以满足你。",
-    h2_vault: "笔记库为什么这么设计",
-    vault_p1:
-      "自动化能跑起来的前提是结构稳定。库分成五层，每层一个职责，新东西永远先落 0-Inbox，处理完再归位：",
-    vault_li1: "<strong>0-Inbox</strong>（入口）——所有新东西先落这里",
-    vault_li2: "<strong>1-Daily</strong>——日记，按 <code>2026年8月/</code> 按月归档",
-    vault_li3: "<strong>2-Projects / 3-Areas</strong>——项目与领域思考",
-    vault_li4: "<strong>4-Resources</strong>——资料收藏",
-    vault_li5: "<strong>5-Summaries</strong>——汇总类：AI 热点、周总结",
-    vault_p2:
-      "三个关键设计：一是 <strong>Inbox 清零原则</strong>——所有东西先落 Inbox，处理完必须归位；二是 <strong>按月归档</strong>——日记和热点都按月分文件夹，「2026 年 7 月发生了什么」一目了然；三是 <strong>双向链接</strong>——每篇日记末尾自动补上关联笔记，让知识长成网络。",
-    h2_hot: "热点是怎么自动归档的",
-    hot_p1:
-      "每天 20:00，<code>fetch_aihot.js</code> 从 AI HOT 抓当天的热点，整理成 Markdown，写到 <code>5-Summaries/2026年8月/AI热点-2026-08-07.md</code>。生成的文件长这样（真实文件的一部分）：",
-    hot_p2: "验证方法：到点后打开 5-Summaries，能看到当天的文件，就说明跑通了。",
-    h2_aihot: "顺带安利：AI HOT 这个热点源",
-    aihot_p1:
-      "这套系统能跑起来，数据源很关键。我用的是 <a href='https://aihot.virxact.com/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline font-semibold'>AI HOT</a>——一个每天精选 AI 领域热点的聚合站。它能干什么？把全网 AI 动态里的「重要信息」捞出来，按天整理好，给每条配上标题、摘要和原文链接，让你不用自己刷一堆信息流。",
-    aihot_p2: "三个优点：",
-    aihot_li1: "<strong>精选而非搬运：</strong>每天只保留真正值得看的 AI 动态",
-    aihot_li2: "<strong>结构化数据：</strong>每条都有标题、摘要和原文链接，直接能加工成 Markdown",
-    aihot_li3: "<strong>有公开 API：</strong>脚本一行请求就能拉到当天内容，自动化零门槛",
-    aihot_p3: "如果你也在做 AI 相关的知识管理，可以把它当作知识库的「每日输入源」。",
-    h2_diary: "日记提醒是怎么工作的",
-    diary_p1:
-      "22:50 脚本检查当天有没有日记，没有就弹系统通知「今天还没写日记，快去写两笔」。",
-    diary_p2:
-      "写完后，跟 Codex 说一句「今天的日记整理一下」，它就会把 Inbox 里的日记移到 <code>1-Daily/2026年8月/</code>、加上日期和标签、在末尾补上当天的 AI 热点链接和关联笔记——正文一个字不动。",
+    prep_intro: "下面五项里，前三项必须手动完成（装软件），后两项 Codex 会帮你做（建目录、注册任务）。每项都标了「你需要做」还是「Codex 会做」，跟着走就行。",
+
+    prep1_title: "1. Obsidian 笔记库初始化（你需要做）",
+    prep1_desc:
+      "下载安装 Obsidian（<a href='https://obsidian.md/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>obsidian.md</a>，完全免费），新建一个笔记库（Vault），名字随意——我这套叫 SecondBrain。能正常创建并打开笔记就 OK。",
+    prep1_plugins_intro: "然后装四个社区插件。路径：打开 Obsidian → 左下角齿轮（设置）→ Community plugins → 右上角「Browse」，逐个搜索安装：",
+    prep1_plugins:
+      "<li><strong>Dataview</strong>：把笔记库当数据库查。Dashboard 看板靠它实时显示「活跃项目」「Inbox 积压数」「最近修改」。</li><li><strong>Calendar</strong>：侧边栏日历视图，哪天写了日记一目了然。点击日期直接打开/创建当天日记。</li><li><strong>Templater</strong>：模板引擎。装好后打开它的设置（Settings → 社区插件 → Templater 的齿轮图标），找到 <strong>Folder Templates</strong> 区域，填 <code>1-Daily</code> 对应 <code>Templates/daily.md</code>；然后开启 <strong>Trigger Templater on new file creation</strong>。效果：每次在 1-Daily 下新建笔记，自动套模板。</li><li><strong>Tag Wrangler</strong>：标签多了以后批量改名，保持体系统一。</li>",
+    prep1_templater:
+      "然后在笔记库里新建 <code>Templates/daily.md</code> 文件，内容见下方代码块。模板的作用：自动注入日期和标签，日记不用从空文件开始写。",
+
+    prep2_title: "2. Codex CLI 安装（你需要做）",
+    prep2_desc:
+      "去 <a href='https://github.com/anthropics/codex' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>Codex CLI 官方仓库</a> 下载安装——选 Windows 版本。装好后，打开终端（右键 Windows 开始按钮 → 终端），输入 <code>codex</code> 回车。能进入对话界面就装好了：",
+    prep2_caption: "▲ 终端里输入 codex 后进入这个界面，就说明 OK",
+    prep2_first_task:
+      "Codex 装好之后，它的第一项任务就是帮你搭环境。打开终端输入 <code>codex</code>，进入对话后直接说：<strong>「帮我在笔记库根目录建 .codex 文件夹和 scripts 子文件夹，然后建 rules.md」</strong>——它会在笔记库里建好 <code>.codex/</code>、<code>.codex/scripts/</code> 和 <code>.codex/rules.md</code>。你告诉它笔记库路径就行。rules.md 的具体内容后面「四条自动化线」那节会详细讲——现在让它建个空壳就行。",
+
+    prep3_title: "3. Node.js 安装（你需要做）",
+    prep3_desc:
+      "脚本靠 Node.js 运行。去 <a href='https://nodejs.org/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>nodejs.org</a> 下载 <strong>LTS 版</strong>（左边绿色大按钮），一路 Next 装完。然后在终端输入 <code>node --version</code>——看到版本号（比如 v20.x）就 OK。国内下载慢可以换镜像：<code>npm config set registry https://registry.npmmirror.com</code>。",
+
+    prep4_title: "4. 笔记库目录结构（Codex 会做）",
+    prep4_desc:
+      "建好 .codex 之后，告诉 Codex：<strong>「帮我建笔记库目录：0-Inbox、1-Daily、2-Projects、3-Areas、4-Resources、5-Summaries，还有 Templates」</strong>——它会在笔记库根目录下建好这些空文件夹。每个文件夹的用途在「笔记库设计」那节详细讲，现在先让它建好就行。",
+
+    prep5_title: "5. Windows 任务计划程序（Codex 会注册）",
+    prep5_desc:
+      "自动化任务的定时执行靠 Windows 任务计划程序。你可以先按 Win 键搜索「任务计划程序」打开看一眼——能打开这个窗口就 OK，不需要做任何操作。后面把需求告诉 Codex 时，它会帮你注册好所有定时任务。",
+
+    // ---- 笔记库设计 ----
+    h2_design: "笔记库设计：为什么是 PARA + Summaries",
+    design_intro:
+      "自动化能跑起来的前提是结构稳定。如果今天把日记放这、明天放那，脚本根本不知道该往哪写。这套结构参考了 Tiago Forte 的 PARA 方法（Projects - Areas - Resources - Archives），并在前面加了 Inbox、后面加了 Summaries：",
+    design_layer0: "<strong>0-Inbox</strong>（入口）——所有新想法、临时代码、未整理的东西先扔这里，定期清零。这是整个系统的「缓冲区」。",
+    design_layer1: "<strong>1-Daily</strong>（日记）——按 <code>2026年8月/</code> 按月归档。每天自动生成，模板注入日期和标签。月末自动成型，不需要手动整理。",
+    design_layer2: "<strong>2-Projects</strong>（项目）——有明确终点的任务：KernelSwift 算子大赛、VAE 图像彩色化、DeepSeek 余额监控。每个项目一个文件夹或 Markdown 文件。",
+    design_layer3: "<strong>3-Areas</strong>（领域）——持续关注、没有终点的方向：Self-Initialization 研究、AGI 思考、德国读博规划、多模态识图。",
+    design_layer4: "<strong>4-Resources</strong>（资料）——参考性质的内容：Linux 命令汇总、高数复习资料、深度学习入门。",
+    design_layer5: "<strong>5-Summaries</strong>（汇总）——时间维度的总结：每日 AI 热点、周总结、月总结。按月份文件夹组织。",
+    design_principles:
+      "三个关键设计决策：<br /><strong>① Inbox 清零原则：</strong>一切新东西先落 0-Inbox，处理完必须归位。Codex 检测到 Inbox 堆积 ≥ 3 篇会自动提醒整理。<br /><strong>② 按月归档：</strong>日记和热点都按「2026年X月」分文件夹。想查「7 月发生了什么」就直接打开对应文件夹，不需要搜索。<br /><strong>③ 双向链接文化：</strong>每篇日记末尾自动挂上当天的 AI 热点链接和相关笔记。笔记库不是文件夹树，是一张图——双向链接让它从树变成网。",
+    design_home:
+      "除此之外，根目录还有一个 <code>Home.md</code>——它是整个笔记库的「主页」。里面有一张知识地图（VAE 体系 → 产品作品 → 参考资料 → 研究探索）、当前聚焦的学习方向和项目、今日热点链接、本周总结入口。打开 Obsidian 第一眼看到的就是它。Dataview 插件让它能自动更新——比如「最近修改」的笔记列表不需要手动维护。",
+
+    // ---- 四条自动化线 ----
+    h2_lines: "四条自动化线：rules.md 是宪法",
+    lines_intro:
+      "<code>.codex/rules.md</code> 是 Codex 在这个笔记库里的唯一行为规则源。每次你打开和 Codex 的对话，它会先读这个文件，然后按里面定义的触发条件检查该做什么。下面是四条自动化线的完整说明：",
+    line1_title: "线 1：AI 热点推送",
+    line1_desc:
+      "<strong>触发条件：</strong>每次和 Codex 对话开始时，检查今天的 <code>AI热点-{日期}.md</code> 是否存在——不存在就立刻抓取，不做任何询问。或者你说「热点」「AI 热点」也能手动触发。<br /><strong>执行流程：</strong>① 调用 AI HOT 公开 API 拉取过去 24 小时精选 → ② 过滤掉 tip 类非核心内容，保留 6-8 条 → ③ 写成 Markdown（每条带标题、摘要、原文链接）→ ④ 存到 <code>5-Summaries/{月份}/AI热点-{日期}.md</code> → ⑤ 自动更新 Home.md 的「今日 AI 热点」链接 → ⑥ 在当天日记末尾追加热点链接。<br /><strong>数据源：</strong><a href='https://aihot.virxact.com/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>AI HOT</a>，一个每天精选 AI 领域热点的聚合站，有公开 API。",
+    line2_title: "线 2：Inbox 自动整理",
+    line2_desc:
+      "<strong>触发条件：</strong>你说「整理 Inbox」，或者 Codex 检测到 <code>0-Inbox/</code> 累积 ≥ 3 个 .md 文件且你还没处理。<br /><strong>执行流程：</strong>① 扫描 Inbox → ② 逐个读取内容，AI 判断归属：有截止日期的任务 → 2-Projects，持续关注的研究话题 → 3-Areas，参考性质的内容 → 4-Resources → ③ 为每篇笔记添加 YAML 头（tags、status、area、created）→ ④ 在当天日记和关联笔记中补双向链接 → ⑤ 移动文件到目标目录 → ⑥ 汇报整理结果。",
+    line3_title: "线 3：周总结",
+    line3_desc:
+      "<strong>触发条件：</strong>你说「周总结」，或者当前是周日且你开了新对话。<br /><strong>执行流程：</strong>① 拉取本周所有日记 → ② 扫描 2-Projects 和 3-Areas 本周新建/修改的笔记 → ③ 提取关键事件、新增想法、未闭环事项 → ④ 按 <code>Templates/weekly-review.md</code> 模板生成草稿（包含：本周日记、新知与想法、Codex 做了什么、未闭环、下周方向）→ ⑤ 更新 Home.md 的「本周总结」入口。",
+    line4_title: "线 4：月总结",
+    line4_desc:
+      "<strong>触发条件：</strong>你说「月总结」，或者当前是每月 1 号。<br /><strong>执行流程：</strong>① 扫描本月所有周总结 → ② 合并提取月度高频标签、知识网增长点、项目进展 → ③ 对比上月（如有）→ ④ 生成 <code>5-Summaries/{月份}/月总结-{年份}-{月份}.md</code>。",
+    lines_checklist:
+      "每次会话启动时的自动检查清单（优先级从高到低）：<br />🔴 热点文件是否存在 → 不存在立刻抓取<br />🟡 Inbox 是否 ≥ 3 篇 → 提醒整理<br />🟢 当前是否周日 → 询问是否做周总结<br />🔵 当前是否 1 号 → 询问是否做月总结",
+
+    // ---- 兴趣雷达 ----
+    h2_radar: "兴趣雷达：只提醒你真正关心的",
+    radar_intro:
+      "四条自动化线让信息自动流入，但带来了新问题：每天 7 条热点，你真正关心的可能只有一两条。AGI、Self-Initialization、算子……每天都要打开文件从头翻到尾，就为了确认「今天有没有我关心的」。没命中时，这 7 条就只是 7 条标题。",
+    radar_how:
+      "解决办法：在热点抓取完成后加一道<strong>关键词过滤器</strong>。扫描当天文件里的内容，命中你订阅的主题就弹一个 Windows 弹窗（带实时倒计时和「打开笔记」按钮），没命中就安静地写一行日志。就像聊天软件的「特别关心」——只有被标记的人才弹提醒。",
+    radar_config:
+      "关键词不是一堆散词，而是<strong>「主题 + 别名」</strong>——每个主题下挂多个匹配词，命中任一就归入该主题。这样弹窗告诉你是「哪个主题命中」，而不是「哪个词命中」。配置独立成一个 JSON 文件（见下方代码块），脚本每次运行都会重新读取，改配置不用改代码。不想手动编辑也没关系——告诉 Codex「帮我加一个 XX 主题」，它帮你改。",
+    radar_pitfall_intro: "弹窗开发踩过的坑（都是真实发生过的）：",
+    radar_pitfall1:
+      "<strong>坑 1：系统通知被静默吞掉。</strong>第一版用的是 WinRT Toast 通知——代码调用成功、日志也写了，但屏幕上什么都没有。原因：Toast 需要注册过的 AppUserModelID，「裸 PowerShell 脚本」没有这个 ID，通知被系统静默丢弃。解决办法：不走系统通知，直接用 WPF 自己做窗口。",
+    radar_pitfall2:
+      "<strong>坑 2：按钮和倒计时没反应。</strong>用 PowerShell 直接写 WPF 窗口时，事件处理脚本需要运行空间有空闲，而 <code>Dispatcher.Run()</code> 把运行空间占死了，事件永远排不上队。解决办法：用 Codex 把弹窗逻辑编译成原生 C# 类（<code>Add-Type</code>），事件走 .NET 原生通道，立刻正常。",
+    radar_pitfall3:
+      "<strong>坑 3：窗口关了进程还卡着。</strong>直接 <code>Dispatcher.Run()</code> 不会因为窗口关闭而返回——进程一直挂着。解决办法：用 WPF 标准写法 <code>Application.Run(window)</code>，窗口一关进程就退出。",
+    radar_pitfall4:
+      "<strong>坑 4：中文乱码。</strong>PowerShell 5.1 读脚本默认按系统编码（Windows 中文版是 GBK），UTF-8 无 BOM 的中文脚本会乱码。把脚本文件存成 <strong>UTF-8 with BOM</strong> 即可解决。",
+
+    // ---- 一天流程 ----
     h2_day: "一天的实际流程",
-    day_p1: "系统跑起来之后，你的一天是这样的：",
-    day_li1: "<strong>早上：</strong>打开 Obsidian，昨天的日记已经在 1-Daily 里，末尾带着昨天的 AI 热点链接",
-    day_li2: "<strong>20:00：</strong>热点自动抓取，出现在 5-Summaries；命中你订阅的主题时还会弹窗提醒（下一篇）",
-    day_li3: "<strong>晚上：</strong>写日记 → 喊一句「整理一下」→ Inbox 清空、日记归位",
-    day_li4: "<strong>月底：</strong>当月文件夹自动成型，月度总结直接用当月的日记和热点写",
-    day_p2: "你需要做的，只剩读和想。",
+    day_intro: "系统跑起来之后，你的一天是这样的：",
+    day_li1: "<strong>早上：</strong>打开 Obsidian，昨天的日记已经在 1-Daily 里，末尾带着昨天的 AI 热点链接。Home.md 告诉你当前有哪些活跃项目。",
+    day_li2: "<strong>20:00：</strong>热点自动抓取，出现在 5-Summaries。命中你订阅的主题时弹窗提醒，没命中就安静。",
+    day_li3: "<strong>晚上：</strong>写日记 → 喊一句「整理一下」→ Inbox 清空、日记归位、双向链接补全。",
+    day_li4: "<strong>月底：</strong>当月文件夹自动成型，周总结已经写了好几篇——月度总结基本是「合并 + 微调」而不是「从零写」。",
+    day_summary: "你需要做的，只剩读和想。系统负责让信息在正确的时间出现在正确的地方。",
+
+    // ---- FAQ ----
     h2_faq: "常见问题",
-    faq_intro: "最常被问到的问题：",
+    faq_intro: "搭这套系统最常被问到的问题，以及我自己踩过的：",
     faq_q1: "需要会写代码吗？",
-    faq_a1: "不需要从零写。把需求告诉 Codex，它帮你生成脚本和任务配置；你只需要会复制粘贴提示词、会看验证结果。",
-    faq_q2: "Codex 没按我说的做怎么办？",
-    faq_a2: "把它的输出贴回去，告诉它哪里不对（比如「热点文件放错文件夹了」），它会修正。它的能力边界在于你描述得清不清楚。",
+    faq_a1: "不需要从零写。核心能力是把自己的需求描述清楚——什么时候触发、做什么、结果放哪。描述清楚了，Codex 生成脚本和配置，你验证结果。描述不清楚，Codex 也帮不了你。这套系统的瓶颈不在代码，在需求表达。",
+    faq_q2: "Codex 没按我想的做怎么办？",
+    faq_a2: "把它的输出贴回去，告诉它哪里不对（比如「热点文件放错文件夹了」「弹窗位置不对」），它会修正。它的能力边界在于你描述得清不清楚——如果描述不清楚，先用 Claude Code 帮你理清思路，再把清晰的方案交给 Codex 执行。这就是为什么两个工具都要用。",
     faq_q3: "怎么改执行时间？",
-    faq_a3: "打开 Windows「任务计划程序」，找到对应任务，右键 → 属性 → 触发器 → 编辑时间。",
-    faq_q4: "出问题了怎么看？",
-    faq_a4: "脚本会往 <code>scripts/</code> 目录写日志（如 <code>aihot_keywords.log</code>）。把日志最后几行复制给 Codex，它一般直接定位。",
+    faq_a3: "打开 Windows「任务计划程序」，找到对应任务，右键 → 属性 → 触发器 → 编辑时间。不需要改任何代码。",
+    faq_q4: "出问题了怎么排查？",
+    faq_a4: "脚本会往 <code>.codex/scripts/</code> 目录写日志（如 <code>aihot_keywords.log</code>）。把日志最后几行复制给 Codex 或 Claude Code，一般直接定位。也可以手动跑脚本：<code>node fetch_aihot.js daily</code>，看终端输出。",
     faq_q5: "不想用了怎么停？",
-    faq_a5: "在任务计划程序里禁用对应任务即可；想彻底卸载就删脚本 + 删任务。",
-    h2_next: "下一步",
-    next_p1:
-      "这套工作流还在长。下一篇给热点加一个「兴趣雷达」：抓完后自动扫描关键词，只有命中你关心的主题（AGI、self、注意力…）才弹窗提醒，不命中就不打扰。",
-    next_link: "兴趣雷达：Windows 自定义弹窗实战 →",
-    h2_ref: "相关资源",
-    ref1_title: "兴趣雷达（本系列下一篇）",
-    ref1_desc: "给 AI 热点装上关键词提醒弹窗",
-    ref2_title: "本站仓库",
-    ref2_desc: "这套博客与脚本的源码都在 GitHub",
-    ref3_title: "AI HOT 数据源",
-    ref3_desc: "每天 20:00 抓取的热点来源",
-    ref4_title: "Windows 任务计划程序",
-    ref4_desc: "搜索「任务计划程序」即可管理所有自动化任务",
+    faq_a5: "在任务计划程序里禁用对应任务即可。脚本和配置可以留着，哪天想恢复就重新启用。想彻底卸载就删脚本 + 删任务。",
+    faq_q6: "为什么用两个 AI 工具而不是一个？",
+    faq_a6: "因为目前没有一个工具能同时做好「思考设计」和「执行自动化」。Claude Code 擅长理解复杂需求和推理——让它设计笔记库结构、写 Dataview 查询、规划自动化流程，比让它逐行写 PowerShell 脚本合适。Codex 擅长直接操作系统——读写文件、执行脚本、注册计划任务，但让它设计架构容易「先干了再说」。分工不是噱头，是各取所长。",
+    faq_q7: "Mac / Linux 能用吗？",
+    faq_a7: "核心逻辑（脚本 + Obsidian + rules.md）跨平台都能跑。但 Windows 任务计划程序是 Windows 专属——Mac 用 launchd，Linux 用 cron/systemd timer。把需求告诉 Codex 时说明你的操作系统，它会用对应的调度工具。",
+
+    // ---- 结尾 ----
     bottom_title: "这篇文章是怎么写的",
     bottom_desc:
-      "本文全程用 Codex 撰写。文中的目录结构、脚本片段和计划任务，都是这套系统真实运行的样子——你照着「第一步」把需求告诉 Codex，也能得到同一套。",
-    bottom_tip: "卡住了？把报错复制给 Codex，它会帮你排查。",
+      "本文的结构设计、内容规划、中英文翻译由 Claude Code 完成；文中的脚本片段、目录结构、自动化流程都来自我真实在用的 SecondBrain 笔记库；Codex 负责这套系统里的日常自动化执行。和前两篇 Claude Code 文章一样——AI 负责执行和辅助，但经验、判断和审美来自人。",
+    bottom_tip: "卡住了？把报错复制给 Claude Code 或 Codex，说明你的操作系统和笔记库路径，它会帮你排查。",
   },
+
   en: {
     intro_p1:
-      "If you've managed knowledge in a note app, you've probably hit these: things you saved and never opened again, notes piling up with nothing findable, streaks that break after a few days. They look like discipline problems, but the root cause is usually the same — <strong>knowledge flows in entirely manually</strong>: every new item needs its own folder, filename, date, and tags.",
+      "Imagine this: you open Obsidian each morning. Yesterday's diary is already in 1-Daily, with yesterday's AI news links appended at the bottom. At 8pm sharp, the day's AI news is automatically fetched, filtered, and written into 5-Summaries as Markdown — and if any topic you care about matches, a popup reminds you. In the evening, you write your diary, say \"organize it,\" and your Inbox clears, the diary files itself, and bidirectional links are filled in. All you have to do is read and think.",
     intro_p2:
-      "This post shows you how to automate that \"organizing\" itself with Codex: news auto-archived at 8pm, diary reminders at 10:50pm, automatic monthly filing. No coding from scratch — <strong>you tell Codex what you want, and it builds it for you.</strong>",
+      "This isn't \"throw requirements at AI and call it done\" — this system has three roles, each doing what it does best: <strong>Claude Code handles thinking and design</strong> (vault structure, templates, queries), <strong>Codex executes automation</strong> (news fetching, inbox sorting, weekly/monthly reviews), and <strong>Obsidian hosts the knowledge graph</strong>. This article is the complete build record — from plugin setup to four automation pipelines, from Dataview dashboards to WPF popup reminders.",
+
+    h2_roles: "The Three Roles: Who Does What",
+    roles_intro:
+      "Before we start, understand what each tool is responsible for — this is the design premise of the whole system. Many people treat AI tools as universal wrenches, making one tool do everything. A better approach: let each tool do what it's best at.",
+    role1_title: "Claude Code — The Thinker",
+    role1_desc:
+      "In this system, Claude Code handles \"think it through, then tell you how.\" It doesn't directly manipulate system files, but it designs your vault's directory structure, writes Templater templates, configures Dataview queries, and plans automation workflows. Ask it \"how should I organize my vault so automation scripts run reliably?\" — it gives you a reasoned design, not just a list of folder names.",
+    role1_detail:
+      "Claude Code is embedded directly in Obsidian via the <strong>Claudian plugin</strong> — press a hotkey in Obsidian and it's there, no window switching. It can see your currently open note, understand the context, and give targeted advice. Like the earlier <a href='/blog/claude-code-mcp-setup' class='text-indigo-600 dark:text-indigo-400 hover:underline'>MCP setup</a> and <a href='/blog/claude-code-statusline' class='text-indigo-600 dark:text-indigo-400 hover:underline'>statusline</a> posts, Claude Code's core strength is understanding and reasoning — not execution.",
+    role2_title: "Codex — The Executor",
+    role2_desc:
+      "Codex handles \"get it done.\" Its <code>.codex/rules.md</code> defines four automation pipelines — news fetching, inbox sorting, weekly review, monthly review. Every time you start a conversation with it, it checks: is today's news file generated? Has the Inbox piled up past 3 items? It fetches what needs fetching and reminds what needs reminding. It doesn't need you to write code, but it does need you to write clear rules: when to trigger, what to do, where results go. <code>rules.md</code> is your contract with it.",
+    role2_detail:
+      "Codex reads and writes vault files directly, executes Node.js and PowerShell scripts, and registers Windows scheduled tasks. The generated scripts can be long (the WPF popup is 200+ lines), but you don't write them — you describe what you want, Codex generates them, and you verify.",
+    role3_title: "Obsidian — The Host",
+    role3_desc:
+      "Obsidian is where knowledge ultimately lives. It doesn't produce content, but it provides the infrastructure that turns knowledge from \"a pile of files\" into \"a network\": <strong>bidirectional links</strong> connect notes to each other, <strong>Dataview</strong> turns your vault into a queryable database, <strong>Templater</strong> auto-applies templates on note creation, and <strong>Calendar</strong> shows which days have diary entries in a sidebar view. Automation scripts feed information in; you read and think.",
+    roles_summary:
+      "Three tools, three clear responsibilities: <strong>Claude Code thinks, Codex executes, Obsidian hosts.</strong> This isn't forcing three tools together — each solves a problem the previous one can't. Claude Code can't run scheduled tasks. Codex isn't suited for architectural design. Obsidian can't run itself. Together, they form a knowledge system that breathes on its own.",
+
     h2_prep: "Preparation",
-    prep_p1: "Before we start, confirm these five things. Each has instructions and a way to verify. The most important one is the first: Codex itself.",
-    prep_check1: "Check 1: Is Codex available? (Most Important)",
-    prep_check1_desc: "Open a terminal and run <code>codex</code>. If you land in Codex's conversation interface, you're good.",
-    prep_check1_fast: "Faster way to open a terminal: <strong>right-click the Windows icon (Start button) → choose \"Terminal\"</strong>, or press Win+R and type <code>powershell</code>.",
-    prep_check1_caption: "▲ Run codex in the terminal and reach its conversation interface — Codex is ready",
-    prep_check1_no: "Codex not installed? Just tell it \"help me install Codex CLI\" — it can; or download it from the official site.",
-    prep_check2: "Check 2: Is Obsidian installed?",
-    prep_check2_desc:
-      "Obsidian is a local-first note app, completely free. Click the icon next to this text (or <a href='https://obsidian.md/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>obsidian.md</a>) to download and install it, then create a vault — any name, e.g., SecondBrain. If you can create and open notes, you're good.",
-    prep_check3: "Check 3: Is Node.js installed?",
-    prep_check3_desc:
-      "Our scripts run on Node.js — install once, done. Click the icon next to this text (or <a href='https://nodejs.org/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>nodejs.org</a>) to download the <strong>LTS version</strong>. Then run <code>node --version</code> in the terminal — seeing a version (e.g., v20.x) means it's installed.",
-    prep_check3_step: "Verify after installing:",
-    prep_check3_s1: "<strong>Reopen the terminal</strong> and run <code>node --version</code>",
-    prep_check3_s2: "A version number means success; if downloads are slow, set the mirror with <code>npm config set registry https://registry.npmmirror.com</code>",
-    prep_check4: "Check 4: Know where the scripts live",
-    prep_check4_desc:
-      "All scripts go into <code>.codex/scripts/</code> inside your vault. Open the vault folder in a file manager and create the <code>.codex</code> and <code>scripts</code> folders. Note: dot-folders don't appear in Obsidian's note list, but they do in the file manager — that's normal.",
-    prep_check4_tip: "💡 Don't know how to create folders? Just tell Codex \"create the .codex/scripts folder for me\" — it can handle all your needs.",
-    prep_check5: "Check 5: Can you find Task Scheduler?",
-    prep_check5_desc:
-      "We'll use it to register the automation tasks. Press the Win key, search \"Task Scheduler,\" and open it. Being able to open the window is enough — don't touch anything yet.",
-    h2_tell: "Step 1: Tell Codex What You Want",
-    tell_p1: "No need to write code yourself. Just paste this request to Codex:",
-    tell_code_title: "Prompt for Codex (copy-paste ready)",
-    tell_p2:
-      "Codex will ask a few questions — your vault path, the news source, what time things should run. Answer them, and it will build the folder structure, write the three scripts, and register the Windows scheduled tasks for you.",
-    tell_tip:
-      "💡 If Codex doesn't do what you asked, paste its output back and tell it what's wrong (e.g., \"the news file went to the wrong folder\") — it will fix it.",
-    h2_get: "What You'll Get",
-    get_p1: "When it's done, your vault looks like this:",
-    get_code_title: "Folder structure",
-    get_p2: "Plus three single-purpose scripts:",
-    get_li1: "<strong>fetch_aihot.js</strong> — fetches AI news daily and writes Markdown into 5-Summaries",
-    get_li2: "<strong>check_diary.js + remind_diary.ps1</strong> — at 10:50pm, checks whether today's diary exists and reminds you if not",
-    get_li3: "<strong>check_inbox.js + remind_inbox.ps1</strong> — reminds you when Inbox has items",
-    get_p3: "Windows Task Scheduler will have three new tasks that run on their own — no need to open anything manually.",
-    get_tip: "Don't like the folder layout? Tell Codex to organize it your way — it can.",
-    h2_vault: "Why the Vault Is Designed This Way",
-    vault_p1:
-      "Automation needs a stable structure to run against. Five layers, one job each. Everything new lands in 0-Inbox first, then moves to its layer:",
-    vault_li1: "<strong>0-Inbox</strong> (inbox) — everything new lands here",
-    vault_li2: "<strong>1-Daily</strong> — diaries, archived by month like <code>2026-08/</code>",
-    vault_li3: "<strong>2-Projects / 3-Areas</strong> — projects and area thinking",
-    vault_li4: "<strong>4-Resources</strong> — saved materials",
-    vault_li5: "<strong>5-Summaries</strong> — summaries: AI news, weekly recaps",
-    vault_p2:
-      "Three key design decisions: the <strong>Inbox-zero principle</strong> — everything lands in Inbox and must be filed; <strong>monthly archiving</strong> — diaries and news grouped by month, so \"what happened in July 2026\" is instantly clear; and <strong>bidirectional links</strong> — each diary links to related notes, letting knowledge grow into a network.",
-    h2_hot: "How News Gets Archived Automatically",
-    hot_p1:
-      "At 8pm, <code>fetch_aihot.js</code> fetches the day's AI news from AI HOT, formats it as Markdown, and writes to <code>5-Summaries/2026年8月/AI热点-2026-08-07.md</code>. The generated file looks like this (a real excerpt):",
-    hot_p2: "Verify: after 8pm, open 5-Summaries — if today's file is there, it works.",
-    h2_aihot: "A Side Recommendation: AI HOT as Your News Source",
-    aihot_p1:
-      "This system only works because of its data source. I use <a href='https://aihot.virxact.com/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline font-semibold'>AI HOT</a> — an aggregator that curates AI news every day. What does it do? It pulls the important items out of the whole AI landscape, organizes them by day, and attaches a title, summary, and source link to each.",
-    aihot_p2: "Three reasons I like it:",
-    aihot_li1: "<strong>Curated, not aggregated:</strong> only genuinely worth-reading AI news survives",
-    aihot_li2: "<strong>Structured data:</strong> title, summary, and source link per item — ready to become Markdown",
-    aihot_li3: "<strong>Public API:</strong> one request pulls the day's content — zero-friction automation",
-    aihot_p3: "If you manage AI knowledge too, treat it as the \"daily input source\" for your vault.",
-    h2_diary: "How the Diary Reminder Works",
-    diary_p1:
-      "At 10:50pm, a script checks whether today's diary exists; if not, it pops a system notification — \"You haven't written your diary today, go write a couple lines.\"",
-    diary_p2:
-      "After you write it, tell Codex \"organize today's diary.\" It moves the note from Inbox to <code>1-Daily/2026年8月/</code>, adds date and tags, and appends today's AI news link plus related notes — without touching a word of the body.",
+    prep_intro: "Of the five items below, the first three you must do yourself (install software); the last two Codex handles for you (create folders, register tasks). Each is labeled — just follow along.",
+
+    prep1_title: "1. Initialize Your Obsidian Vault (You Do This)",
+    prep1_desc:
+      "Download and install Obsidian (<a href='https://obsidian.md/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>obsidian.md</a>, completely free). Create a new vault — any name works; mine is called SecondBrain. If you can create and open a note, you're set.",
+    prep1_plugins_intro: "Then install four community plugins. Path: Open Obsidian → gear icon bottom-left (Settings) → Community plugins → Browse (top-right), search and install each:",
+    prep1_plugins:
+      "<li><strong>Dataview</strong>: Treats your vault as a queryable database. The Dashboard board uses it to show active projects, Inbox backlog count, and recent changes.</li><li><strong>Calendar</strong>: A sidebar calendar view — which days have entries at a glance. Click a date to open or create that day's diary.</li><li><strong>Templater</strong>: Template engine. After installing, open its settings (Settings → Community plugins → gear icon on Templater), find the <strong>Folder Templates</strong> section, fill in <code>1-Daily</code> → <code>Templates/daily.md</code>; then enable <strong>Trigger Templater on new file creation</strong>. Effect: new files under 1-Daily auto-inject the daily template.</li><li><strong>Tag Wrangler</strong>: Batch-rename tags as your system grows, keeping conventions consistent.</li>",
+    prep1_templater:
+      "Then create <code>Templates/daily.md</code> in your vault (content below). Its job: auto-inject date and tags — you never start a diary from a blank file.",
+
+    prep2_title: "2. Install Codex CLI (You Do This)",
+    prep2_desc:
+      "Go to the <a href='https://github.com/anthropics/codex' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>Codex CLI repository</a>, download the Windows version, and install. Then open a terminal (right-click the Windows Start button → Terminal) and run <code>codex</code>. If you land in the conversation interface, it's installed:",
+    prep2_caption: "▲ After running codex in the terminal, you should see this interface — you're good to go",
+    prep2_first_task:
+      "Once Codex is installed, its first job is helping you set up the environment. Open a terminal, run <code>codex</code>, and say: <strong>\"Create a .codex folder, a scripts subfolder, and a rules.md file in my vault root.\"</strong> It will create <code>.codex/</code>, <code>.codex/scripts/</code>, and <code>.codex/rules.md</code> for you. Just tell it your vault path. The actual rules.md content is covered in \"Four Automation Pipelines\" below — for now, an empty shell is fine.",
+
+    prep3_title: "3. Install Node.js (You Do This)",
+    prep3_desc:
+      "Scripts run on Node.js. Go to <a href='https://nodejs.org/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>nodejs.org</a>, download the <strong>LTS version</strong> (big green button on the left), install with all defaults. Then run <code>node --version</code> in terminal — seeing a version number (e.g., v20.x) means it's installed. If downloads are slow, set a mirror: <code>npm config set registry https://registry.npmmirror.com</code>.",
+
+    prep4_title: "4. Vault Folder Structure (Codex Does This)",
+    prep4_desc:
+      "After Codex creates the .codex folder, tell it: <strong>\"Create vault folders: 0-Inbox, 1-Daily, 2-Projects, 3-Areas, 4-Resources, 5-Summaries, and Templates.\"</strong> It creates them all in your vault root. Each folder's purpose is explained under \"Vault Design\" — for now, just let Codex scaffold them.",
+
+    prep5_title: "5. Windows Task Scheduler (Codex Registers This)",
+    prep5_desc:
+      "Scheduled automation relies on Windows Task Scheduler. You can press the Win key and search \"Task Scheduler\" to peek — if the window opens, you're fine; don't touch anything. When you give Codex the full requirements later, it registers all the scheduled tasks for you.",
+
+    h2_design: "Vault Design: Why PARA + Summaries",
+    design_intro:
+      "Automation needs a stable structure to run against. If you put diaries here today and there tomorrow, scripts can't know where to write. This structure follows Tiago Forte's PARA method (Projects - Areas - Resources - Archives), with an Inbox prepended and Summaries appended:",
+    design_layer0: "<strong>0-Inbox</strong> (entry point) — all new ideas, temporary snippets, and unsorted items land here first. Cleared regularly. This is the system's buffer zone.",
+    design_layer1: "<strong>1-Daily</strong> (diaries) — archived by month like <code>2026-08/</code>. Auto-generated daily, template injects date and tags. The month's folder shapes itself — no manual filing.",
+    design_layer2: "<strong>2-Projects</strong> (projects) — tasks with clear endpoints: KernelSwift competition, VAE colorization, DeepSeek monitor. One folder or Markdown file per project.",
+    design_layer3: "<strong>3-Areas</strong> (areas) — ongoing interests without endpoints: Self-Initialization research, AGI thinking, Germany PhD planning, multimodal vision.",
+    design_layer4: "<strong>4-Resources</strong> (references) — reference material: Linux commands cheatsheet, advanced math review, deep learning intro.",
+    design_layer5: "<strong>5-Summaries</strong> (summaries) — time-based reviews: daily AI news digests, weekly reviews, monthly reviews. Organized by month folder.",
+    design_principles:
+      "Three key design decisions:<br /><strong>① Inbox Zero:</strong> everything lands in 0-Inbox first. Once processed, it must move to its target layer. Codex detects Inbox buildup ≥ 3 items and reminds you to sort.<br /><strong>② Monthly Archiving:</strong> diaries and news are grouped by month folder. Want to see \"what happened in July\"? Open one folder — no searching required.<br /><strong>③ Bidirectional Link Culture:</strong> every diary gets today's AI news link and related notes appended. A vault isn't a folder tree; it's a graph — bidirectional links turn the tree into a network.",
+    design_home:
+      "Beyond the layers, there's a <code>Home.md</code> in the vault root — it's the \"homepage\" of the whole vault. It has a knowledge map (VAE system → products → references → research), current focus areas and projects, today's news link, and weekly review entries. It's the first thing you see when opening Obsidian. Dataview keeps it auto-updating — the \"recent changes\" list maintains itself.",
+
+    h2_lines: "Four Automation Pipelines: rules.md Is the Constitution",
+    lines_intro:
+      "<code>.codex/rules.md</code> is Codex's single source of behavioral truth in this vault. Every time you start a conversation with Codex, it reads this file first, then checks what needs doing based on the trigger conditions defined inside. Here are the four pipelines:",
+    line1_title: "Pipeline 1: AI News Digest",
+    line1_desc:
+      "<strong>Trigger:</strong> At every session start, Codex checks whether today's <code>AI热点-{date}.md</code> exists — if not, it fetches immediately, no questions asked. Or say \"news\" / \"AI news\" to trigger manually.<br /><strong>Flow:</strong> ① Call the AI HOT public API for the last 24 hours of curated items → ② Filter out tip-category filler, keep 6–8 core items → ③ Format as Markdown (each with title, summary, source link) → ④ Save to <code>5-Summaries/{month}/AI热点-{date}.md</code> → ⑤ Update Home.md's \"Today's AI News\" link → ⑥ Append the news link to today's diary.<br /><strong>Data source:</strong> <a href='https://aihot.virxact.com/' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>AI HOT</a>, a curated AI news aggregator with a public API.",
+    line2_title: "Pipeline 2: Inbox Auto-Sort",
+    line2_desc:
+      "<strong>Trigger:</strong> You say \"sort inbox,\" or Codex detects ≥ 3 .md files accumulated in <code>0-Inbox/</code> without your intervention.<br /><strong>Flow:</strong> ① Scan Inbox → ② Read each item, AI classifies: deadline-driven tasks → 2-Projects, ongoing research topics → 3-Areas, reference material → 4-Resources → ③ Add YAML frontmatter (tags, status, area, created) → ④ Fill in bidirectional links in today's diary and related notes → ⑤ Move files to target directories → ⑥ Report results.",
+    line3_title: "Pipeline 3: Weekly Review",
+    line3_desc:
+      "<strong>Trigger:</strong> You say \"weekly review,\" or it's Sunday and you open a new conversation.<br /><strong>Flow:</strong> ① Pull all diary entries from this week → ② Scan 2-Projects and 3-Areas for new/modified notes this week → ③ Extract key events, new ideas, open loops → ④ Generate a draft following <code>Templates/weekly-review.md</code> (sections: diaries, new knowledge & ideas, what Codex did, open loops, next week's direction) → ⑤ Update Home.md's \"Weekly Review\" link.",
+    line4_title: "Pipeline 4: Monthly Review",
+    line4_desc:
+      "<strong>Trigger:</strong> You say \"monthly review,\" or it's the 1st of the month.<br /><strong>Flow:</strong> ① Scan all weekly reviews from this month → ② Merge and extract: monthly top tags, knowledge graph growth points, project progress → ③ Compare with last month (if exists) → ④ Generate <code>5-Summaries/{month}/月总结-{year}-{month}.md</code>.",
+    lines_checklist:
+      "Session startup auto-check (priority order):<br />🔴 News file exists? → If not, fetch immediately<br />🟡 Inbox ≥ 3 items? → Remind to sort<br />🟢 Is it Sunday? → Ask about weekly review<br />🔵 Is it the 1st? → Ask about monthly review",
+
+    h2_radar: "Interest Radar: Only Alert What You Care About",
+    radar_intro:
+      "Four pipelines keep information flowing in automatically, but they create a new problem: of 7 daily news items, you probably only care about 1 or 2. AGI, Self-Initialization, operators… every day you'd open the file and skim top to bottom, just to check \"is there anything for me today?\" On days with no match, those 7 items are just 7 headlines.",
+    radar_how:
+      "The fix: add a <strong>keyword filter</strong> after the news fetch. Scan the day's file for configured topics; if a topic you subscribe to matches, pop a Windows notification window (with a live countdown and \"Open note\" button); otherwise, quietly write one log line. Like \"close friends\" notifications in a chat app — only tagged people trigger an alert.",
+    radar_config:
+      "Keywords aren't loose words — they're <strong>topics with aliases</strong>. Each topic carries multiple match words; hitting any of them counts. So the popup tells you \"which topic matched,\" not \"which word.\" Configuration lives in its own JSON file (see code block below). The script re-reads it every run — change config without touching code. Don't want to hand-edit JSON? Tell Codex \"add a topic for XX\" — it edits it for you.",
+    radar_pitfall_intro: "Real pitfalls from building the popup:",
+    radar_pitfall1:
+      "<strong>Pitfall 1: System toasts silently swallowed.</strong> The first version used WinRT Toast notifications — API calls succeeded, logs were written, but nothing appeared on screen. Cause: Toasts require a registered AppUserModelID, and a \"bare PowerShell script\" has none — the system silently discards them. Fix: skip system toasts entirely; build your own window with WPF.",
+    radar_pitfall2:
+      "<strong>Pitfall 2: Buttons and countdown unresponsive.</strong> When writing WPF directly in PowerShell, event handler scripts need a free runspace, but <code>Dispatcher.Run()</code> blocks the runspace — events never fire. Fix: have Codex compile the popup logic into a native C# class (<code>Add-Type</code>); events go through .NET directly and work immediately.",
+    radar_pitfall3:
+      "<strong>Pitfall 3: Process hangs after window closes.</strong> A bare <code>Dispatcher.Run()</code> doesn't return when the window closes — the process stays alive. Fix: use WPF's standard <code>Application.Run(window)</code>; when the window closes, the process exits.",
+    radar_pitfall4:
+      "<strong>Pitfall 4: Chinese text garbled.</strong> PowerShell 5.1 reads scripts with the system codepage (GBK on Chinese Windows); UTF-8 without BOM gets mangled. Fix: save scripts as <strong>UTF-8 with BOM</strong>.",
+
     h2_day: "A Day in the Life",
-    day_p1: "Once the system runs, your day looks like this:",
-    day_li1: "<strong>Morning:</strong> open Obsidian — yesterday's diary is already in 1-Daily, with yesterday's AI news link at the end",
-    day_li2: "<strong>8pm:</strong> news is fetched automatically into 5-Summaries; matching topics even pop a reminder (next post)",
-    day_li3: "<strong>Evening:</strong> write the diary → say \"organize it\" → Inbox clears, diary files itself",
-    day_li4: "<strong>End of month:</strong> the month's folder is already shaped; the monthly recap writes itself",
-    day_p2: "All you have to do is read and think.",
+    day_intro: "Once the system runs, your day looks like this:",
+    day_li1: "<strong>Morning:</strong> open Obsidian — yesterday's diary is already in 1-Daily, with yesterday's AI news link at the end. Home.md shows what projects are active.",
+    day_li2: "<strong>8pm:</strong> news is fetched automatically into 5-Summaries. Matching your subscribed topics? Popup. No match? Silence.",
+    day_li3: "<strong>Evening:</strong> write your diary → say \"organize it\" → Inbox clears, diary files itself, bidirectional links fill in.",
+    day_li4: "<strong>End of month:</strong> the month's folder is already shaped, weekly reviews are written — the monthly review is mostly merge-and-polish, not write-from-scratch.",
+    day_summary: "All you have to do is read and think. The system makes sure information appears in the right place at the right time.",
+
     h2_faq: "FAQ",
-    faq_intro: "The questions readers ask most:",
+    faq_intro: "The questions readers ask most, plus my own pitfalls:",
     faq_q1: "Do I need to know how to code?",
-    faq_a1: "Not from scratch. Tell Codex what you want and it generates the scripts and task config; you just copy prompts and check results.",
+    faq_a1: "Not from scratch. The core skill is clearly describing what you want — when to trigger, what to do, where results go. Describe it clearly and Codex generates scripts and configs; you verify. Describe it unclearly and even Codex can't help. The bottleneck in this system isn't code — it's requirements articulation.",
     faq_q2: "What if Codex doesn't do what I asked?",
-    faq_a2: "Paste its output back and tell it what's wrong (e.g., \"the news file went to the wrong folder\"). It will fix it. How well it works depends on how clearly you describe the problem.",
-    faq_q3: "How do I change the execution time?",
-    faq_a3: "Open Windows Task Scheduler, find the task, right-click → Properties → Triggers → Edit the time.",
+    faq_a2: "Paste its output back and tell it what's wrong (\"the news file went to the wrong folder,\" \"the popup position is off\"). It will fix it. Its capability boundary is how clearly you describe the problem. If you can't articulate the issue clearly, use Claude Code first to reason through the problem, then hand the clarified plan to Codex for execution. That's why we use both.",
+    faq_q3: "How do I change execution time?",
+    faq_a3: "Open Windows Task Scheduler, find the task, right-click → Properties → Triggers → Edit the time. No code changes needed.",
     faq_q4: "How do I debug when something breaks?",
-    faq_a4: "Scripts write logs to <code>scripts/</code> (e.g., <code>aihot_keywords.log</code>). Paste the last few lines to Codex — it usually pinpoints the issue.",
+    faq_a4: "Scripts write logs to <code>.codex/scripts/</code> (e.g., <code>aihot_keywords.log</code>). Paste the last few lines to Codex or Claude Code — they usually pinpoint the issue. You can also run scripts manually: <code>node fetch_aihot.js daily</code>, check terminal output.",
     faq_q5: "How do I stop it?",
-    faq_a5: "Disable the task in Task Scheduler; scripts can stay. To uninstall completely, delete the scripts and tasks.",
-    h2_next: "What's Next",
-    next_p1:
-      "This workflow keeps growing. The next post adds an \"Interest Radar\" to the news: after fetching, keywords are scanned, and a popup appears only when topics you care about (AGI, self, attention…) match — no match, no interruption.",
-    next_link: "Interest Radar: Custom Windows Popups in Practice →",
-    h2_ref: "Related Resources",
-    ref1_title: "Interest Radar (Next in Series)",
-    ref1_desc: "Keyword-alert popups for AI news",
-    ref2_title: "This Site's Repository",
-    ref2_desc: "Source code for this blog and its scripts on GitHub",
-    ref3_title: "AI HOT Source",
-    ref3_desc: "The curated AI news source fetched at 8pm",
-    ref4_title: "Windows Task Scheduler",
-    ref4_desc: "Search \"Task Scheduler\" to manage all automation tasks",
+    faq_a5: "Disable the task in Task Scheduler. Scripts and config can stay — re-enable the task whenever. To fully uninstall, delete the scripts and tasks.",
+    faq_q6: "Why two AI tools instead of one?",
+    faq_a6: "Because no single tool today excels at both \"design thinking\" and \"automation execution.\" Claude Code is strong at understanding complex requirements and reasoning — it's better suited to designing vault structures, writing Dataview queries, and planning automation workflows than writing PowerShell scripts line by line. Codex is strong at direct system manipulation — reading/writing files, executing scripts, registering scheduled tasks — but when asked to design architecture, it tends to \"act first, think later.\" This division of labor isn't gimmickry; it's playing to each tool's strengths.",
+    faq_q7: "Does this work on Mac / Linux?",
+    faq_a7: "The core logic (scripts + Obsidian + rules.md) works cross-platform. But Windows Task Scheduler is Windows-only — Mac uses launchd, Linux uses cron/systemd timers. When you describe your requirements to Codex, tell it your OS, and it'll use the appropriate scheduler.",
+
     bottom_title: "How This Article Was Written",
     bottom_desc:
-      "Written entirely with Codex. The folder structure, scripts, and scheduled tasks here are how this system really runs — follow Step 1 and tell Codex what you want, and you'll get the same thing.",
-    bottom_tip: "Stuck? Paste the error to Codex — it will help you debug.",
+      "The structure design, content planning, and Chinese-English translation of this article were done with Claude Code. The script snippets, directory structure, and automation flows all come from my real SecondBrain vault. Codex handles the daily automation execution within that system. As with the earlier Claude Code posts — AI handles execution and assistance, but experience, judgment, and taste come from the human.",
+    bottom_tip: "Stuck? Paste the error to Claude Code or Codex, tell it your OS and vault path — it'll help you debug.",
   },
 } as const;
 
 const codeBlocks = {
-  prompt: {
-    zh: `帮我搭一套 Obsidian 笔记库自动化：
-1. 写一个 Node 脚本，每天抓 AI HOT 的热点，整理成 Markdown，
-   存到 5-Summaries/{年份年月份}/AI热点-{日期}.md
-2. 写一个 PowerShell 提醒脚本，每天 22:50 检查当天日记有没有写，
-   没写就弹系统通知
-3. 帮我注册 Windows 计划任务：每天 20:00 跑抓取，22:50 跑提醒
-
-笔记库结构：0-Inbox、1-Daily、2-Projects、3-Areas、4-Resources、5-Summaries
-脚本统一放在 .codex/scripts/ 下，每个脚本要有日志`,
-    en: `Build me an Obsidian vault automation:
-1. A Node script that fetches AI HOT news daily, formats it as Markdown,
-   and saves to 5-Summaries/{YYYY年M月}/AI热点-{YYYY-MM-DD}.md
-2. A PowerShell reminder that checks at 10:50pm whether today's diary exists
-   and pops a system notification if not
-3. Register Windows scheduled tasks: fetch at 8pm, remind at 10:50pm
-
-Vault structure: 0-Inbox, 1-Daily, 2-Projects, 3-Areas, 4-Resources, 5-Summaries
-Put all scripts under .codex/scripts/ and give each one a log`,
-  },
   vaultTree: {
     zh: `SecondBrain/
 ├── 0-Inbox/          # 入口：新想法、未整理的东西
 ├── 1-Daily/          # 日记（按 2026年8月/ 归档）
-├── 2-Projects/       # 项目（CV、VAE、比赛…）
-├── 3-Areas/          # 领域思考（AGI、Agent…）
+├── 2-Projects/       # 项目（有终点的任务）
+├── 3-Areas/          # 领域（持续关注的方向）
 ├── 4-Resources/      # 资料收藏
-└── 5-Summaries/      # 汇总：AI热点、周总结`,
+├── 5-Summaries/      # 汇总：AI热点、周总结、月总结
+├── Templates/        # 模板（daily.md, weekly-review.md…）
+├── Home.md           # 笔记库主页 / 知识地图
+└── .codex/
+    ├── rules.md      # Codex 行为规则（四条自动化线）
+    └── scripts/      # 自动化脚本`,
     en: `SecondBrain/
-├── 0-Inbox/          # inbox: new ideas, unsorted stuff
+├── 0-Inbox/          # entry point: new ideas, unsorted
 ├── 1-Daily/          # diaries (archived by month)
-├── 2-Projects/       # projects (CV, VAE, competitions…)
-├── 3-Areas/          # area thinking (AGI, Agents…)
-├── 4-Resources/      # saved materials
-└── 5-Summaries/      # summaries: AI news, weekly recaps`,
+├── 2-Projects/       # projects (tasks with endpoints)
+├── 3-Areas/          # areas (ongoing interests)
+├── 4-Resources/      # reference material
+├── 5-Summaries/      # summaries: news, weekly, monthly
+├── Templates/        # templates (daily.md, weekly-review.md…)
+├── Home.md           # vault homepage / knowledge map
+└── .codex/
+    ├── rules.md      # Codex behavior rules (4 automation pipelines)
+    └── scripts/      # automation scripts`,
   },
-  hotMd: {
+  dailyTemplate: {
     zh: `---
-tags: [AI热点, 资讯]
-created: 2026-08-07
+date: <% tp.date.now("YYYY-MM-DD") %>
+tags: [日记]
 ---
 
-# AI 热点 · 2026-08-07
-
-## [Runway 上线 Seedance 2.5，支持 50 个角色参考](https://...)
-
-Runway 发布了支持 50 个角色参考的视频生成模型…
-
-## [OpenAI 披露 ChatGPT 全球 10 亿用户画像](https://...)
-
-35 岁及以上用户用量上升…
-
----
-*数据来源：AI HOT — 过去 24 小时精选*`,
+<% tp.date.now("YYYY-MM-DD HH:mm:ss") %>`,
     en: `---
-tags: [AI热点, 资讯]
-created: 2026-08-07
+date: <% tp.date.now("YYYY-MM-DD") %>
+tags: [diary]
 ---
 
-# AI News · 2026-08-07
+<% tp.date.now("YYYY-MM-DD HH:mm:ss") %>`,
+  },
+  rulesExcerpt: {
+    zh: `# Codex + SecondBrain 四条自动化线
 
-## [Runway launches Seedance 2.5 with 50 character references](https://...)
+## 线1：AI 热点推送
+- 触发：每次对话开始时检查今日热点文件是否存在 → 不存在立刻抓取
+- 流程：调 API → 过滤 6-8 条 → 写 Markdown → 更新 Home.md → 补日记链接
 
-Runway released a video generation model supporting 50 character references…
+## 线2：Inbox 自动整理
+- 触发：用户说"整理 Inbox" 或 Inbox 累积 >= 3 个文件
+- 流程：扫描 → AI 判断归属 → 加 YAML 头 → 补双向链接 → 移动文件
 
-## [OpenAI reveals ChatGPT's 1B global users](https://...)
+## 线3：周总结
+- 触发：用户说"周总结" 或周日新对话
+- 流程：拉本周日记 → 扫描项目/领域 → 按模板生成草稿
 
-Usage among users 35+ is rising…
+## 线4：月总结
+- 触发：用户说"月总结" 或每月 1 号
+- 流程：扫描本月周总结 → 合并提取 → 对比上月 → 生成月总结
 
----
-*Source: AI HOT — curated from the last 24 hours*`,
+## 每次会话启动检查
+- [ ] 热点是否存在 → 不存在立刻抓取（最高优先级）
+- [ ] Inbox 是否 >= 3 篇 → 提醒整理
+- [ ] 是否周日 → 询问周总结
+- [ ] 是否 1 号 → 询问月总结`,
+    en: `# Codex + SecondBrain: Four Automation Pipelines
+
+## Pipeline 1: AI News Digest
+- Trigger: check if today's news file exists at session start → fetch if missing
+- Flow: call API → filter 6-8 items → write Markdown → update Home.md → append diary link
+
+## Pipeline 2: Inbox Auto-Sort
+- Trigger: user says "sort inbox" or Inbox >= 3 files
+- Flow: scan → AI classify → add YAML → fill bidirectional links → move files
+
+## Pipeline 3: Weekly Review
+- Trigger: user says "weekly review" or Sunday new session
+- Flow: pull week's diaries → scan projects/areas → generate from template
+
+## Pipeline 4: Monthly Review
+- Trigger: user says "monthly review" or 1st of month
+- Flow: scan month's weekly reviews → merge & extract → compare with last month → generate
+
+## Session Startup Checklist
+- [ ] News file exists? → Fetch immediately if not (highest priority)
+- [ ] Inbox >= 3 items? → Remind to sort
+- [ ] Sunday? → Ask about weekly review
+- [ ] 1st of month? → Ask about monthly review`,
+  },
+  keywordsJson: {
+    zh: `{
+  "topics": [
+    { "name": "AGI",
+      "keywords": ["AGI", "通用人工智能", "artificial general intelligence"] },
+    { "name": "Self-Initialization / 注意力",
+      "keywords": ["Self-Initialization", "attention", "注意力", "元认知"] },
+    { "name": "算子 / 国产芯片",
+      "keywords": ["算子", "国产芯片", "昇腾", "Triton"] },
+    { "name": "VAE / 生成模型",
+      "keywords": ["VAE", "变分自编码器", "扩散模型", "图像生成"] },
+    { "name": "多模态",
+      "keywords": ["多模态", "视频生成", "Sora", "Runway", "视觉理解"] }
+  ]
+}`,
+    en: `{
+  "topics": [
+    { "name": "AGI",
+      "keywords": ["AGI", "artificial general intelligence"] },
+    { "name": "Self-Initialization / Attention",
+      "keywords": ["Self-Initialization", "attention", "meta-cognition"] },
+    { "name": "Operators / Domestic Chips",
+      "keywords": ["operator", "domestic chip", "Ascend", "Triton"] },
+    { "name": "VAE / Generative Models",
+      "keywords": ["VAE", "variational autoencoder", "diffusion", "image generation"] },
+    { "name": "Multimodal",
+      "keywords": ["multimodal", "video generation", "Sora", "Runway", "visual understanding"] }
+  ]
+}`,
+  },
+  codexPrompt: {
+    zh: `帮我搭一套 Obsidian 笔记库自动化系统：
+
+1. 笔记库结构用 PARA + Summaries：
+   0-Inbox、1-Daily、2-Projects、3-Areas、4-Resources、5-Summaries
+   日记和热点按月归档（1-Daily/2026年8月/）
+
+2. 四条自动化线，规则写在 .codex/rules.md：
+   - 线1：每天自动抓 AI HOT 热点，写成 Markdown 存 5-Summaries
+   - 线2：Inbox 堆积 >= 3 篇时提醒整理，AI 判断归属后自动归类
+   - 线3：每周日生成周总结草稿
+   - 线4：每月 1 号生成月总结
+
+3. 兴趣雷达：热点抓完后扫描关键词（独立 JSON 配置），
+   命中主题弹 WPF 窗口提醒，没命中静默
+
+4. 脚本统一放 .codex/scripts/，每个脚本有日志
+5. 注册 Windows 计划任务：热点 20:00、日记提醒 22:50`,
+    en: `Build me an Obsidian vault automation system:
+
+1. Vault structure: PARA + Summaries
+   0-Inbox, 1-Daily, 2-Projects, 3-Areas, 4-Resources, 5-Summaries
+   Diaries and news archived by month (1-Daily/2026-08/)
+
+2. Four automation pipelines, rules in .codex/rules.md:
+   - Pipeline 1: fetch AI HOT news daily, write Markdown to 5-Summaries
+   - Pipeline 2: remind when Inbox >= 3 items, AI-classify and auto-sort
+   - Pipeline 3: generate weekly review draft every Sunday
+   - Pipeline 4: generate monthly review on the 1st
+
+3. Interest radar: scan keywords after news fetch (separate JSON config),
+   pop WPF window on topic match, stay silent otherwise
+
+4. All scripts under .codex/scripts/, each with logging
+5. Register Windows scheduled tasks: news at 8pm, diary reminder at 10:50pm`,
   },
 };
 
@@ -339,122 +485,182 @@ export default function CodexObsidianWorkflowPage() {
     const section = content[lang as keyof typeof content] ?? content.zh;
     return (section as Record<string, string>)[key] ?? key;
   };
+  const cb = (key: string) => {
+    const section = codeBlocks[key as keyof typeof codeBlocks];
+    return (section as Record<string, string>)[lang as keyof typeof section] ?? (section as Record<string, string>).zh;
+  };
 
   return (
     <BlogPostLayout post={post}>
-      <p dangerouslySetInnerHTML={{ __html: t("intro_p1") }} />
+      {/* ===== 开头 ===== */}
+      <p>{t("intro_p1")}</p>
       <p dangerouslySetInnerHTML={{ __html: t("intro_p2") }} />
 
-      <h2 id="prep">{t("h2_prep")}</h2>
-      <p>{t("prep_p1")}</p>
+      {/* ===== 工具分工 ===== */}
+      <h2 id="roles">{t("h2_roles")}</h2>
+      <p>{t("roles_intro")}</p>
 
-      <h3>{t("prep_check1")}</h3>
-      <p dangerouslySetInnerHTML={{ __html: t("prep_check1_desc") }} />
-      <p dangerouslySetInnerHTML={{ __html: t("prep_check1_fast") }} />
+      <div className="mt-8 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3 flex items-center gap-3">
+          <img src={`${BASE_PATH}/blog-images/claude-code-logo.svg`} alt="Claude Code" className="w-8 h-8" />
+          {t("role1_title")}
+        </h3>
+        <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role1_desc") }} />
+        <p className="mt-3 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role1_detail") }} />
+      </div>
+
+      <div className="mt-6 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3 flex items-center gap-3">
+          <img src={`${BASE_PATH}/blog-images/codex-logo.svg`} alt="Codex" className="w-8 h-8" />
+          {t("role2_title")}
+        </h3>
+        <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role2_desc") }} />
+        <p className="mt-3 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">{t("role2_detail")}</p>
+      </div>
+
+      <div className="mt-6 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3 flex items-center gap-3">
+          <img src={`${BASE_PATH}/blog-images/obsidian-logo.svg`} alt="Obsidian" className="w-8 h-8" />
+          {t("role3_title")}
+        </h3>
+        <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role3_desc") }} />
+      </div>
+
+      <div className="mt-4 px-5 py-4 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800/30 rounded-xl text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("roles_summary") }} />
+
+      {/* ===== 准备工作 ===== */}
+      <h2 id="prep">{t("h2_prep")}</h2>
+      <p>{t("prep_intro")}</p>
+
+      <h3>{t("prep1_title")}</h3>
+      <p className="flex items-center gap-3 my-2">
+        <a href="https://obsidian.md/" target="_blank" rel="noopener noreferrer" title="Obsidian">
+          <img src={`${BASE_PATH}/blog-images/obsidian-logo.svg`} alt="Obsidian logo" className="w-9 h-9" />
+        </a>
+        <span className="text-[15px] text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "Obsidian 官网：" : "Official site:"} <a href="https://obsidian.md/" target="_blank" className="text-indigo-600 dark:text-indigo-400 hover:underline">obsidian.md</a></span>
+      </p>
+      <p dangerouslySetInnerHTML={{ __html: t("prep1_desc") }} />
+      <p className="mt-3">{t("prep1_plugins_intro")}</p>
+      <ul className="list-disc pl-5 my-3 space-y-2 text-[17px] leading-[1.9]" dangerouslySetInnerHTML={{ __html: t("prep1_plugins") }} />
+      <p className="mt-3">{t("prep1_templater")}</p>
+      <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "Templates/daily.md：" : "Templates/daily.md:"}</p>
+      <CodeBlock language="markdown">{cb("dailyTemplate")}</CodeBlock>
+
+      <h3 className="mt-8">{t("prep2_title")}</h3>
+      <p dangerouslySetInnerHTML={{ __html: t("prep2_desc") }} />
       <figure className="my-6">
         <div className="rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-lg max-w-2xl mx-auto">
           <img src={`${BASE_PATH}/blog-images/terminal.png`} alt="Terminal running codex" className="w-full" />
         </div>
-        <figcaption className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">{t("prep_check1_caption")}</figcaption>
+        <figcaption className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">{t("prep2_caption")}</figcaption>
       </figure>
-      <div className="mt-4 px-5 py-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/30 rounded-xl text-[16px] leading-[1.8] text-amber-800 dark:text-amber-200" dangerouslySetInnerHTML={{ __html: t("prep_check1_no") }} />
+      <p>{t("prep2_first_task")}</p>
 
-      <h3 className="mt-8">{t("prep_check2")}</h3>
+      <h3 className="mt-8">{t("prep3_title")}</h3>
       <p className="flex items-center gap-3 my-2">
-        <a href="https://obsidian.md/" target="_blank" rel="noopener noreferrer" title="Obsidian 官网"><img src={`${BASE_PATH}/blog-images/obsidian-logo.svg`} alt="Obsidian logo" className="w-9 h-9" /></a>
-        <span className="text-[15px] text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "Obsidian 官网：" : "Official site:"} <a href="https://obsidian.md/" target="_blank" className="text-indigo-600 dark:text-indigo-400 hover:underline">obsidian.md</a></span>
-      </p>
-      <p dangerouslySetInnerHTML={{ __html: t("prep_check2_desc") }} />
-
-      <h3 className="mt-8">{t("prep_check3")}</h3>
-      <p className="flex items-center gap-3 my-2">
-        <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer" title="Node.js 官网"><img src={`${BASE_PATH}/blog-images/nodejs-logo.svg`} alt="Node.js logo" className="w-9 h-9" /></a>
+        <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer" title="Node.js">
+          <img src={`${BASE_PATH}/blog-images/nodejs-logo.svg`} alt="Node.js logo" className="w-9 h-9" />
+        </a>
         <span className="text-[15px] text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "Node.js 官网：" : "Official site:"} <a href="https://nodejs.org/" target="_blank" className="text-indigo-600 dark:text-indigo-400 hover:underline">nodejs.org</a></span>
       </p>
-      <p dangerouslySetInnerHTML={{ __html: t("prep_check3_desc") }} />
-      <p>{t("prep_check3_step")}</p>
+      <p dangerouslySetInnerHTML={{ __html: t("prep3_desc") }} />
+
+      <h3 className="mt-8">{t("prep4_title")}</h3>
+      <p>{t("prep4_desc")}</p>
+
+      <h3 className="mt-8">{t("prep5_title")}</h3>
+      <p>{t("prep5_desc")}</p>
+
+      {/* ===== 笔记库设计 ===== */}
+      <h2 id="design">{t("h2_design")}</h2>
+      <p>{t("design_intro")}</p>
+      <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "完整目录结构：" : "Full directory structure:"}</p>
+      <CodeBlock language="text">{cb("vaultTree")}</CodeBlock>
       <ul className="list-disc pl-5 my-3 space-y-2 text-[17px] leading-[1.9]">
-        <li dangerouslySetInnerHTML={{ __html: t("prep_check3_s1") }} />
-        <li dangerouslySetInnerHTML={{ __html: t("prep_check3_s2") }} />
+        <li dangerouslySetInnerHTML={{ __html: t("design_layer0") }} />
+        <li dangerouslySetInnerHTML={{ __html: t("design_layer1") }} />
+        <li dangerouslySetInnerHTML={{ __html: t("design_layer2") }} />
+        <li dangerouslySetInnerHTML={{ __html: t("design_layer3") }} />
+        <li dangerouslySetInnerHTML={{ __html: t("design_layer4") }} />
+        <li dangerouslySetInnerHTML={{ __html: t("design_layer5") }} />
       </ul>
+      <div className="mt-4 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("design_principles") }} />
+      <p dangerouslySetInnerHTML={{ __html: t("design_home") }} />
 
-      <h3 className="mt-8">{t("prep_check4")}</h3>
-      <p dangerouslySetInnerHTML={{ __html: t("prep_check4_desc") }} />
-      <div className="mt-4 px-5 py-4 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800/30 rounded-xl text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("prep_check4_tip") }} />
+      {/* ===== 四条自动化线 ===== */}
+      <h2 id="lines">{t("h2_lines")}</h2>
+      <p dangerouslySetInnerHTML={{ __html: t("lines_intro") }} />
+      <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "rules.md 核心内容：" : "rules.md core content:"}</p>
+      <CodeBlock language="markdown">{cb("rulesExcerpt")}</CodeBlock>
 
-      <h3 className="mt-8">{t("prep_check5")}</h3>
-      <p dangerouslySetInnerHTML={{ __html: t("prep_check5_desc") }} />
-
-      <h2 id="tell">{t("h2_tell")}</h2>
-      <p>{t("tell_p1")}</p>
-      <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{t("tell_code_title")}</p>
-      <CodeBlock language="text">
-        {codeBlocks.prompt[lang as keyof typeof codeBlocks.prompt] ?? codeBlocks.prompt.zh}
-      </CodeBlock>
-      <p dangerouslySetInnerHTML={{ __html: t("tell_p2") }} />
-      <div className="mt-4 px-5 py-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/30 rounded-xl text-[16px] leading-[1.8] text-amber-800 dark:text-amber-200" dangerouslySetInnerHTML={{ __html: t("tell_tip") }} />
-
-      <h2 id="get">{t("h2_get")}</h2>
-      <p>{t("get_p1")}</p>
-      <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{t("get_code_title")}</p>
-      <CodeBlock language="text">
-        {codeBlocks.vaultTree[lang as keyof typeof codeBlocks.vaultTree] ?? codeBlocks.vaultTree.zh}
-      </CodeBlock>
-      <p>{t("get_p2")}</p>
-      <ul className="list-disc pl-5 my-3 space-y-2 text-[17px] leading-[1.9]">
-        <li dangerouslySetInnerHTML={{ __html: t("get_li1") }} />
-        <li dangerouslySetInnerHTML={{ __html: t("get_li2") }} />
-        <li dangerouslySetInnerHTML={{ __html: t("get_li3") }} />
-      </ul>
-      <p>{t("get_p3")}</p>
-      <div className="mt-4 px-5 py-4 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800/30 rounded-xl text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("get_tip") }} />
-
-      <h2 id="vault">{t("h2_vault")}</h2>
-      <p>{t("vault_p1")}</p>
-      <ul className="list-disc pl-5 my-3 space-y-2 text-[17px] leading-[1.9]">
-        <li dangerouslySetInnerHTML={{ __html: t("vault_li1") }} />
-        <li dangerouslySetInnerHTML={{ __html: t("vault_li2") }} />
-        <li dangerouslySetInnerHTML={{ __html: t("vault_li3") }} />
-        <li dangerouslySetInnerHTML={{ __html: t("vault_li4") }} />
-        <li dangerouslySetInnerHTML={{ __html: t("vault_li5") }} />
-      </ul>
-      <p dangerouslySetInnerHTML={{ __html: t("vault_p2") }} />
-
-      <h2 id="hot">{t("h2_hot")}</h2>
-      <p dangerouslySetInnerHTML={{ __html: t("hot_p1") }} />
-      <CodeBlock language="markdown">
-        {codeBlocks.hotMd[lang as keyof typeof codeBlocks.hotMd] ?? codeBlocks.hotMd.zh}
-      </CodeBlock>
-      <p>{t("hot_p2")}</p>
-
-      <h2 id="aihot">{t("h2_aihot")}</h2>
+      <h3>{t("line1_title")}</h3>
       <p className="flex items-center gap-3 my-2">
         <img src={`${BASE_PATH}/blog-images/aihot.ico`} alt="AI HOT icon" className="w-8 h-8" />
         <a href="https://aihot.virxact.com/" target="_blank" className="text-indigo-600 dark:text-indigo-400 hover:underline font-semibold">aihot.virxact.com</a>
       </p>
-      <p dangerouslySetInnerHTML={{ __html: t("aihot_p1") }} />
-      <p>{t("aihot_p2")}</p>
-      <ul className="list-disc pl-5 my-3 space-y-2 text-[17px] leading-[1.9]">
-        <li dangerouslySetInnerHTML={{ __html: t("aihot_li1") }} />
-        <li dangerouslySetInnerHTML={{ __html: t("aihot_li2") }} />
-        <li dangerouslySetInnerHTML={{ __html: t("aihot_li3") }} />
-      </ul>
-      <p dangerouslySetInnerHTML={{ __html: t("aihot_p3") }} />
+      <p dangerouslySetInnerHTML={{ __html: t("line1_desc") }} />
 
-      <h2 id="diary">{t("h2_diary")}</h2>
-      <p>{t("diary_p1")}</p>
-      <p dangerouslySetInnerHTML={{ __html: t("diary_p2") }} />
+      <h3 className="mt-6">{t("line2_title")}</h3>
+      <p dangerouslySetInnerHTML={{ __html: t("line2_desc") }} />
 
+      <h3 className="mt-6">{t("line3_title")}</h3>
+      <p dangerouslySetInnerHTML={{ __html: t("line3_desc") }} />
+
+      <h3 className="mt-6">{t("line4_title")}</h3>
+      <p dangerouslySetInnerHTML={{ __html: t("line4_desc") }} />
+
+      <div className="mt-6 px-5 py-4 bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("lines_checklist") }} />
+
+      {/* ===== 告诉 Codex ===== */}
+      <h2 id="tell">{lang === "zh" ? "告诉 Codex：一份需求，全部搞定" : "Tell Codex: One Prompt, Everything Built"}</h2>
+      <p>{lang === "zh" ? "上面这些不需要你手动搭。把下面这份需求复制给 Codex，它会问你几个问题（笔记库路径、执行时间），然后自动帮你建目录、写脚本、注册计划任务。" : "You don't need to build any of this manually. Paste the prompt below to Codex. It'll ask a few questions (vault path, execution time), then build the directories, write the scripts, and register the scheduled tasks for you."}</p>
+      <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "给 Codex 的需求描述（可以直接复制）：" : "Prompt for Codex (copy-paste ready):"}</p>
+      <CodeBlock language="text">{cb("codexPrompt")}</CodeBlock>
+      <div className="mt-4 px-5 py-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/30 rounded-xl text-[16px] leading-[1.8] text-amber-800 dark:text-amber-200">
+        {lang === "zh"
+          ? "💡 如果 Codex 没按你想的做——把它的输出贴回去，告诉它哪里不对。如果描述不清楚问题，先用 Claude Code 理清思路，再把清晰的方案交给 Codex 执行。"
+          : "💡 If Codex doesn't do what you want — paste its output back and tell it what's wrong. If you can't articulate the issue clearly, use Claude Code first to reason through it, then hand the clarified plan to Codex."}
+      </div>
+
+      {/* ===== 兴趣雷达 ===== */}
+      <h2 id="radar">{t("h2_radar")}</h2>
+      <p>{t("radar_intro")}</p>
+      <p dangerouslySetInnerHTML={{ __html: t("radar_how") }} />
+      <p dangerouslySetInnerHTML={{ __html: t("radar_config") }} />
+      <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "aihot_keywords.json：" : "aihot_keywords.json:"}</p>
+      <CodeBlock language="json">{cb("keywordsJson")}</CodeBlock>
+
+      <figure className="my-8">
+        <div className="rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-lg max-w-lg mx-auto">
+          <img src={`${BASE_PATH}/aihot-popup.png`} alt="Interest radar popup" className="w-full" />
+        </div>
+        <figcaption className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">
+          {lang === "zh" ? "▲ 命中主题时的弹窗：标签、命中标题、倒计时、一键打开笔记" : "▲ The popup on a match: topic chips, matched headline, countdown, one-click open"}
+        </figcaption>
+      </figure>
+
+      <div className="mt-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-3">{t("radar_pitfall_intro")}</p>
+        <div className="space-y-3 text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300">
+          <p dangerouslySetInnerHTML={{ __html: t("radar_pitfall1") }} />
+          <p dangerouslySetInnerHTML={{ __html: t("radar_pitfall2") }} />
+          <p dangerouslySetInnerHTML={{ __html: t("radar_pitfall3") }} />
+          <p dangerouslySetInnerHTML={{ __html: t("radar_pitfall4") }} />
+        </div>
+      </div>
+
+      {/* ===== 一天流程 ===== */}
       <h2 id="day">{t("h2_day")}</h2>
-      <p>{t("day_p1")}</p>
+      <p>{t("day_intro")}</p>
       <ul className="list-disc pl-5 my-3 space-y-2 text-[17px] leading-[1.9]">
         <li dangerouslySetInnerHTML={{ __html: t("day_li1") }} />
         <li dangerouslySetInnerHTML={{ __html: t("day_li2") }} />
         <li dangerouslySetInnerHTML={{ __html: t("day_li3") }} />
         <li dangerouslySetInnerHTML={{ __html: t("day_li4") }} />
       </ul>
-      <p>{t("day_p2")}</p>
+      <p className="text-zinc-700 dark:text-zinc-300 font-semibold">{t("day_summary")}</p>
 
+      {/* ===== FAQ ===== */}
       <h2 id="faq">{t("h2_faq")}</h2>
       <p>{t("faq_intro")}</p>
       <CollapsibleCard title={t("faq_q1")}><p>{t("faq_a1")}</p></CollapsibleCard>
@@ -462,26 +668,18 @@ export default function CodexObsidianWorkflowPage() {
       <CollapsibleCard title={t("faq_q3")}><p>{t("faq_a3")}</p></CollapsibleCard>
       <CollapsibleCard title={t("faq_q4")}><p>{t("faq_a4")}</p></CollapsibleCard>
       <CollapsibleCard title={t("faq_q5")}><p>{t("faq_a5")}</p></CollapsibleCard>
+      <CollapsibleCard title={t("faq_q6")}><p>{t("faq_a6")}</p></CollapsibleCard>
+      <CollapsibleCard title={t("faq_q7")}><p>{t("faq_a7")}</p></CollapsibleCard>
 
-      <h2 id="next">{t("h2_next")}</h2>
-      <p dangerouslySetInnerHTML={{ __html: t("next_p1") }} />
-      <Link
-        href="/blog/aihot-interest-radar"
-        className="group inline-flex items-center gap-2 mt-3 px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500/50 transition-all duration-300 hover:shadow-md bg-zinc-50 dark:bg-zinc-900/50"
-      >
-        <span className="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:underline">{t("next_link")}</span>
-        <svg className="w-4 h-4 text-zinc-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </Link>
-
-      <h2 id="ref">{t("h2_ref")}</h2>
+      {/* ===== 相关资源 ===== */}
+      <h2 id="ref">{lang === "zh" ? "相关资源" : "Related Resources"}</h2>
       <div className="mt-6 space-y-3">
         {[
-          { icon: "📡", title: t("ref1_title"), desc: t("ref1_desc"), href: "/blog/aihot-interest-radar", external: false },
-          { icon: "💻", title: t("ref2_title"), desc: t("ref2_desc"), href: "https://github.com/Muanyan-mjq/muanyan-portfolio", external: true },
-          { icon: "🔥", title: t("ref3_title"), desc: t("ref3_desc"), href: "https://aihot.virxact.com/", external: true },
-          { icon: "⏰", title: t("ref4_title"), desc: t("ref4_desc"), href: "#tasks", external: false },
+          { icon: "🔌", title: lang === "zh" ? "Claude Code MCP 配置" : "Claude Code MCP Setup", desc: lang === "zh" ? "像 USB 一样给 Claude Code 接上外设" : "Give Claude Code USB-like plug-and-play powers", href: "/blog/claude-code-mcp-setup", external: false },
+          { icon: "📊", title: lang === "zh" ? "Claude Code 状态栏" : "Claude Code Statusline", desc: lang === "zh" ? "一行命令让终端活起来" : "One command to bring your terminal to life", href: "/blog/claude-code-statusline", external: false },
+          { icon: "🌌", title: lang === "zh" ? "AGI 之后：从「会什么」到「你是谁」" : "After AGI: From Capability to Identity", desc: lang === "zh" ? "Codex 与 Claude Code 的三方深夜对话" : "A three-way late-night dialogue with Codex and Claude Code", href: "/blog/agi-era-thoughts", external: false },
+          { icon: "🔥", title: "AI HOT", desc: lang === "zh" ? "每天 20:00 抓取的热点来源" : "The curated news source fetched at 8pm daily", href: "https://aihot.virxact.com/", external: true },
+          { icon: "💻", title: lang === "zh" ? "本站仓库" : "Site Repository", desc: lang === "zh" ? "博客与脚本的源码都在 GitHub" : "Source code for this blog and its scripts", href: "https://github.com/Muanyan-mjq/muanyan-portfolio", external: true },
         ].map((item, i) => (
           <a
             key={i}
@@ -502,6 +700,7 @@ export default function CodexObsidianWorkflowPage() {
         ))}
       </div>
 
+      {/* ===== 结尾 ===== */}
       <div className="mt-12 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-700">
         <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">{t("bottom_title")}</p>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">{t("bottom_desc")}</p>
