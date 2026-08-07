@@ -591,7 +591,7 @@ export default function CodexObsidianWorkflowPage() {
       {/* Codex — 主角 */}
       <div className="mt-8 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
         <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3">
-          <img src={`${BASE_PATH}/blog-images/codex-logo.svg`} alt="" className="w-5 h-5 inline-block mr-2 align-middle" />
+          <img src={`${BASE_PATH}/blog-images/codex-logo.svg`} alt="" className="w-6 h-6 inline-block mr-2 align-middle" />
           {t("role1_title")}
         </h3>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role1_desc") }} />
