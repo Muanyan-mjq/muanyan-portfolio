@@ -81,11 +81,40 @@ const content = {
       "然后在笔记库里新建 <code>Templates/daily.md</code> 文件，内容见下方代码块。模板的作用：自动注入日期和标签，日记不用从空文件开始写。",
 
     prep2_title: "2. Codex CLI 安装（你需要做）",
-    prep2_desc:
-      "去 <a href='https://github.com/anthropics/codex' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>Codex CLI 官方仓库</a> 下载安装——选 Windows 版本。装好后，打开终端（右键 Windows 开始按钮 → 终端），输入 <code>codex</code> 回车。能进入对话界面就装好了：",
-    prep2_caption: "▲ 终端里输入 codex 后进入这个界面，就说明 OK",
+    prep2_intro:
+      "Codex CLI 是 OpenAI 的开源终端编程助手，能直接读写文件、执行脚本、注册计划任务——它是这套系统的「手」。下面是完整的安装和配置步骤。",
+    prep2_step1_title: "第 1 步：下载安装",
+    prep2_step1_desc:
+      "打开 <a href='https://github.com/anthropics/codex' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>Codex CLI GitHub 仓库</a>，找到右侧的 <strong>Releases</strong> 链接，下载最新 Windows 版本（.msi 或 .exe），双击安装，一路 Next 即可。",
+    prep2_step2_title: "第 2 步：验证安装",
+    prep2_step2_desc:
+      "打开终端（右键 Windows 开始按钮 → 终端），输入 <code>codex</code> 回车。看到 Codex 的对话界面就说明装好了：",
+    prep2_caption: "▲ 终端里输入 codex 后进入对话界面，就说明 OK",
+    prep2_step3_title: "第 3 步：首次配置",
+    prep2_step3_desc:
+      "Codex 首次运行会引导你选择认证方式和默认模型。如果你有 ChatGPT / OpenAI 账号，直接登录最简单；如果用的是第三方 API（比如国内的 DeepSeek、通义千问），可以在设置里配自定义 API endpoint 和 key——Codex 支持接入兼容 OpenAI 格式的任何 API。",
+
+    prep2_alt_title: "其他玩法（这套系统不绑定单一工具）",
+    prep2_alt_intro:
+      "这套自动化系统的核心是 <code>rules.md</code> + Node.js 脚本 + Windows 计划任务——Codex CLI 是最方便的入口，但<strong>不是唯一入口</strong>。根据你自己的情况，至少有四种玩法：",
+    prep2_alt1:
+      "<strong>① Codex CLI（推荐）：</strong>终端里直接用，和 rules.md 深度集成。每次打开对话自动检查热点/Inbox/周月总结，该抓的抓、该提醒的提醒——本文后续所有内容都基于这个方案。",
+    prep2_alt2:
+      "<strong>② Codex 桌面端 / ChatGPT：</strong>在桌面应用里打开笔记库目录作为工作区，同样能读取和执行 rules.md。优势是有图形界面，适合不习惯终端的用户。Codex 桌面端支持接入 GPT-5-Codex 模型，代码能力更强。",
+    prep2_alt3:
+      "<strong>③ Claude Code：</strong>把 rules.md 的规则复制给 Claude Code，让它当规则执行。Claude Code 擅长理解和推理——跟它说「这是笔记库的自动化规则，帮我按规则检查一下该做什么」，它会逐条执行。如果你已经配好了 Claude Code（<a href='/blog/claude-code-mcp-setup' class='text-indigo-600 dark:text-indigo-400 hover:underline'>MCP 配置教程</a>、<a href='/blog/claude-code-statusline' class='text-indigo-600 dark:text-indigo-400 hover:underline'>状态栏教程</a>），这个方案没有任何额外安装成本。",
+    prep2_alt4:
+      "<strong>④ 手动 + 任意 AI：</strong>手动跑脚本（<code>node fetch_aihot.js daily</code>、<code>powershell -File remind_diary.ps1</code>），然后把 rules.md 贴给任意 AI（ChatGPT、Claude、Kimi……）让它帮你理解和修改规则。灵活性最高，代价是少了自动触发。",
+    prep2_alt_note:
+      "选哪种取决于你的习惯——用终端多就 CLI，习惯图形界面就桌面端，已经在用 Claude Code 就让它兼这个职。<strong>玩法可以很多，没必要局限于一种。</strong>包括后文的弹窗样式——如果你有新的想法（加提示音、换图标、放右下角），告诉 Codex 就行，它可以按你的审美改。",
+
+    prep2_help_title: "实在装不上？",
+    prep2_help_desc:
+      "让 Claude Code 帮你。跟它说「帮我安装 Codex CLI」——它能搜 GitHub 找到最新版本、给出针对你系统的详细步骤、甚至帮你排查报错。如果之前已经配好了 Claude Code 的 MCP（GitHub + Filesystem + Playwright），它连下载链接都能直接找到。",
+    prep2_help_link_text: "Claude Code MCP 配置教程 →",
+
     prep2_first_task:
-      "Codex 装好之后，它的第一项任务就是帮你搭环境。打开终端输入 <code>codex</code>，进入对话后直接说：<strong>「帮我在笔记库根目录建 .codex 文件夹和 scripts 子文件夹，然后建 rules.md」</strong>——它会在笔记库里建好 <code>.codex/</code>、<code>.codex/scripts/</code> 和 <code>.codex/rules.md</code>。你告诉它笔记库路径就行。rules.md 的具体内容后面「四条自动化线」那节会详细讲——现在让它建个空壳就行。",
+      "Codex 装好之后，第一件事就是让它帮你搭环境。打开终端输入 <code>codex</code>，进入对话后说：<strong>「帮我在笔记库根目录建 .codex 文件夹和 scripts 子文件夹，然后建 rules.md」</strong>。你告诉它笔记库路径就行——它会在笔记库里建好 <code>.codex/</code>、<code>.codex/scripts/</code> 和 <code>.codex/rules.md</code>。rules.md 的具体内容后面「四条自动化线」那节会详细讲——现在让它建个空壳就行。",
 
     prep3_title: "3. Node.js 安装（你需要做）",
     prep3_desc:
@@ -135,12 +164,20 @@ const content = {
 
     // ---- 兴趣雷达 ----
     h2_radar: "兴趣雷达：只提醒你真正关心的",
-    radar_intro:
-      "四条自动化线让信息自动流入，但带来了新问题：每天 7 条热点，你真正关心的可能只有一两条。AGI、Self-Initialization、算子……每天都要打开文件从头翻到尾，就为了确认「今天有没有我关心的」。没命中时，这 7 条就只是 7 条标题。",
-    radar_how:
-      "解决办法：在热点抓取完成后加一道<strong>关键词过滤器</strong>。扫描当天文件里的内容，命中你订阅的主题就弹一个 Windows 弹窗（带实时倒计时和「打开笔记」按钮），没命中就安静地写一行日志。就像聊天软件的「特别关心」——只有被标记的人才弹提醒。",
+    radar_problem:
+      "四条自动化线让信息自动流入，但很快你会发现一个新问题——",
+    radar_problem_detail:
+      "每天 7 条热点，你真正关心的可能只有一两条。AGI、Self-Initialization、算子……每天都要打开文件从头翻到尾，就为了确认「今天有没有我关心的」。没命中时，这 7 条就只是 7 条标题，而你已经花了 5 分钟扫完。",
+    radar_solution_title: "解决办法：关键词过滤器",
+    radar_solution:
+      "在热点抓取完成后，脚本自动扫描当天文件里的内容：<br /><strong>命中</strong>你订阅的主题 → 弹一个 Windows 弹窗（带实时倒计时和「打开笔记」按钮），告诉你命中了什么。<br /><strong>没命中</strong> → 安静地写一行日志，不打扰你。<br />就像聊天软件的「特别关心」——只有被标记的人才弹提醒。",
+    radar_config_title: "关键词怎么配？",
     radar_config:
-      "关键词不是一堆散词，而是<strong>「主题 + 别名」</strong>——每个主题下挂多个匹配词，命中任一就归入该主题。这样弹窗告诉你是「哪个主题命中」，而不是「哪个词命中」。配置独立成一个 JSON 文件（见下方代码块），脚本每次运行都会重新读取，改配置不用改代码。不想手动编辑也没关系——告诉 Codex「帮我加一个 XX 主题」，它帮你改。",
+      "关键词不是一堆散词，而是更实用的<strong>「主题 + 别名」</strong>结构。举个例子：主题叫「AGI」，别名可以写「AGI」「通用人工智能」「artificial general intelligence」——脚本匹配到任意一个，都归入「AGI」这个主题。这样弹窗告诉你是<strong>「哪个主题命中」</strong>，而不是「哪个词命中」。",
+    radar_config_file:
+      "配置独立成一个 JSON 文件（见下方代码块）。脚本每次运行都会重新读取——<strong>改配置不用改代码</strong>，改完 JSON 下次运行就生效。",
+    radar_config_tip:
+      "不想手动编辑 JSON？告诉 Codex「帮我加一个 XX 主题，匹配词是 A、B、C」，它直接帮你改文件——一行代码都不用碰。",
     radar_pitfall_intro: "弹窗开发踩过的坑（都是真实发生过的）：",
     radar_pitfall1:
       "<strong>坑 1：系统通知被静默吞掉。</strong>第一版用的是 WinRT Toast 通知——代码调用成功、日志也写了，但屏幕上什么都没有。原因：Toast 需要注册过的 AppUserModelID，「裸 PowerShell 脚本」没有这个 ID，通知被系统静默丢弃。解决办法：不走系统通知，直接用 WPF 自己做窗口。",
@@ -223,11 +260,40 @@ const content = {
       "Then create <code>Templates/daily.md</code> in your vault (content below). Its job: auto-inject date and tags — you never start a diary from a blank file.",
 
     prep2_title: "2. Install Codex CLI (You Do This)",
-    prep2_desc:
-      "Go to the <a href='https://github.com/anthropics/codex' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>Codex CLI repository</a>, download the Windows version, and install. Then open a terminal (right-click the Windows Start button → Terminal) and run <code>codex</code>. If you land in the conversation interface, it's installed:",
+    prep2_intro:
+      "Codex CLI is OpenAI's open-source terminal coding agent — it reads/writes files, executes scripts, and registers scheduled tasks. It's the \"hands\" of this system. Here's the full install and setup guide.",
+    prep2_step1_title: "Step 1: Download & Install",
+    prep2_step1_desc:
+      "Go to the <a href='https://github.com/anthropics/codex' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>Codex CLI GitHub repo</a>, find <strong>Releases</strong> on the right, download the latest Windows version (.msi or .exe), double-click to install, accept all defaults.",
+    prep2_step2_title: "Step 2: Verify",
+    prep2_step2_desc:
+      "Open a terminal (right-click Windows Start → Terminal) and run <code>codex</code>. If you land in the conversation interface, it's installed:",
     prep2_caption: "▲ After running codex in the terminal, you should see this interface — you're good to go",
+    prep2_step3_title: "Step 3: First-Time Setup",
+    prep2_step3_desc:
+      "Codex will guide you through authentication and model selection on first run. If you have a ChatGPT / OpenAI account, just sign in — that's the simplest path. If you use a third-party API (e.g., DeepSeek, Qwen, or any OpenAI-compatible endpoint), you can configure a custom API endpoint and key in settings — Codex supports any OpenAI-format API.",
+
+    prep2_alt_title: "Other Approaches (This System Isn't Locked to One Tool)",
+    prep2_alt_intro:
+      "The core of this automation system is <code>rules.md</code> + Node.js scripts + Windows Task Scheduler. Codex CLI is the most convenient entry point, but <strong>it's not the only one</strong>. Depending on your setup, at least four paths work:",
+    prep2_alt1:
+      "<strong>① Codex CLI (recommended):</strong> Use it directly in the terminal, deeply integrated with rules.md. Every session auto-checks news/Inbox/weekly/monthly — fetches what's missing, reminds what needs attention. All subsequent content in this article assumes this approach.",
+    prep2_alt2:
+      "<strong>② Codex Desktop / ChatGPT:</strong> Open your vault directory as a workspace in the desktop app. It reads and executes rules.md just the same. The advantage: a GUI for those who prefer it over the terminal. The desktop app supports the GPT-5-Codex model with stronger coding capabilities.",
+    prep2_alt3:
+      "<strong>③ Claude Code:</strong> Copy the rules from rules.md to Claude Code and tell it: \"These are my vault's automation rules — check what needs doing.\" Claude Code excels at understanding and reasoning — it executes the rules step by step. If you've already set up Claude Code (<a href='/blog/claude-code-mcp-setup' class='text-indigo-600 dark:text-indigo-400 hover:underline'>MCP setup</a>, <a href='/blog/claude-code-statusline' class='text-indigo-600 dark:text-indigo-400 hover:underline'>statusline</a>), this path has zero additional install cost.",
+    prep2_alt4:
+      "<strong>④ Manual + Any AI:</strong> Run scripts manually (<code>node fetch_aihot.js daily</code>, <code>powershell -File remind_diary.ps1</code>), then paste rules.md to any AI (ChatGPT, Claude, Kimi…) when you need help understanding or modifying the rules. Maximum flexibility, at the cost of no automatic triggers.",
+    prep2_alt_note:
+      "Which you pick depends on your habits — CLI if you live in the terminal, desktop if you prefer a GUI, Claude Code if you're already using it. <strong>The system is flexible — don't feel locked into one path.</strong> Same goes for the popup design later — if you have new ideas (add a sound, change the icon, move it to the corner), just tell Codex and it'll adapt to your taste.",
+
+    prep2_help_title: "Can't Get It Installed?",
+    prep2_help_desc:
+      "Ask Claude Code for help. Tell it \"help me install Codex CLI\" — it can search GitHub for the latest release, give you OS-specific step-by-step instructions, and even help troubleshoot errors. If you've already set up Claude Code's MCP (GitHub + Filesystem + Playwright), it can even find the download link directly.",
+    prep2_help_link_text: "Claude Code MCP Setup Guide →",
+
     prep2_first_task:
-      "Once Codex is installed, its first job is helping you set up the environment. Open a terminal, run <code>codex</code>, and say: <strong>\"Create a .codex folder, a scripts subfolder, and a rules.md file in my vault root.\"</strong> It will create <code>.codex/</code>, <code>.codex/scripts/</code>, and <code>.codex/rules.md</code> for you. Just tell it your vault path. The actual rules.md content is covered in \"Four Automation Pipelines\" below — for now, an empty shell is fine.",
+      "Once Codex is installed, its first job is setting up the environment. Open a terminal, run <code>codex</code>, and say: <strong>\"Create a .codex folder, a scripts subfolder, and a rules.md file in my vault root.\"</strong> Tell it your vault path — it creates <code>.codex/</code>, <code>.codex/scripts/</code>, and <code>.codex/rules.md</code> for you. The actual rules.md content is covered in \"Four Automation Pipelines\" below — for now, an empty shell is fine.",
 
     prep3_title: "3. Install Node.js (You Do This)",
     prep3_desc:
@@ -274,12 +340,20 @@ const content = {
       "Session startup auto-check (priority order):<br />🔴 News file exists? → If not, fetch immediately<br />🟡 Inbox ≥ 3 items? → Remind to sort<br />🟢 Is it Sunday? → Ask about weekly review<br />🔵 Is it the 1st? → Ask about monthly review",
 
     h2_radar: "Interest Radar: Only Alert What You Care About",
-    radar_intro:
-      "Four pipelines keep information flowing in automatically, but they create a new problem: of 7 daily news items, you probably only care about 1 or 2. AGI, Self-Initialization, operators… every day you'd open the file and skim top to bottom, just to check \"is there anything for me today?\" On days with no match, those 7 items are just 7 headlines.",
-    radar_how:
-      "The fix: add a <strong>keyword filter</strong> after the news fetch. Scan the day's file for configured topics; if a topic you subscribe to matches, pop a Windows notification window (with a live countdown and \"Open note\" button); otherwise, quietly write one log line. Like \"close friends\" notifications in a chat app — only tagged people trigger an alert.",
+    radar_problem:
+      "Four pipelines keep information flowing in automatically — but soon you'll notice a new problem:",
+    radar_problem_detail:
+      "Of 7 daily news items, you probably only care about 1 or 2. AGI, Self-Initialization, operators… every day you'd open the file and skim top to bottom, just to check \"is there anything for me today?\" On days with no match, those 7 items are just 7 headlines — and you've already spent 5 minutes scanning.",
+    radar_solution_title: "The Fix: A Keyword Filter",
+    radar_solution:
+      "After the news fetch, the script scans the day's file automatically:<br /><strong>Match</strong> on a subscribed topic → pop a Windows notification window (with a live countdown and \"Open note\" button), telling you what matched.<br /><strong>No match</strong> → quietly write one log line. No interruption.<br />Like \"close friends\" notifications in a chat app — only tagged people trigger an alert.",
+    radar_config_title: "How to Configure Keywords",
     radar_config:
-      "Keywords aren't loose words — they're <strong>topics with aliases</strong>. Each topic carries multiple match words; hitting any of them counts. So the popup tells you \"which topic matched,\" not \"which word.\" Configuration lives in its own JSON file (see code block below). The script re-reads it every run — change config without touching code. Don't want to hand-edit JSON? Tell Codex \"add a topic for XX\" — it edits it for you.",
+      "Keywords aren't loose words — they're a more practical <strong>\"topic + aliases\"</strong> structure. Example: a topic called \"AGI\" with aliases like \"AGI,\" \"artificial general intelligence,\" \"通用人工智能\" — the script matching any of them still counts as \"AGI.\" So the popup tells you <strong>\"which topic matched,\"</strong> not \"which word.\"",
+    radar_config_file:
+      "Configuration lives in its own JSON file (see code block below). The script re-reads it every run — <strong>change config without touching code.</strong> Edit the JSON, and the next run picks it up.",
+    radar_config_tip:
+      "Don't want to hand-edit JSON? Tell Codex \"add a topic for XX with keywords A, B, C\" — it edits the file for you. Zero manual JSON editing.",
     radar_pitfall_intro: "Real pitfalls from building the popup:",
     radar_pitfall1:
       "<strong>Pitfall 1: System toasts silently swallowed.</strong> The first version used WinRT Toast notifications — API calls succeeded, logs were written, but nothing appeared on screen. Cause: Toasts require a registered AppUserModelID, and a \"bare PowerShell script\" has none — the system silently discards them. Fix: skip system toasts entirely; build your own window with WPF.",
@@ -501,28 +575,28 @@ export default function CodexObsidianWorkflowPage() {
       <p>{t("roles_intro")}</p>
 
       <div className="mt-8 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3 flex items-center gap-3">
-          <img src={`${BASE_PATH}/blog-images/claude-code-logo.svg`} alt="Claude Code" className="w-8 h-8" />
-          {t("role1_title")}
-        </h3>
+        <div className="flex items-center gap-4 mb-3">
+          <img src={`${BASE_PATH}/blog-images/claude-code-logo.svg`} alt="Claude Code" className="w-9 h-9 shrink-0" />
+          <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{t("role1_title")}</h3>
+        </div>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role1_desc") }} />
         <p className="mt-3 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role1_detail") }} />
       </div>
 
       <div className="mt-6 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3 flex items-center gap-3">
-          <img src={`${BASE_PATH}/blog-images/codex-logo.svg`} alt="Codex" className="w-8 h-8" />
-          {t("role2_title")}
-        </h3>
+        <div className="flex items-center gap-4 mb-3">
+          <img src={`${BASE_PATH}/blog-images/codex-logo.svg`} alt="Codex" className="w-9 h-9 shrink-0" />
+          <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{t("role2_title")}</h3>
+        </div>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role2_desc") }} />
         <p className="mt-3 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">{t("role2_detail")}</p>
       </div>
 
       <div className="mt-6 mb-6 p-6 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3 flex items-center gap-3">
-          <img src={`${BASE_PATH}/blog-images/obsidian-logo.svg`} alt="Obsidian" className="w-8 h-8" />
-          {t("role3_title")}
-        </h3>
+        <div className="flex items-center gap-4 mb-3">
+          <img src={`${BASE_PATH}/blog-images/obsidian-logo.svg`} alt="Obsidian" className="w-9 h-9 shrink-0" />
+          <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{t("role3_title")}</h3>
+        </div>
         <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("role3_desc") }} />
       </div>
 
@@ -547,13 +621,48 @@ export default function CodexObsidianWorkflowPage() {
       <CodeBlock language="markdown">{cb("dailyTemplate")}</CodeBlock>
 
       <h3 className="mt-8">{t("prep2_title")}</h3>
-      <p dangerouslySetInnerHTML={{ __html: t("prep2_desc") }} />
+      <p className="mt-2">{t("prep2_intro")}</p>
+
+      <p className="mt-5 mb-2 text-base font-semibold text-zinc-800 dark:text-zinc-200">{t("prep2_step1_title")}</p>
+      <p dangerouslySetInnerHTML={{ __html: t("prep2_step1_desc") }} />
+
+      <p className="mt-5 mb-2 text-base font-semibold text-zinc-800 dark:text-zinc-200">{t("prep2_step2_title")}</p>
+      <p>{t("prep2_step2_desc")}</p>
       <figure className="my-6">
         <div className="rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-lg max-w-2xl mx-auto">
           <img src={`${BASE_PATH}/blog-images/terminal.png`} alt="Terminal running codex" className="w-full" />
         </div>
         <figcaption className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">{t("prep2_caption")}</figcaption>
       </figure>
+
+      <p className="mt-5 mb-2 text-base font-semibold text-zinc-800 dark:text-zinc-200">{t("prep2_step3_title")}</p>
+      <p dangerouslySetInnerHTML={{ __html: t("prep2_step3_desc") }} />
+
+      {/* 其他玩法 */}
+      <div className="mt-8 p-5 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800/30 rounded-xl">
+        <p className="text-base font-semibold text-indigo-800 dark:text-indigo-200 mb-3">{t("prep2_alt_title")}</p>
+        <p className="text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("prep2_alt_intro") }} />
+        <ul className="list-disc pl-5 my-3 space-y-2 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">
+          <li dangerouslySetInnerHTML={{ __html: t("prep2_alt1") }} />
+          <li dangerouslySetInnerHTML={{ __html: t("prep2_alt2") }} />
+          <li dangerouslySetInnerHTML={{ __html: t("prep2_alt3") }} />
+          <li dangerouslySetInnerHTML={{ __html: t("prep2_alt4") }} />
+        </ul>
+        <p className="mt-3 text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("prep2_alt_note") }} />
+      </div>
+
+      {/* 实在装不上？ */}
+      <div className="mt-4">
+        <p className="text-base font-semibold text-zinc-800 dark:text-zinc-200">{t("prep2_help_title")}</p>
+        <p className="mt-2 text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("prep2_help_desc") }} />
+        <Link href="/blog/claude-code-mcp-setup" className="group inline-flex items-center gap-2 mt-3 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500/50 transition-all duration-300 hover:shadow-md bg-zinc-50 dark:bg-zinc-900/50">
+          <img src={`${BASE_PATH}/statusline-cover.png`} alt="" className="w-10 h-10 object-contain rounded" />
+          <span className="text-indigo-600 dark:text-indigo-400 font-semibold text-sm group-hover:underline">{t("prep2_help_link_text")}</span>
+          <svg className="w-4 h-4 text-zinc-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        </Link>
+      </div>
+
+      <p className="mt-6"><strong>{lang === "zh" ? "装好后的第一件事：" : "First thing after install:"}</strong></p>
       <p>{t("prep2_first_task")}</p>
 
       <h3 className="mt-8">{t("prep3_title")}</h3>
@@ -594,10 +703,10 @@ export default function CodexObsidianWorkflowPage() {
       <CodeBlock language="markdown">{cb("rulesExcerpt")}</CodeBlock>
 
       <h3>{t("line1_title")}</h3>
-      <p className="flex items-center gap-3 my-2">
-        <img src={`${BASE_PATH}/blog-images/aihot.ico`} alt="AI HOT icon" className="w-8 h-8" />
-        <a href="https://aihot.virxact.com/" target="_blank" className="text-indigo-600 dark:text-indigo-400 hover:underline font-semibold">aihot.virxact.com</a>
-      </p>
+      <a href="https://aihot.virxact.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 my-2 group">
+        <img src={`${BASE_PATH}/blog-images/aihot.ico`} alt="AI HOT icon" className="w-8 h-8 shrink-0" />
+        <span className="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:underline">aihot.virxact.com</span>
+      </a>
       <p dangerouslySetInnerHTML={{ __html: t("line1_desc") }} />
 
       <h3 className="mt-6">{t("line2_title")}</h3>
@@ -624,11 +733,18 @@ export default function CodexObsidianWorkflowPage() {
 
       {/* ===== 兴趣雷达 ===== */}
       <h2 id="radar">{t("h2_radar")}</h2>
-      <p>{t("radar_intro")}</p>
-      <p dangerouslySetInnerHTML={{ __html: t("radar_how") }} />
-      <p dangerouslySetInnerHTML={{ __html: t("radar_config") }} />
+      <p className="text-zinc-700 dark:text-zinc-300">{t("radar_problem")}</p>
+      <p className="mt-2 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">{t("radar_problem_detail")}</p>
+
+      <h3 className="mt-6">{t("radar_solution_title")}</h3>
+      <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300" dangerouslySetInnerHTML={{ __html: t("radar_solution") }} />
+
+      <h3 className="mt-6">{t("radar_config_title")}</h3>
+      <p className="text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">{t("radar_config")}</p>
+      <p className="mt-2 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">{t("radar_config_file")}</p>
       <p className="my-3 text-sm text-zinc-500 dark:text-zinc-400">{lang === "zh" ? "aihot_keywords.json：" : "aihot_keywords.json:"}</p>
       <CodeBlock language="json">{cb("keywordsJson")}</CodeBlock>
+      <p className="mt-2 text-[16px] leading-[1.9] text-zinc-700 dark:text-zinc-300">{t("radar_config_tip")}</p>
 
       <figure className="my-8">
         <div className="rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-lg max-w-lg mx-auto">
