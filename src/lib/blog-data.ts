@@ -172,6 +172,52 @@ export const blogPosts: BlogPost[] = [
     featured: false,
     published: true,
   },
+  {
+    slug: "codex-obsidian-workflow",
+    title: {
+      zh: "把 AI 住进笔记库：Codex + Obsidian 自动化工作流",
+      en: "Move AI Into Your Notes: A Codex + Obsidian Automation Workflow",
+    },
+    description: {
+      zh: "用 Codex 把 Obsidian 笔记库改造成会自动运转的系统：每天 20:00 AI 热点自动归档、22:50 日记提醒、按月整理。从目录设计到计划任务，一步步搭出自己的第二大脑。",
+      en: "Turning an Obsidian vault into a self-running system with Codex: AI news auto-archived at 8pm, diary reminders at 10:50pm, monthly organization. From folder design to scheduled tasks — build your own second brain step by step.",
+    },
+    date: "2026-08-07",
+    tags: ["Codex", "Obsidian", "自动化", "工作流", "Windows"],
+    category: "indie",
+    categoryColor: "from-sky-600 via-indigo-600 to-violet-600",
+    cover: { gradient: "from-sky-600 via-indigo-600 to-violet-600", icon: "🧠", image: "/codex-obsidian-cover.svg" },
+    readingTime: 12,
+    prerequisites: [
+      { zh: "Obsidian 已安装并建好笔记库", en: "Obsidian installed with a vault" },
+      { zh: "Node.js 已安装（脚本运行需要）", en: "Node.js installed (for scripts)" },
+      { zh: "Windows 10/11（用到计划任务）", en: "Windows 10/11 (scheduled tasks)" },
+    ],
+    published: true,
+  },
+  {
+    slug: "aihot-interest-radar",
+    title: {
+      zh: "给 AI 热点装上兴趣雷达：Windows 自定义弹窗实战",
+      en: "An Interest Radar for AI News: Custom Windows Popups in Practice",
+    },
+    description: {
+      zh: "每天 20:00 自动抓取 AI 热点，只在你关心的主题（AGI、self、注意力…）出现时弹窗提醒。从系统通知踩坑到原生 C# 弹窗，附实时倒计时和完整代码。",
+      en: "Fetch AI news automatically at 8pm and get a popup only when topics you care about (AGI, self-attention…) appear. From broken system toasts to a native C# popup with a live countdown — full code included.",
+    },
+    date: "2026-08-07",
+    tags: ["Windows", "PowerShell", "WPF", "自动化", "弹窗"],
+    category: "indie",
+    categoryColor: "from-amber-500 via-orange-500 to-rose-500",
+    cover: { gradient: "from-amber-500 via-orange-500 to-rose-500", icon: "📡", image: "/aihot-radar-cover.svg" },
+    readingTime: 15,
+    prerequisites: [
+      { zh: "Windows 10/11", en: "Windows 10/11" },
+      { zh: "了解 JSON 配置格式", en: "Familiar with JSON config" },
+      { zh: "PowerShell 基础（能看懂脚本）", en: "Basic PowerShell (able to read scripts)" },
+    ],
+    published: true,
+  },
 ];
 
 // 按日期倒序排列，已发布优先
