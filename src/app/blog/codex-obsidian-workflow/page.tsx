@@ -748,9 +748,11 @@ export default function CodexObsidianWorkflowPage() {
           : "💡 If Codex doesn't do what you want — paste its output back and tell it what's wrong. If you can't articulate the issue clearly, use Claude Code first to reason through it, then hand the clarified plan to Codex."}
       </div>
       <div className="mt-4 px-5 py-4 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-800/30 rounded-xl text-[16px] leading-[1.8] text-zinc-700 dark:text-zinc-300">
-        {lang === "zh"
-          ? "🔧 <strong>以上所有内容都是开放性的。</strong>目录结构觉得不合适？告诉 Codex 换成你喜欢的组织方式。执行时间想改？告诉 Codex。弹窗样式不满意（太暗、太大、位置不对、想加提示音）？告诉 Codex，它都能按你的审美改。这套系统的设计原则是：<strong>你描述需求，Codex 实现，你验证结果。</strong>不要觉得被本文的方案框住了——它只是我在用的版本。"
-          : "🔧 <strong>Everything above is open to customization.</strong> Don't like the folder structure? Tell Codex to reorganize it your way. Want a different execution time? Tell Codex. Popup design not to your taste (too dark, too big, wrong position, want a sound)? Tell Codex — it adapts to your preferences. The design principle of this system: <strong>you describe what you want, Codex implements, you verify.</strong> Don't feel locked into what's shown here — it's just my version."}
+        {lang === "zh" ? (
+          <>🔧 <strong>以上所有内容都是开放性的。</strong>目录结构觉得不合适？告诉 Codex 换成你喜欢的组织方式。执行时间想改？告诉 Codex。弹窗样式不满意（太暗、太大、位置不对、想加提示音）？告诉 Codex，它都能按你的审美改。这套系统的设计原则是：<strong>你描述需求，Codex 实现，你验证结果。</strong>不要觉得被本文的方案框住了——它只是我在用的版本。</>
+        ) : (
+          <>🔧 <strong>Everything above is open to customization.</strong> Don&rsquo;t like the folder structure? Tell Codex to reorganize it your way. Want a different execution time? Tell Codex. Popup design not to your taste (too dark, too big, wrong position, want a sound)? Tell Codex &mdash; it adapts to your preferences. The design principle of this system: <strong>you describe what you want, Codex implements, you verify.</strong> Don&rsquo;t feel locked into what&rsquo;s shown here &mdash; it&rsquo;s just my version.</>
+        )}
       </div>
 
       {/* ===== 兴趣雷达 ===== */}
