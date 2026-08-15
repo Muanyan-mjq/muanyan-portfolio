@@ -266,7 +266,7 @@ const awardsData = [
     year: "2026.05",
     title: { zh: "第19届中国大学生计算机设计大赛", en: "19th Chinese Collegiate Computing Design Competition" },
     subtitle: { zh: "中南赛区 · 湖北省一等奖", en: "Central-South Division · Hubei Province First Prize" },
-    image: "", // 后续替换为获奖照片路径，如 "/awards/ccc2026.jpg"
+    image: "/awards/ccc2026.jpg",
   },
 ];
 
