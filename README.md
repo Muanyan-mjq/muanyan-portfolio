@@ -8,11 +8,18 @@
 
 ### 博客文章
 
-| 文章 | 摘要 | 分类 |
-|------|------|------|
-| [VAE 学习笔记（一）：从直觉到实现](/blog/vae-1-introduction) | 编码器→潜在空间→解码器，含网络架构图解、重参数化技巧、KL 散度与 MSE 损失函数详解 | 学习笔记 |
-| [自定义 Claude Code 状态栏](/blog/claude-code-statusline) | 零代码打造三行终端状态栏：模型/分支/CTX 用量实时显示，含完整 Python 脚本与 15 条 FAQ | 灵感产物 |
-| [First Post](/blog/first-post) | 博客开篇文章 | 示例 |
+| 文章 | 日期 | 分类 | 阅读 |
+|------|------|------|------|
+| [AGI 之后：从「会什么」到「你是谁」](/blog/agi-era-thoughts) | 2026-07-31 | AGI | 15 分钟 |
+| [让 Obsidian 自己运转：Codex 自动化工作流搭建实录](/blog/codex-obsidian-workflow) | 2026-08-07 | 独立开发 | 25 分钟 |
+| [给 AI 热点装一个「特别关心」：Windows 弹窗实战](/blog/aihot-interest-radar) | 2026-08-07 | 独立开发 | 20 分钟 |
+| [VAE 学习笔记（一）：从直觉到实现](/blog/vae-1-introduction) | 2026-06-02 | 学习笔记 | 20 分钟 |
+| [VAE 学习笔记（二）：彩色图像与优化](/blog/vae-2-color) | 2026-07-24 | 学习笔记 | 25 分钟 |
+| [我把 AI 装进了 QQ 和微信：Hermes Agent 全平台部署记](/blog/hermes-agent-qq-wechat) | 2026-07-18 | 独立开发 | 25 分钟 |
+| [Claude Code 配置 MCP 服务器：像 USB 一样给 AI 接上外设](/blog/claude-code-mcp-setup) | 2026-07-16 | 独立开发 | 8 分钟 |
+| [一行命令，让 Claude Code 终端「活」起来](/blog/claude-code-statusline) | 2026-06-29 | 独立开发 | 15 分钟 |
+
+> 另有 1 篇草稿未发布：《VAE 学习笔记（三）：条件生成 CVAE》
 
 ### 项目空间
 
@@ -20,6 +27,7 @@
 |------|------|------|
 | [DeepSeek Monitor Windows](/projects/deepseek-monitor) | Windows 桌面 API 用量监控器，7 套主题色，系统托盘驻留。可点击架构管线、主题画廊、fork 链致谢卡片 | Tauri 2 · React · Rust |
 | [随心耶 Flowdiary](/projects/flowdiary) | 萨摩耶主题日记 App，含 12 区块叙事产品介绍页 | Flutter · 独立开发 |
+| [VAE 项目集](/projects/vae) · [VAE 彩色化](/projects/vae-color) · [VAE 灰度版](/projects/vae-gray) | VAE 系列项目页 | PyTorch · 深度学习 |
 | [项目总览](/projects) | 项目卡片展示，欢迎页入场动画 | |
 
 ### 专栏 & 工具
