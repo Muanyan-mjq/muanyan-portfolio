@@ -771,7 +771,7 @@ export default function Home() {
             <div className="w-full aspect-[4/3] bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 dark:from-zinc-800 dark:via-zinc-800 dark:to-zinc-800 flex items-center justify-center">
               {awardsData[lightboxIndex].image ? (
                 <Image
-                  src={awardsData[lightboxIndex].image}
+                  src={`${BASE_PATH}${awardsData[lightboxIndex].image}`}
                   alt={awardsData[lightboxIndex].title[lang]}
                   width={800}
                   height={600}
